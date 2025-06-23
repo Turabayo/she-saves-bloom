@@ -32,7 +32,7 @@ const Landing = () => {
           <div className="space-y-4 w-full">
             <Button 
               className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 text-lg rounded-lg"
-              onClick={() => navigate('/signup')}
+              onClick={() => navigate('/auth')}
             >
               Get Started
             </Button>
@@ -41,7 +41,7 @@ const Landing = () => {
               <span className="text-gray-600">Already have an account? </span>
               <button 
                 className="text-orange-500 font-medium"
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/auth')}
               >
                 Sign in
               </button>

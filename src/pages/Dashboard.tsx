@@ -1,20 +1,37 @@
 
-import { useState } from "react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { useInvestments } from "@/hooks/useInvestments";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [netWorth] = useState(25500);
+  const { user, loading: authLoading } = useAuth();
+  const { investments, loading: investmentsLoading, getTotalSavings } = useInvestments();
 
-  const investments = [
-    { name: "Emergency Fund", amount: 2500 },
-    { name: "Education Fund", amount: 11800 },
-    { name: "Retirement Fund", amount: 1200 },
-    { name: "Small Business", amount: 1500 },
-    { name: "Home Purchase", amount: 4300 },
-  ];
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/auth');
+    }
+  }, [user, authLoading, navigate]);
+
+  if (authLoading || investmentsLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) return null;
+
+  const totalSavings = getTotalSavings();
+  const displayInvestments = investments.slice(0, 3);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -24,15 +41,19 @@ const Dashboard = () => {
         <div className="max-w-md mx-auto">
           {/* Welcome Header */}
           <div className="py-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Good morning!</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Good morning, {user.user_metadata?.full_name?.split(' ')[0] || 'there'}!
+            </h1>
             <p className="text-gray-600">Here's your financial progress</p>
           </div>
 
           {/* Net Worth Card */}
           <div className="bg-white rounded-xl p-6 mb-6 shadow-sm">
             <h2 className="text-lg font-semibold text-gray-900 mb-2">Total Savings</h2>
-            <p className="text-3xl font-bold text-gray-900">${netWorth.toLocaleString()}</p>
-            <p className="text-green-600 text-sm mt-1">+12% this month</p>
+            <p className="text-3xl font-bold text-gray-900">${totalSavings.toLocaleString()}</p>
+            <p className="text-green-600 text-sm mt-1">
+              {investments.length} {investments.length === 1 ? 'investment' : 'investments'}
+            </p>
           </div>
 
           {/* Quick Actions */}
@@ -66,16 +87,28 @@ const Dashboard = () => {
               </Button>
             </div>
             
-            <div className="space-y-4">
-              {investments.slice(0, 3).map((investment, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <span className="text-gray-700">{investment.name}</span>
-                  <span className="font-semibold text-gray-900">
-                    ${investment.amount.toLocaleString()}
-                  </span>
-                </div>
-              ))}
-            </div>
+            {displayInvestments.length > 0 ? (
+              <div className="space-y-4">
+                {displayInvestments.map((investment) => (
+                  <div key={investment.id} className="flex items-center justify-between">
+                    <span className="text-gray-700">{investment.name}</span>
+                    <span className="font-semibold text-gray-900">
+                      ${investment.amount.toLocaleString()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-500 mb-4">No investments yet</p>
+                <Button 
+                  onClick={() => navigate('/add-investment')}
+                  className="bg-orange-500 hover:bg-orange-600 text-white"
+                >
+                  Add Your First Investment
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </main>

@@ -1,15 +1,23 @@
 
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 
 const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, signOut } = useAuth();
 
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', active: location.pathname === '/dashboard' },
     { path: '/investments', label: 'Investments', active: location.pathname === '/investments' },
     { path: '/insights', label: 'Insights', active: location.pathname === '/insights' },
   ];
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   return (
     <>
@@ -38,12 +46,24 @@ const Navigation = () => {
               ))}
             </nav>
             
-            <button 
-              onClick={() => navigate('/settings')}
-              className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center"
-            >
-              <span className="text-white font-bold text-xs">A</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => navigate('/settings')}
+                className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center"
+              >
+                <span className="text-white font-bold text-xs">
+                  {user?.user_metadata?.full_name?.[0] || user?.email?.[0] || 'A'}
+                </span>
+              </button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleSignOut}
+                className="text-gray-600 hover:text-gray-900"
+              >
+                Sign Out
+              </Button>
+            </div>
           </div>
         </div>
       </header>
