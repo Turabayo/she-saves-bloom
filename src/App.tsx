@@ -16,6 +16,7 @@ import Insights from "./pages/Insights";
 import Community from "./pages/Community";
 import Assistant from "./pages/Assistant";
 import Settings from "./pages/Settings";
+import TopUp from "./pages/TopUp";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/community" element={<Community />} />
             <Route path="/assistant" element={<Assistant />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/top-up" element={<TopUp />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

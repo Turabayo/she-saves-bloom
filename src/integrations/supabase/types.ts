@@ -73,27 +73,45 @@ export type Database = {
         Row: {
           amount: number
           created_at: string | null
+          currency: string | null
           description: string | null
+          external_id: string | null
           id: string
           investment_id: string | null
+          payment_method: string | null
+          phone: string | null
+          reference_id: string | null
+          status: string | null
           type: string
           user_id: string
         }
         Insert: {
           amount: number
           created_at?: string | null
+          currency?: string | null
           description?: string | null
+          external_id?: string | null
           id?: string
           investment_id?: string | null
+          payment_method?: string | null
+          phone?: string | null
+          reference_id?: string | null
+          status?: string | null
           type: string
           user_id: string
         }
         Update: {
           amount?: number
           created_at?: string | null
+          currency?: string | null
           description?: string | null
+          external_id?: string | null
           id?: string
           investment_id?: string | null
+          payment_method?: string | null
+          phone?: string | null
+          reference_id?: string | null
+          status?: string | null
           type?: string
           user_id?: string
         }
