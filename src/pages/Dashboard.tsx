@@ -50,7 +50,7 @@ const Dashboard = () => {
           {/* Net Worth Card */}
           <div className="bg-white rounded-xl p-6 mb-6 shadow-sm">
             <h2 className="text-lg font-semibold text-gray-900 mb-2">Total Savings</h2>
-            <p className="text-3xl font-bold text-gray-900">${totalSavings.toLocaleString()}</p>
+            <p className="text-3xl font-bold text-gray-900">{totalSavings.toLocaleString()} RWF</p>
             <p className="text-green-600 text-sm mt-1">
               {investments.length} {investments.length === 1 ? 'investment' : 'investments'}
             </p>
@@ -65,11 +65,11 @@ const Dashboard = () => {
               + Add Investment
             </Button>
             <Button 
-              onClick={() => navigate('/assistant')}
+              onClick={() => navigate('/top-up')}
               variant="outline"
               className="border-gray-300 py-4 rounded-lg"
             >
-              💡 Get Tips
+              💰 Top Up
             </Button>
           </div>
 
@@ -93,7 +93,7 @@ const Dashboard = () => {
                   <div key={investment.id} className="flex items-center justify-between">
                     <span className="text-gray-700">{investment.name}</span>
                     <span className="font-semibold text-gray-900">
-                      ${investment.amount.toLocaleString()}
+                      {investment.amount.toLocaleString()} RWF
                     </span>
                   </div>
                 ))}

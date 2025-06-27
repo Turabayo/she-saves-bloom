@@ -67,11 +67,11 @@ const Investments = () => {
                   </div>
                   <div className="text-right">
                     <span className="text-gray-900 font-semibold">
-                      ${investment.amount.toLocaleString()}
+                      {investment.amount.toLocaleString()} RWF
                     </span>
                     {investment.target_amount && (
                       <div className="text-sm text-gray-500">
-                        Goal: ${investment.target_amount.toLocaleString()}
+                        Goal: {investment.target_amount.toLocaleString()} RWF
                       </div>
                     )}
                   </div>
