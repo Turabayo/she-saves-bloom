@@ -42,6 +42,54 @@ export type Database = {
         }
         Relationships: []
       }
+      momo_transactions: {
+        Row: {
+          amount: number
+          callback_received_at: string | null
+          created_at: string | null
+          currency: string
+          external_id: string | null
+          financial_transaction_id: string | null
+          id: string
+          phone: string
+          reason: string | null
+          reference_id: string
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          callback_received_at?: string | null
+          created_at?: string | null
+          currency?: string
+          external_id?: string | null
+          financial_transaction_id?: string | null
+          id?: string
+          phone: string
+          reason?: string | null
+          reference_id: string
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          callback_received_at?: string | null
+          created_at?: string | null
+          currency?: string
+          external_id?: string | null
+          financial_transaction_id?: string | null
+          id?: string
+          phone?: string
+          reason?: string | null
+          reference_id?: string
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
