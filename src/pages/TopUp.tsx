@@ -74,7 +74,7 @@ const TopUp = () => {
             phone: formData.phone,
             status: 'pending',
             payment_method: 'momo',
-            currency: 'RWF',
+            currency: 'EUR', // EUR for sandbox
             description: 'MoMo top-up'
           }
         ])
@@ -84,34 +84,19 @@ const TopUp = () => {
       if (transactionError) throw transactionError;
 
       // Call MoMo API through edge function
-      const response = await fetch('/api/momo-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke('momo-payment', {
+        body: {
           amount: amount,
           phone: formData.phone,
           transactionId: transaction.id
-        })
+        }
       });
 
-      const result = await response.json();
+      if (error) throw error;
 
-      if (!response.ok) {
-        throw new Error(result.error || 'Payment request failed');
+      if (!data.success) {
+        throw new Error(data.error || 'Payment request failed');
       }
-
-      // Update transaction with external reference
-      await supabase
-        .from('transactions')
-        .update({
-          external_id: result.externalId,
-          reference_id: result.referenceId,
-          status: 'processing'
-        })
-        .eq('id', transaction.id);
 
       toast({
         title: "Payment request sent!",
@@ -135,6 +120,30 @@ const TopUp = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkPaymentStatus = async (referenceId: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('momo-payment', {
+        body: { referenceId },
+        method: 'POST'
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Payment Status",
+        description: `Status: ${data.status}`,
+      });
+
+    } catch (error: any) {
+      console.error('Status check error:', error);
+      toast({
+        title: "Status check failed",
+        description: error.message,
+        variant: "destructive"
+      });
     }
   };
 
@@ -167,7 +176,7 @@ const TopUp = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Amount */}
             <div>
-              <label className="block text-gray-900 font-medium mb-2">Amount (RWF)</label>
+              <label className="block text-gray-900 font-medium mb-2">Amount (EUR - Sandbox)</label>
               <div className="relative">
                 <DollarSign size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <Input
@@ -175,13 +184,13 @@ const TopUp = () => {
                   value={formData.amount}
                   onChange={(e) => setFormData({...formData, amount: e.target.value})}
                   className="pl-10 py-3 text-lg border border-gray-300 rounded-lg"
-                  placeholder="1000"
-                  min="100"
+                  placeholder="100"
+                  min="1"
                   step="1"
                   required
                 />
               </div>
-              <p className="text-sm text-gray-500 mt-1">Minimum amount: 100 RWF</p>
+              <p className="text-sm text-gray-500 mt-1">Minimum amount: 1 EUR (Sandbox mode)</p>
             </div>
 
             {/* Phone Number */}
@@ -220,12 +229,13 @@ const TopUp = () => {
 
           {/* Info */}
           <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-            <h3 className="font-medium text-blue-900 mb-2">How it works:</h3>
+            <h3 className="font-medium text-blue-900 mb-2">How it works (Sandbox Mode):</h3>
             <ul className="text-sm text-blue-800 space-y-1">
-              <li>• Enter the amount you want to save</li>
+              <li>• Enter the amount you want to save (in EUR for sandbox)</li>
               <li>• Enter your MTN MoMo number</li>
               <li>• You'll receive a payment prompt on your phone</li>
               <li>• Complete the payment to add funds to your savings</li>
+              <li>• Payment status will be updated automatically via webhook</li>
             </ul>
           </div>
         </div>
