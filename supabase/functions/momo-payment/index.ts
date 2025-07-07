@@ -5,6 +5,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
 }
 
 // MTN MoMo Sandbox Configuration
@@ -44,12 +45,46 @@ function generateUUID(): string {
   });
 }
 
+// Validate phone number format
+function validatePhoneNumber(phone: string): boolean {
+  const phoneRegex = /^(\+?25)?(078|072|073|079)\d{7}$/;
+  return phoneRegex.test(phone);
+}
+
+// Validate access token (basic check for expiry)
+function isTokenValid(token: string): boolean {
+  if (!token || !token.startsWith('Bearer ')) {
+    return false;
+  }
+  
+  try {
+    // Extract JWT payload and check expiry if possible
+    const tokenPart = token.replace('Bearer ', '');
+    const payload = JSON.parse(atob(tokenPart.split('.')[1]));
+    const currentTime = Math.floor(Date.now() / 1000);
+    
+    return payload.exp && payload.exp > currentTime;
+  } catch {
+    // If we can't parse, assume it's valid for now
+    return true;
+  }
+}
+
 // Initiate payment with MTN MoMo
-async function initiatePayment(phone: string, amount: number): Promise<string> {
+async function initiatePayment(phone: string, amount: number): Promise<{ success: boolean; referenceId?: string; error?: string }> {
   const referenceId = generateUUID();
   
   console.log(`Initiating MoMo payment: ${amount} ${MOMO_CONFIG.currency} to ${phone}`);
   console.log(`Using reference ID: ${referenceId}`);
+
+  // Validate inputs
+  if (!validatePhoneNumber(phone)) {
+    return { success: false, error: 'Invalid phone number format. Please use a valid Rwandan number.' };
+  }
+
+  if (!isTokenValid(MOMO_CONFIG.authorization)) {
+    return { success: false, error: 'Access token is expired or invalid. Please refresh the session.' };
+  }
 
   const requestBody = {
     amount: amount.toString(),
@@ -57,7 +92,7 @@ async function initiatePayment(phone: string, amount: number): Promise<string> {
     externalId: MOMO_CONFIG.externalId,
     payer: {
       partyIdType: 'MSISDN',
-      partyId: MOMO_CONFIG.testPayerId // Use sandbox test number
+      partyId: phone // Use the provided phone number in sandbox
     },
     payerMessage: 'Top-up from SheSaves',
     payeeNote: 'Thank you'
@@ -82,16 +117,22 @@ async function initiatePayment(phone: string, amount: number): Promise<string> {
     
     if (response.status === 202) {
       console.log(`Payment initiated successfully with reference ID: ${referenceId}`);
-      return referenceId;
+      return { success: true, referenceId };
     } else {
       const errorText = await response.text();
       console.error('MTN MoMo API error response:', errorText);
-      throw new Error(`Payment initiation failed with status ${response.status}: ${errorText}`);
+      return { 
+        success: false, 
+        error: `Payment initiation failed: ${response.status} - ${errorText || 'Unknown error'}` 
+      };
     }
 
   } catch (error) {
     console.error('Error initiating payment:', error);
-    throw error;
+    return { 
+      success: false, 
+      error: `Network error: ${error.message}` 
+    };
   }
 }
 
@@ -199,7 +240,16 @@ serve(async (req) => {
       const { referenceId }: MoMoStatusRequest = await req.json();
       
       if (!referenceId) {
-        throw new Error('Reference ID is required');
+        return new Response(
+          JSON.stringify({ success: false, error: 'Reference ID is required' }),
+          { 
+            status: 400,
+            headers: { 
+              ...corsHeaders, 
+              'Content-Type': 'application/json' 
+            } 
+          }
+        );
       }
 
       const statusData = await checkPaymentStatus(referenceId);
@@ -248,21 +298,55 @@ serve(async (req) => {
 
       // Validate input
       if (!amount || !phone) {
-        throw new Error('Amount and phone number are required');
+        return new Response(
+          JSON.stringify({ success: false, error: 'Amount and phone number are required' }),
+          { 
+            status: 400,
+            headers: { 
+              ...corsHeaders, 
+              'Content-Type': 'application/json' 
+            } 
+          }
+        );
       }
 
       if (amount <= 0) {
-        throw new Error('Invalid amount');
+        return new Response(
+          JSON.stringify({ success: false, error: 'Invalid amount. Amount must be greater than 0.' }),
+          { 
+            status: 400,
+            headers: { 
+              ...corsHeaders, 
+              'Content-Type': 'application/json' 
+            } 
+          }
+        );
       }
 
       console.log(`Processing payment request: amount=${amount}, phone=${phone}, user=${user?.id}`);
 
       // Initiate payment
-      const referenceId = await initiatePayment(phone, amount);
+      const paymentResult = await initiatePayment(phone, amount);
+      
+      if (!paymentResult.success) {
+        return new Response(
+          JSON.stringify({ 
+            success: false, 
+            error: paymentResult.error 
+          }),
+          { 
+            status: 400,
+            headers: { 
+              ...corsHeaders, 
+              'Content-Type': 'application/json' 
+            } 
+          }
+        );
+      }
 
       // Create transaction record
       const transactionData = {
-        reference_id: referenceId,
+        reference_id: paymentResult.referenceId!,
         external_id: MOMO_CONFIG.externalId,
         amount: amount,
         currency: MOMO_CONFIG.currency,
@@ -290,8 +374,8 @@ serve(async (req) => {
           const { error: updateError } = await supabaseClient
             .from('transactions')
             .update({
-              external_id: referenceId,
-              reference_id: referenceId,
+              external_id: paymentResult.referenceId,
+              reference_id: paymentResult.referenceId,
               status: 'processing'
             })
             .eq('id', transactionId)
@@ -306,7 +390,7 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({
           success: true,
-          referenceId: referenceId,
+          referenceId: paymentResult.referenceId,
           externalId: MOMO_CONFIG.externalId,
           message: 'Payment initiated successfully',
           amount: amount,
@@ -339,10 +423,11 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: error.message || 'Internal server error'
+        error: error.message || 'Internal server error',
+        details: error.stack || 'No additional details'
       }),
       { 
-        status: 400,
+        status: 500,
         headers: { 
           ...corsHeaders, 
           'Content-Type': 'application/json' 
