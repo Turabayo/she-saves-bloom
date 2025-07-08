@@ -25,18 +25,22 @@ const TopUp = () => {
   const [loading, setLoading] = useState(false);
   const [sessionStatus, setSessionStatus] = useState<'valid' | 'invalid' | 'checking'>('checking');
 
-  // Check session status on mount
+  // Check session status and access token on mount
   useEffect(() => {
     const checkSession = async () => {
-      const valid = await refreshSessionIfNeeded();
-      setSessionStatus(valid ? 'valid' : 'invalid');
+      const token = localStorage.getItem("accessToken");
+      if (!token || !isTokenValid()) {
+        setSessionStatus('invalid');
+      } else {
+        setSessionStatus('valid');
+      }
       
-      // Initialize session data for sandbox
+      // Initialize session data for sandbox with correct test number
       if (!sessionData.environment) {
         saveSessionData({
           environment: 'sandbox',
           subscriptionKey: 'e088d79cb68442d6b631a1783d1fd5be',
-          accessToken: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSMjU2In0...',
+          accessToken: token || 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSMjU2In0...',
           apiUserId: '780c177b-fdcf-4c9f-8a51-499ee395574f'
         });
       }
@@ -48,6 +52,13 @@ const TopUp = () => {
   const handleFormChange = (field: 'amount' | 'phone', value: string) => {
     const updatedForm = { ...formData, [field]: value };
     saveFormData(updatedForm);
+    
+    // Also save to localStorage for persistence
+    if (field === 'amount') {
+      localStorage.setItem("topupAmount", value);
+    } else if (field === 'phone') {
+      localStorage.setItem("topupPhone", value);
+    }
   };
 
   const validateInputs = () => {
@@ -70,12 +81,12 @@ const TopUp = () => {
       return false;
     }
 
-    // Validate phone number format (Rwanda format or test number)
-    const phoneRegex = /^(\+?25)?(078|072|073|079)\d{7}$|^46733123454$/;
+    // Accept MTN Rwanda test number or standard formats
+    const phoneRegex = /^(0780000000|0780\d{6}|078\d{7}|072\d{7}|073\d{7}|079\d{7}|\+25078\d{7})$/;
     if (!phoneRegex.test(formData.phone)) {
       toast({
         title: "Invalid phone number",
-        description: "Please enter a valid Rwandan phone number or use test number 46733123454",
+        description: "Please use test number 0780000000 or a valid MTN Rwanda number",
         variant: "destructive"
       });
       return false;
@@ -209,6 +220,11 @@ const TopUp = () => {
     const valid = await refreshSessionIfNeeded();
     setSessionStatus(valid ? 'valid' : 'invalid');
     
+    // Store access token if valid
+    if (valid && sessionData.accessToken) {
+      localStorage.setItem("accessToken", sessionData.accessToken);
+    }
+    
     toast({
       title: valid ? "Session refreshed" : "Session refresh failed",
       description: valid ? "Your session has been updated" : "Please check your connection",
@@ -293,12 +309,12 @@ const TopUp = () => {
                   value={formData.phone}
                   onChange={(e) => handleFormChange('phone', e.target.value)}
                   className="pl-10 py-3 text-lg border border-gray-300 rounded-lg"
-                  placeholder="46733123454"
+                  placeholder="0780000000"
                   required
                 />
               </div>
               <p className="text-sm text-gray-500 mt-1">
-                Use test number: 46733123454 (or your MTN Rwanda number)
+                Use test number: <code className="bg-gray-100 px-1 rounded">0780000000</code> (MTN Rwanda)
               </p>
             </div>
 
@@ -327,7 +343,7 @@ const TopUp = () => {
             <ul className="text-sm text-blue-800 space-y-1">
               <li>• Form values are saved automatically and restored on page reload</li>
               <li>• Enter the amount you want to save (in EUR for sandbox)</li>
-              <li>• Use test number 46733123454 or your MTN MoMo number</li>
+              <li>• Use test number <code className="bg-blue-100 px-1 rounded">0780000000</code> (MTN Rwanda)</li>
               <li>• You'll receive a payment prompt on your phone</li>
               <li>• Complete the payment to add funds to your savings</li>
               <li>• Payment status will be updated automatically via webhook</li>

@@ -3,8 +3,60 @@ import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { ChevronRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Settings = () => {
+  const { signOut } = useAuth();
+  const { toast } = useToast();
+  const [aiEnabled, setAiEnabled] = useState(true); // Default to enabled
+
+  // Load AI assistant setting from localStorage
+  useEffect(() => {
+    const savedSetting = localStorage.getItem("aiAssistant");
+    if (savedSetting !== null) {
+      setAiEnabled(savedSetting === "true");
+    }
+  }, []);
+
+  const toggleAi = () => {
+    const newValue = !aiEnabled;
+    setAiEnabled(newValue);
+    localStorage.setItem("aiAssistant", newValue.toString());
+    
+    toast({
+      title: "AI Assistant " + (newValue ? "Enabled" : "Disabled"),
+      description: newValue ? "AI Assistant is now active" : "AI Assistant has been turned off",
+    });
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      toast({
+        title: "Signed out successfully",
+        description: "You have been logged out of your account",
+      });
+    } catch (error) {
+      console.error('Sign out error:', error);
+    }
+  };
+
+  const handleExportData = () => {
+    toast({
+      title: "Export feature coming soon",
+      description: "Data export functionality will be available in a future update",
+    });
+  };
+
+  const handleHelpSupport = () => {
+    toast({
+      title: "Help & Support",
+      description: "Contact support at support@shesaves.app",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
@@ -40,8 +92,14 @@ const Settings = () => {
               </div>
 
               <div className="flex items-center justify-between p-4">
-                <span className="text-gray-900">AI Assistant</span>
-                <Switch />
+                <div className="flex-1">
+                  <span className="text-gray-900">AI Assistant</span>
+                  <p className="text-sm text-gray-500">Enable financial AI assistance</p>
+                </div>
+                <Switch 
+                  checked={aiEnabled}
+                  onCheckedChange={toggleAi}
+                />
               </div>
 
               <div className="flex items-center justify-between p-4">
@@ -55,15 +113,37 @@ const Settings = () => {
 
             {/* Actions */}
             <div className="space-y-3">
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={handleExportData}
+              >
                 Export Savings History
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={handleHelpSupport}
+              >
                 Help & Support
               </Button>
-              <Button variant="destructive" className="w-full justify-start">
+              <Button 
+                variant="destructive" 
+                className="w-full justify-start"
+                onClick={handleSignOut}
+              >
                 Sign Out
               </Button>
+            </div>
+
+            {/* Debug Info */}
+            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+              <h4 className="font-medium text-gray-800 mb-1">Debug Info:</h4>
+              <div className="text-xs text-gray-600 space-y-1">
+                <div>AI Assistant: {aiEnabled ? 'Enabled' : 'Disabled'}</div>
+                <div>Environment: Sandbox</div>
+                <div>Version: 1.0.0</div>
+              </div>
             </div>
           </div>
         </div>

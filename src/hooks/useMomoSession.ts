@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 
 interface MomoSessionData {
@@ -21,13 +22,17 @@ export const useMomoSession = () => {
   const [sessionData, setSessionData] = useState<MomoSessionData>({});
   const [formData, setFormData] = useState<FormData>({
     amount: '10',
-    phone: '46733123454'
+    phone: '0780000000' // MTN Rwanda test number
   });
 
-  // Load session data from localStorage on mount
+  // Load session data and form data from localStorage on mount
   useEffect(() => {
     const savedSession = localStorage.getItem(MOMO_SESSION_KEY);
     const savedForm = localStorage.getItem(MOMO_FORM_KEY);
+    
+    // Load saved amount and phone from localStorage
+    const savedAmount = localStorage.getItem("topupAmount") || "10";
+    const savedPhone = localStorage.getItem("topupPhone") || "0780000000";
     
     if (savedSession) {
       try {
@@ -38,14 +43,25 @@ export const useMomoSession = () => {
       }
     }
 
+    // Use localStorage values if available, otherwise use defaults
     if (savedForm) {
       try {
         const parsed = JSON.parse(savedForm);
         setFormData(parsed);
       } catch (error) {
         console.error('Error parsing saved form data:', error);
-        // Keep default values if parsing fails
+        // Use localStorage values as fallback
+        setFormData({
+          amount: savedAmount,
+          phone: savedPhone
+        });
       }
+    } else {
+      // Initialize with localStorage values
+      setFormData({
+        amount: savedAmount,
+        phone: savedPhone
+      });
     }
   }, []);
 
@@ -58,17 +74,27 @@ export const useMomoSession = () => {
     };
     setSessionData(updatedData);
     localStorage.setItem(MOMO_SESSION_KEY, JSON.stringify(updatedData));
+    
+    // Also save access token separately for easy access
+    if (data.accessToken) {
+      localStorage.setItem("accessToken", data.accessToken);
+    }
   };
 
   // Save form data to localStorage
   const saveFormData = (data: FormData) => {
     setFormData(data);
     localStorage.setItem(MOMO_FORM_KEY, JSON.stringify(data));
+    
+    // Also save individual values
+    localStorage.setItem("topupAmount", data.amount);
+    localStorage.setItem("topupPhone", data.phone);
   };
 
   // Check if token is valid and not expired
   const isTokenValid = () => {
-    if (!sessionData.accessToken) return false;
+    const storedToken = localStorage.getItem("accessToken");
+    if (!storedToken) return false;
     
     const lastUpdated = sessionData.lastUpdated || 0;
     const currentTime = Date.now();
@@ -93,15 +119,18 @@ export const useMomoSession = () => {
   const clearSession = () => {
     setSessionData({});
     localStorage.removeItem(MOMO_SESSION_KEY);
+    localStorage.removeItem("accessToken");
   };
 
   // Clear form data
   const clearFormData = () => {
     setFormData({
       amount: '10',
-      phone: '46733123454'
+      phone: '0780000000' // Reset to MTN Rwanda test number
     });
     localStorage.removeItem(MOMO_FORM_KEY);
+    localStorage.removeItem("topupAmount");
+    localStorage.removeItem("topupPhone");
   };
 
   return {

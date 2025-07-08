@@ -15,7 +15,7 @@ const MOMO_CONFIG = {
   targetEnvironment: 'sandbox',
   currency: 'EUR',
   authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSMjU2In0.eyJjbGllbnRJZCI6Ijc4MGMxNzdiLWZkY2YtNGM5Zi04YTUxLTQ5OWVlMzk1NTc0ZiIsImV4cGlyZXMiOiIyMDI1LTA3LTA1VDE2OjU3OjM4LjMwNCIsInNlc3Npb25JZCI6Ijc2ODk4OWVkLTgzZmEtNGUwMC1hOTkwLTVkMzRjYmEzMDkwNCJ9.aolYOkszNsGdgNWh0xvBbPBqXqdP0xQXZ2lHH_4lTuPPWwwuymd5wjgMcHP8KN3l6fw_kUYA4s0mhBoSbaJ4wuw-jaj1FQDv62WVhoGDDsuELjQdLLulVtIwdGOcjS81hDkh7Hk4xVYEdL2zv7HmkGvoQ0S46gsWTWkB11K9nF2LDCB9rX46iSAkXz_VNAj-9BOKqlB7MBjxpeoiRrvv3OACfKzw248bWQlm5lVQtWM8-XH4mKRNU6fKedv130GhMQIDw-hdx6aBeSrt3Bn273_nwxK07zL6LU05F76y1GR-M6Fy3VVbpXHwaULg0kTcqvuJP1N8exupqpqAUQfDjQ',
-  testPayerId: '46733123454',
+  testPayerId: '0780000000', // MTN Rwanda test number
   externalId: '123456789'
 }
 
@@ -45,9 +45,13 @@ function generateUUID(): string {
   });
 }
 
-// Validate phone number format
+// Validate phone number format - prioritize MTN Rwanda test number
 function validatePhoneNumber(phone: string): boolean {
-  const phoneRegex = /^(\+?25)?(078|072|073|079)\d{7}$/;
+  // Accept MTN Rwanda test number specifically
+  if (phone === '0780000000') return true;
+  
+  // Accept other MTN Rwanda formats
+  const phoneRegex = /^(0780\d{6}|078\d{7}|072\d{7}|073\d{7}|079\d{7}|\+25078\d{7})$/;
   return phoneRegex.test(phone);
 }
 
@@ -79,12 +83,15 @@ async function initiatePayment(phone: string, amount: number): Promise<{ success
 
   // Validate inputs
   if (!validatePhoneNumber(phone)) {
-    return { success: false, error: 'Invalid phone number format. Please use a valid Rwandan number.' };
+    return { success: false, error: 'Invalid phone number format. Please use 0780000000 (MTN Rwanda test number) or a valid MTN number.' };
   }
 
   if (!isTokenValid(MOMO_CONFIG.authorization)) {
     return { success: false, error: 'Access token is expired or invalid. Please refresh the session.' };
   }
+
+  // Use the MTN Rwanda test number for sandbox
+  const payerPhone = phone === '0780000000' ? '0780000000' : phone;
 
   const requestBody = {
     amount: amount.toString(),
@@ -92,10 +99,10 @@ async function initiatePayment(phone: string, amount: number): Promise<{ success
     externalId: MOMO_CONFIG.externalId,
     payer: {
       partyIdType: 'MSISDN',
-      partyId: phone // Use the provided phone number in sandbox
+      partyId: payerPhone
     },
     payerMessage: 'Top-up from SheSaves',
-    payeeNote: 'Thank you'
+    payeeNote: 'Thank you for using SheSaves'
   };
 
   console.log('Request body:', JSON.stringify(requestBody, null, 2));
@@ -114,16 +121,17 @@ async function initiatePayment(phone: string, amount: number): Promise<{ success
     });
 
     console.log(`MTN MoMo API response status: ${response.status}`);
+    const responseText = await response.text();
+    console.log('MTN MoMo API response:', responseText);
     
     if (response.status === 202) {
       console.log(`Payment initiated successfully with reference ID: ${referenceId}`);
       return { success: true, referenceId };
     } else {
-      const errorText = await response.text();
-      console.error('MTN MoMo API error response:', errorText);
+      console.error('MTN MoMo API error response:', responseText);
       return { 
         success: false, 
-        error: `Payment initiation failed: ${response.status} - ${errorText || 'Unknown error'}` 
+        error: `Payment initiation failed: ${response.status} - ${responseText || 'Unknown error'}` 
       };
     }
 
@@ -259,7 +267,8 @@ serve(async (req) => {
         .from('momo_transactions')
         .update({
           status: statusData.status || 'PENDING',
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
+          financial_transaction_id: statusData.financialTransactionId
         })
         .eq('reference_id', referenceId);
 
@@ -272,6 +281,7 @@ serve(async (req) => {
           success: true, 
           status: statusData.status || 'PENDING', 
           referenceId,
+          financialTransactionId: statusData.financialTransactionId,
           data: statusData 
         }),
         { 
@@ -392,9 +402,10 @@ serve(async (req) => {
           success: true,
           referenceId: paymentResult.referenceId,
           externalId: MOMO_CONFIG.externalId,
-          message: 'Payment initiated successfully',
+          message: 'Payment initiated successfully. Check your phone for the MoMo prompt.',
           amount: amount,
-          currency: MOMO_CONFIG.currency
+          currency: MOMO_CONFIG.currency,
+          phone: phone
         }),
         { 
           headers: { 
