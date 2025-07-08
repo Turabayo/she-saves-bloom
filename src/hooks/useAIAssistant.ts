@@ -39,8 +39,8 @@ export const useAIAssistant = () => {
     setLoading(true);
 
     try {
-      // Get conversation history (last 10 messages)
-      const conversationHistory = messages.slice(-10).map(msg => ({
+      // Get conversation history (last 8 messages)
+      const conversationHistory = messages.slice(-8).map(msg => ({
         role: msg.type === 'user' ? 'user' as const : 'assistant' as const,
         content: msg.content
       }));
@@ -77,21 +77,24 @@ export const useAIAssistant = () => {
     } catch (error: any) {
       console.error('Error sending message:', error);
       
-      // Add fallback message
+      // Add graceful fallback message
       const fallbackMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: 'assistant',
-        content: "I'm sorry, I'm having trouble connecting right now. Please try asking your question again in a moment. In the meantime, remember that consistent small savings can make a big difference!",
+        content: "AI temporarily unavailable — try again soon. In the meantime, remember that consistent small savings can make a big difference in building your financial security!",
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, fallbackMessage]);
 
-      toast({
-        title: "Connection Issue",
-        description: "I'm having trouble connecting. Please try again.",
-        variant: "destructive"
-      });
+      // Only show toast for unexpected errors, not connection issues
+      if (!error.message?.includes('FunctionsHttpError')) {
+        toast({
+          title: "Connection Issue",
+          description: "I'm having trouble connecting. Please try again.",
+          variant: "destructive"
+        });
+      }
     } finally {
       setLoading(false);
     }

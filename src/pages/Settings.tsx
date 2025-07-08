@@ -1,4 +1,3 @@
-
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -10,12 +9,16 @@ import { useToast } from "@/hooks/use-toast";
 const Settings = () => {
   const { signOut } = useAuth();
   const { toast } = useToast();
-  const [aiEnabled, setAiEnabled] = useState(true); // Default to enabled
+  const [aiEnabled, setAiEnabled] = useState(true);
 
-  // Load AI assistant setting from localStorage
+  // Enable AI assistant by default and load setting from localStorage
   useEffect(() => {
     const savedSetting = localStorage.getItem("aiAssistant");
-    if (savedSetting !== null) {
+    if (savedSetting === null) {
+      // Enable by default
+      localStorage.setItem("aiAssistant", "true");
+      setAiEnabled(true);
+    } else {
       setAiEnabled(savedSetting === "true");
     }
   }, []);
@@ -94,7 +97,7 @@ const Settings = () => {
               <div className="flex items-center justify-between p-4">
                 <div className="flex-1">
                   <span className="text-gray-900">AI Assistant</span>
-                  <p className="text-sm text-gray-500">Enable financial AI assistance</p>
+                  <p className="text-sm text-gray-500">Enable financial AI assistance everywhere</p>
                 </div>
                 <Switch 
                   checked={aiEnabled}

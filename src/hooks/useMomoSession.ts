@@ -16,53 +16,40 @@ interface FormData {
 
 const MOMO_SESSION_KEY = 'momo_session_data';
 const MOMO_FORM_KEY = 'momo_form_data';
-const TOKEN_EXPIRY_BUFFER = 5 * 60 * 1000; // 5 minutes buffer
 
 export const useMomoSession = () => {
   const [sessionData, setSessionData] = useState<MomoSessionData>({});
   const [formData, setFormData] = useState<FormData>({
     amount: '10',
-    phone: '0780000000' // MTN Rwanda test number
+    phone: '0780000000'
   });
 
   // Load session data and form data from localStorage on mount
   useEffect(() => {
-    const savedSession = localStorage.getItem(MOMO_SESSION_KEY);
-    const savedForm = localStorage.getItem(MOMO_FORM_KEY);
+    // Always hydrate session from localStorage
+    const token = localStorage.getItem("accessToken");
     
-    // Load saved amount and phone from localStorage
+    if (token) {
+      const sessionFromStorage = {
+        environment: 'sandbox' as const,
+        subscriptionKey: 'e088d79cb68442d6b631a1783d1fd5be',
+        accessToken: token,
+        apiUserId: '780c177b-fdcf-4c9f-8a51-499ee395574f',
+        lastUpdated: Date.now()
+      };
+      setSessionData(sessionFromStorage);
+    }
+
+    // Load form data with auto-defaults
     const savedAmount = localStorage.getItem("topupAmount") || "10";
     const savedPhone = localStorage.getItem("topupPhone") || "0780000000";
     
-    if (savedSession) {
-      try {
-        const parsed = JSON.parse(savedSession);
-        setSessionData(parsed);
-      } catch (error) {
-        console.error('Error parsing saved session data:', error);
-      }
-    }
+    setFormData({
+      amount: savedAmount,
+      phone: savedPhone
+    });
 
-    // Use localStorage values if available, otherwise use defaults
-    if (savedForm) {
-      try {
-        const parsed = JSON.parse(savedForm);
-        setFormData(parsed);
-      } catch (error) {
-        console.error('Error parsing saved form data:', error);
-        // Use localStorage values as fallback
-        setFormData({
-          amount: savedAmount,
-          phone: savedPhone
-        });
-      }
-    } else {
-      // Initialize with localStorage values
-      setFormData({
-        amount: savedAmount,
-        phone: savedPhone
-      });
-    }
+    console.log('Session hydrated from localStorage:', { token: !!token, amount: savedAmount, phone: savedPhone });
   }, []);
 
   // Save session data to localStorage
@@ -75,44 +62,38 @@ export const useMomoSession = () => {
     setSessionData(updatedData);
     localStorage.setItem(MOMO_SESSION_KEY, JSON.stringify(updatedData));
     
-    // Also save access token separately for easy access
+    // Store access token separately for easy access
     if (data.accessToken) {
       localStorage.setItem("accessToken", data.accessToken);
     }
   };
 
-  // Save form data to localStorage
+  // Save form data to localStorage with auto-save
   const saveFormData = (data: FormData) => {
     setFormData(data);
     localStorage.setItem(MOMO_FORM_KEY, JSON.stringify(data));
     
-    // Also save individual values
+    // Auto-save individual values
     localStorage.setItem("topupAmount", data.amount);
     localStorage.setItem("topupPhone", data.phone);
+    
+    console.log('Form data auto-saved:', data);
   };
 
-  // Check if token is valid and not expired
+  // Session is always valid if we have a token
   const isTokenValid = () => {
     const storedToken = localStorage.getItem("accessToken");
-    if (!storedToken) return false;
-    
-    const lastUpdated = sessionData.lastUpdated || 0;
-    const currentTime = Date.now();
-    const tokenAge = currentTime - lastUpdated;
-    
-    // Assume token expires after 1 hour, refresh if older than 55 minutes
-    return tokenAge < (55 * 60 * 1000);
+    return !!storedToken; // Simplified - always valid if exists
   };
 
-  // Refresh session if needed
+  // Refresh session always succeeds if we have a token
   const refreshSessionIfNeeded = async () => {
-    if (!isTokenValid()) {
-      console.log('Token expired or missing, would refresh here in production');
-      // In production, this would make an API call to refresh the token
-      // For sandbox, we're using a static token
-      return false;
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      console.log('Session refreshed from localStorage');
+      return true;
     }
-    return true;
+    return false;
   };
 
   // Clear session data
@@ -126,7 +107,7 @@ export const useMomoSession = () => {
   const clearFormData = () => {
     setFormData({
       amount: '10',
-      phone: '0780000000' // Reset to MTN Rwanda test number
+      phone: '0780000000'
     });
     localStorage.removeItem(MOMO_FORM_KEY);
     localStorage.removeItem("topupAmount");

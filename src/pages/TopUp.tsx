@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Phone, DollarSign, RefreshCw } from "lucide-react";
+import { ArrowLeft, Phone, DollarSign } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,48 +17,36 @@ const TopUp = () => {
     formData,
     saveFormData,
     sessionData,
-    saveSessionData,
-    isTokenValid,
-    refreshSessionIfNeeded
+    saveSessionData
   } = useMomoSession();
   
   const [loading, setLoading] = useState(false);
-  const [sessionStatus, setSessionStatus] = useState<'valid' | 'invalid' | 'checking'>('checking');
 
-  // Check session status and access token on mount
+  // Auto-load form values from localStorage on mount
   useEffect(() => {
-    const checkSession = async () => {
-      const token = localStorage.getItem("accessToken");
-      if (!token || !isTokenValid()) {
-        setSessionStatus('invalid');
-      } else {
-        setSessionStatus('valid');
-      }
-      
-      // Initialize session data for sandbox with correct test number
-      if (!sessionData.environment) {
-        saveSessionData({
-          environment: 'sandbox',
-          subscriptionKey: 'e088d79cb68442d6b631a1783d1fd5be',
-          accessToken: token || 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSMjU2In0...',
-          apiUserId: '780c177b-fdcf-4c9f-8a51-499ee395574f'
-        });
-      }
-    };
+    const savedAmount = localStorage.getItem("topupAmount") || "10";
+    const savedPhone = localStorage.getItem("topupPhone") || "0780000000";
+    
+    saveFormData({
+      amount: savedAmount,
+      phone: savedPhone
+    });
 
-    checkSession();
+    // Initialize session data for sandbox
+    if (!sessionData.environment) {
+      saveSessionData({
+        environment: 'sandbox',
+        subscriptionKey: 'e088d79cb68442d6b631a1783d1fd5be',
+        accessToken: localStorage.getItem("accessToken") || 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSMjU2In0...',
+        apiUserId: '780c177b-fdcf-4c9f-8a51-499ee395574f'
+      });
+    }
   }, []);
 
+  // Auto-save on form changes
   const handleFormChange = (field: 'amount' | 'phone', value: string) => {
     const updatedForm = { ...formData, [field]: value };
     saveFormData(updatedForm);
-    
-    // Also save to localStorage for persistence
-    if (field === 'amount') {
-      localStorage.setItem("topupAmount", value);
-    } else if (field === 'phone') {
-      localStorage.setItem("topupPhone", value);
-    }
   };
 
   const validateInputs = () => {
@@ -76,17 +64,6 @@ const TopUp = () => {
       toast({
         title: "Invalid amount",
         description: "Please enter a valid amount",
-        variant: "destructive"
-      });
-      return false;
-    }
-
-    // Accept MTN Rwanda test number or standard formats
-    const phoneRegex = /^(0780000000|0780\d{6}|078\d{7}|072\d{7}|073\d{7}|079\d{7}|\+25078\d{7})$/;
-    if (!phoneRegex.test(formData.phone)) {
-      toast({
-        title: "Invalid phone number",
-        description: "Please use test number 0780000000 or a valid MTN Rwanda number",
         variant: "destructive"
       });
       return false;
@@ -111,17 +88,6 @@ const TopUp = () => {
       return;
     }
 
-    // Check session validity before proceeding
-    const sessionValid = await refreshSessionIfNeeded();
-    if (!sessionValid && sessionData.environment === 'production') {
-      toast({
-        title: "Session expired",
-        description: "Please refresh your session and try again",
-        variant: "destructive"
-      });
-      return;
-    }
-
     setLoading(true);
 
     try {
@@ -138,7 +104,7 @@ const TopUp = () => {
             phone: formData.phone,
             status: 'pending',
             payment_method: 'momo',
-            currency: 'EUR', // EUR for sandbox
+            currency: 'EUR',
             description: 'MoMo top-up'
           }
         ])
@@ -175,15 +141,11 @@ const TopUp = () => {
         throw new Error(errorMessage);
       }
 
-      // Save successful form submission
-      saveFormData(formData);
-
       toast({
         title: "Payment request sent!",
         description: `Reference ID: ${data.referenceId}. Check your phone for the MoMo prompt.`,
       });
 
-      // Navigate to investments page after a short delay
       setTimeout(() => {
         navigate('/investments');
       }, 3000);
@@ -198,8 +160,6 @@ const TopUp = () => {
           errorMessage = "Payment service is currently unavailable. Please try again later.";
         } else if (error.message.includes('Invalid phone number')) {
           errorMessage = "Please enter a valid phone number.";
-        } else if (error.message.includes('expired')) {
-          errorMessage = "Session expired. Please refresh the page and try again.";
         } else {
           errorMessage = error.message;
         }
@@ -215,23 +175,6 @@ const TopUp = () => {
     }
   };
 
-  const handleRefreshSession = async () => {
-    setSessionStatus('checking');
-    const valid = await refreshSessionIfNeeded();
-    setSessionStatus(valid ? 'valid' : 'invalid');
-    
-    // Store access token if valid
-    if (valid && sessionData.accessToken) {
-      localStorage.setItem("accessToken", sessionData.accessToken);
-    }
-    
-    toast({
-      title: valid ? "Session refreshed" : "Session refresh failed",
-      description: valid ? "Your session has been updated" : "Please check your connection",
-      variant: valid ? "default" : "destructive"
-    });
-  };
-
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -245,24 +188,6 @@ const TopUp = () => {
           </div>
           <span className="text-xl font-bold text-gray-900">SheSaves</span>
         </div>
-        {/* Session Status Indicator */}
-        <div className="ml-auto flex items-center gap-2">
-          <div className={`w-2 h-2 rounded-full ${
-            sessionStatus === 'valid' ? 'bg-green-500' : 
-            sessionStatus === 'invalid' ? 'bg-red-500' : 'bg-yellow-500'
-          }`}></div>
-          <span className="text-sm text-gray-600">
-            {sessionStatus === 'valid' ? 'Session Active' : 
-             sessionStatus === 'invalid' ? 'Session Expired' : 'Checking...'}
-          </span>
-          <button 
-            onClick={handleRefreshSession}
-            className="p-1 hover:bg-gray-100 rounded"
-            disabled={sessionStatus === 'checking'}
-          >
-            <RefreshCw size={16} className={`text-gray-600 ${sessionStatus === 'checking' ? 'animate-spin' : ''}`} />
-          </button>
-        </div>
       </header>
 
       {/* Main Content */}
@@ -275,7 +200,7 @@ const TopUp = () => {
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Top Up with MoMo</h1>
             <p className="text-gray-600">Add money to your savings using MTN Mobile Money</p>
             <div className="mt-2 text-xs text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-block">
-              Environment: {sessionData.environment || 'sandbox'} mode
+              Environment: sandbox mode
             </div>
           </div>
 
@@ -321,7 +246,7 @@ const TopUp = () => {
             {/* Submit Button */}
             <Button 
               type="submit"
-              disabled={loading || sessionStatus === 'invalid'}
+              disabled={loading}
               className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 text-lg rounded-lg disabled:opacity-50"
             >
               {loading ? (
@@ -329,8 +254,6 @@ const TopUp = () => {
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   Processing...
                 </div>
-              ) : sessionStatus === 'invalid' ? (
-                "Session Expired - Refresh Required"
               ) : (
                 "Save Now"
               )}
@@ -346,18 +269,7 @@ const TopUp = () => {
               <li>• Use test number <code className="bg-blue-100 px-1 rounded">0780000000</code> (MTN Rwanda)</li>
               <li>• You'll receive a payment prompt on your phone</li>
               <li>• Complete the payment to add funds to your savings</li>
-              <li>• Payment status will be updated automatically via webhook</li>
             </ul>
-          </div>
-
-          {/* Session Info */}
-          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-            <h4 className="font-medium text-gray-800 mb-1">Session Info:</h4>
-            <div className="text-xs text-gray-600 space-y-1">
-              <div>Environment: {sessionData.environment || 'sandbox'}</div>
-              <div>Token Valid: {isTokenValid() ? 'Yes' : 'No'}</div>
-              <div>Last Updated: {sessionData.lastUpdated ? new Date(sessionData.lastUpdated).toLocaleString() : 'Never'}</div>
-            </div>
           </div>
         </div>
       </main>

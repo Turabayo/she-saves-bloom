@@ -36,14 +36,12 @@ serve(async (req) => {
       throw new Error('No authorization header');
     }
 
-    // Create Supabase client
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    // Get current user
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
     if (authError || !user) {
       throw new Error('Authentication failed');
@@ -67,7 +65,6 @@ serve(async (req) => {
     const totalSavings = investments?.reduce((sum, inv) => sum + inv.amount, 0) || 0;
     const recentTransactions = transactions?.length || 0;
 
-    // Prepare system prompt with financial context
     const systemPrompt = `You are SheSaves AI, a friendly and knowledgeable financial advisor specifically designed to help women build their savings and achieve financial independence. You provide personalized advice based on their financial data.
 
 Current User Context:
@@ -77,21 +74,20 @@ Current User Context:
 
 Your responses should be:
 1. Encouraging and supportive
-2. Focused on practical savings strategies
+2. Focused on practical savings strategies  
 3. Tailored to women's financial empowerment
 4. Clear and actionable
 5. Based on their actual financial data when relevant
 
-Always maintain a warm, professional tone and provide specific, actionable advice. If asked about non-financial topics, gently redirect to financial matters while being helpful.`;
+Always maintain a warm, professional tone and provide specific, actionable advice. Keep responses concise and helpful. If asked about non-financial topics, gently redirect to financial matters while being helpful.`;
 
-    // Build conversation messages
     const messages: ChatMessage[] = [
       { role: 'system', content: systemPrompt },
-      ...conversationHistory.slice(-10), // Keep last 10 messages for context
+      ...conversationHistory.slice(-8), // Keep last 8 messages for context
       { role: 'user', content: message }
     ];
 
-    console.log('Sending request to OpenAI with context for user:', user.id);
+    console.log('Sending request to OpenAI with GPT-3.5-turbo for user:', user.id);
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -100,9 +96,9 @@ Always maintain a warm, professional tone and provide specific, actionable advic
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-3.5-turbo', // Using GPT-3.5 for reliability
         messages: messages,
-        max_tokens: 500,
+        max_tokens: 400,
         temperature: 0.7,
       }),
     });
@@ -115,20 +111,6 @@ Always maintain a warm, professional tone and provide specific, actionable advic
 
     const data = await response.json();
     const assistantResponse = data.choices[0].message.content;
-
-    // Log the conversation for analytics (optional)
-    await supabaseClient
-      .from('ai_conversations')
-      .insert([
-        {
-          user_id: user.id,
-          user_message: message,
-          assistant_response: assistantResponse,
-          context: userContext,
-          created_at: new Date().toISOString()
-        }
-      ])
-      .catch(() => {}); // Ignore if table doesn't exist
 
     return new Response(
       JSON.stringify({
@@ -151,7 +133,7 @@ Always maintain a warm, professional tone and provide specific, actionable advic
       JSON.stringify({
         success: false,
         error: error.message || 'Internal server error',
-        fallbackResponse: "I'm sorry, I'm having trouble connecting right now. Please try asking your question again in a moment. In the meantime, remember that consistent small savings can make a big difference in building your financial security!"
+        fallbackResponse: "AI temporarily unavailable — try again soon. In the meantime, remember that consistent small savings can make a big difference in building your financial security!"
       }),
       {
         status: 500,

@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -15,7 +14,7 @@ const MOMO_CONFIG = {
   targetEnvironment: 'sandbox',
   currency: 'EUR',
   authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSMjU2In0.eyJjbGllbnRJZCI6Ijc4MGMxNzdiLWZkY2YtNGM5Zi04YTUxLTQ5OWVlMzk1NTc0ZiIsImV4cGlyZXMiOiIyMDI1LTA3LTA1VDE2OjU3OjM4LjMwNCIsInNlc3Npb25JZCI6Ijc2ODk4OWVkLTgzZmEtNGUwMC1hOTkwLTVkMzRjYmEzMDkwNCJ9.aolYOkszNsGdgNWh0xvBbPBqXqdP0xQXZ2lHH_4lTuPPWwwuymd5wjgMcHP8KN3l6fw_kUYA4s0mhBoSbaJ4wuw-jaj1FQDv62WVhoGDDsuELjQdLLulVtIwdGOcjS81hDkh7Hk4xVYEdL2zv7HmkGvoQ0S46gsWTWkB11K9nF2LDCB9rX46iSAkXz_VNAj-9BOKqlB7MBjxpeoiRrvv3OACfKzw248bWQlm5lVQtWM8-XH4mKRNU6fKedv130GhMQIDw-hdx6aBeSrt3Bn273_nwxK07zL6LU05F76y1GR-M6Fy3VVbpXHwaULg0kTcqvuJP1N8exupqpqAUQfDjQ',
-  testPayerId: '0780000000', // MTN Rwanda test number
+  testPayerId: '0780000000',
   externalId: '123456789'
 }
 
@@ -43,6 +42,13 @@ function generateUUID(): string {
     const v = c == 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
+}
+
+// Sanitize phone number to keep last 9 digits
+function sanitizePhone(rawPhone: string): string {
+  const phone = rawPhone.replace(/\D/g, "").slice(-9);
+  // Ensure it's the test number for sandbox
+  return phone === "780000000" ? "0780000000" : `0${phone}`;
 }
 
 // Validate phone number format - prioritize MTN Rwanda test number
@@ -77,9 +83,13 @@ function isTokenValid(token: string): boolean {
 // Initiate payment with MTN MoMo
 async function initiatePayment(phone: string, amount: number): Promise<{ success: boolean; referenceId?: string; error?: string }> {
   const referenceId = generateUUID();
+  const sanitizedPhone = sanitizePhone(phone);
   
-  console.log(`Initiating MoMo payment: ${amount} ${MOMO_CONFIG.currency} to ${phone}`);
-  console.log(`Using reference ID: ${referenceId}`);
+  console.log(`=== MoMo Payment Initiation ===`);
+  console.log(`Amount: ${amount} ${MOMO_CONFIG.currency}`);
+  console.log(`Original phone: ${phone}`);
+  console.log(`Sanitized phone: ${sanitizedPhone}`);
+  console.log(`Reference ID: ${referenceId}`);
 
   // Validate inputs
   if (!validatePhoneNumber(phone)) {
@@ -107,36 +117,43 @@ async function initiatePayment(phone: string, amount: number): Promise<{ success
 
   console.log('Request body:', JSON.stringify(requestBody, null, 2));
 
+  const headers = {
+    'X-Reference-Id': referenceId,
+    'X-Target-Environment': MOMO_CONFIG.targetEnvironment,
+    'Ocp-Apim-Subscription-Key': MOMO_CONFIG.subscriptionKey,
+    'Authorization': MOMO_CONFIG.authorization,
+    'Content-Type': 'application/json'
+  };
+
+  console.log('Request headers:', JSON.stringify(headers, null, 2));
+
   try {
     const response = await fetch(`${MOMO_CONFIG.baseUrl}/collection/v1_0/requesttopay`, {
       method: 'POST',
-      headers: {
-        'Authorization': MOMO_CONFIG.authorization,
-        'X-Reference-Id': referenceId,
-        'X-Target-Environment': MOMO_CONFIG.targetEnvironment,
-        'Ocp-Apim-Subscription-Key': MOMO_CONFIG.subscriptionKey,
-        'Content-Type': 'application/json'
-      },
+      headers: headers,
       body: JSON.stringify(requestBody)
     });
 
-    console.log(`MTN MoMo API response status: ${response.status}`);
+    console.log(`=== MoMo API Response ===`);
+    console.log(`Status: ${response.status}`);
+    console.log(`Status Text: ${response.statusText}`);
+    
     const responseText = await response.text();
-    console.log('MTN MoMo API response:', responseText);
+    console.log(`Response body: ${responseText}`);
     
     if (response.status === 202) {
-      console.log(`Payment initiated successfully with reference ID: ${referenceId}`);
+      console.log(`✅ Payment initiated successfully with reference ID: ${referenceId}`);
       return { success: true, referenceId };
     } else {
-      console.error('MTN MoMo API error response:', responseText);
+      console.error(`❌ Payment initiation failed: ${response.status}`);
       return { 
         success: false, 
-        error: `Payment initiation failed: ${response.status} - ${responseText || 'Unknown error'}` 
+        error: `Payment failed with status ${response.status}: ${responseText}` 
       };
     }
 
   } catch (error) {
-    console.error('Error initiating payment:', error);
+    console.error('❌ Network error:', error);
     return { 
       success: false, 
       error: `Network error: ${error.message}` 
@@ -306,6 +323,9 @@ serve(async (req) => {
 
       const { amount, phone, transactionId }: MoMoPaymentRequest = await req.json();
 
+      console.log(`=== Processing Payment Request ===`);
+      console.log(`Amount: ${amount}, Phone: ${phone}, User: ${user?.id}, Transaction: ${transactionId}`);
+
       // Validate input
       if (!amount || !phone) {
         return new Response(
@@ -333,8 +353,6 @@ serve(async (req) => {
         );
       }
 
-      console.log(`Processing payment request: amount=${amount}, phone=${phone}, user=${user?.id}`);
-
       // Initiate payment
       const paymentResult = await initiatePayment(phone, amount);
       
@@ -360,7 +378,7 @@ serve(async (req) => {
         external_id: MOMO_CONFIG.externalId,
         amount: amount,
         currency: MOMO_CONFIG.currency,
-        phone: phone,
+        phone: sanitizePhone(phone),
         status: 'PENDING',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
@@ -397,6 +415,8 @@ serve(async (req) => {
         }
       }
 
+      console.log(`✅ Payment request successful. Reference: ${paymentResult.referenceId}`);
+
       return new Response(
         JSON.stringify({
           success: true,
@@ -405,7 +425,7 @@ serve(async (req) => {
           message: 'Payment initiated successfully. Check your phone for the MoMo prompt.',
           amount: amount,
           currency: MOMO_CONFIG.currency,
-          phone: phone
+          phone: sanitizePhone(phone)
         }),
         { 
           headers: { 
@@ -429,7 +449,7 @@ serve(async (req) => {
     );
 
   } catch (error: any) {
-    console.error('MoMo API error:', error);
+    console.error('❌ MoMo API error:', error);
     
     return new Response(
       JSON.stringify({
