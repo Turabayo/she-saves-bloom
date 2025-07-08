@@ -31,6 +31,8 @@ serve(async (req) => {
   }
 
   try {
+    console.log('=== AI Assistant Request Started ===');
+    
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       throw new Error('No authorization header');
@@ -48,6 +50,8 @@ serve(async (req) => {
     }
 
     const { message, conversationHistory = [], userContext = {} }: AssistantRequest = await req.json();
+
+    console.log('Processing AI request for user:', user.id);
 
     // Get user's financial data for context
     const { data: investments } = await supabaseClient
@@ -87,7 +91,11 @@ Always maintain a warm, professional tone and provide specific, actionable advic
       { role: 'user', content: message }
     ];
 
-    console.log('Sending request to OpenAI with GPT-3.5-turbo for user:', user.id);
+    console.log('Sending request to OpenAI with GPT-3.5-turbo');
+
+    if (!openAIApiKey) {
+      throw new Error('OpenAI API key not configured');
+    }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -96,12 +104,14 @@ Always maintain a warm, professional tone and provide specific, actionable advic
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo', // Using GPT-3.5 for reliability
+        model: 'gpt-3.5-turbo', // Using GPT-3.5 for reliability and cost
         messages: messages,
         max_tokens: 400,
         temperature: 0.7,
       }),
     });
+
+    console.log('OpenAI response status:', response.status);
 
     if (!response.ok) {
       const errorData = await response.text();
@@ -111,6 +121,8 @@ Always maintain a warm, professional tone and provide specific, actionable advic
 
     const data = await response.json();
     const assistantResponse = data.choices[0].message.content;
+
+    console.log('AI response generated successfully');
 
     return new Response(
       JSON.stringify({

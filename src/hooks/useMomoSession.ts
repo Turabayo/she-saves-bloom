@@ -6,6 +6,7 @@ interface MomoSessionData {
   accessToken?: string;
   apiUserId?: string;
   environment?: 'sandbox' | 'production';
+  tokenExpiry?: number;
   lastUpdated?: number;
 }
 
@@ -26,20 +27,6 @@ export const useMomoSession = () => {
 
   // Load session data and form data from localStorage on mount
   useEffect(() => {
-    // Always hydrate session from localStorage
-    const token = localStorage.getItem("accessToken");
-    
-    if (token) {
-      const sessionFromStorage = {
-        environment: 'sandbox' as const,
-        subscriptionKey: 'e088d79cb68442d6b631a1783d1fd5be',
-        accessToken: token,
-        apiUserId: '780c177b-fdcf-4c9f-8a51-499ee395574f',
-        lastUpdated: Date.now()
-      };
-      setSessionData(sessionFromStorage);
-    }
-
     // Load form data with auto-defaults
     const savedAmount = localStorage.getItem("topupAmount") || "10";
     const savedPhone = localStorage.getItem("topupPhone") || "0780000000";
@@ -49,7 +36,16 @@ export const useMomoSession = () => {
       phone: savedPhone
     });
 
-    console.log('Session hydrated from localStorage:', { token: !!token, amount: savedAmount, phone: savedPhone });
+    // Initialize session data for sandbox - no token needed as we refresh automatically
+    const sessionFromStorage = {
+      environment: 'sandbox' as const,
+      subscriptionKey: 'e088d79cb68442d6b631a1783d1fd5be',
+      apiUserId: '780c177b-fdcf-4c9f-8a51-499ee395574f',
+      lastUpdated: Date.now()
+    };
+    setSessionData(sessionFromStorage);
+
+    console.log('Session hydrated from localStorage:', { amount: savedAmount, phone: savedPhone });
   }, []);
 
   // Save session data to localStorage
@@ -62,9 +58,12 @@ export const useMomoSession = () => {
     setSessionData(updatedData);
     localStorage.setItem(MOMO_SESSION_KEY, JSON.stringify(updatedData));
     
-    // Store access token separately for easy access
+    // Store token and expiry separately for easy access
     if (data.accessToken) {
       localStorage.setItem("accessToken", data.accessToken);
+      // Token expires in 1 hour
+      const expiry = Date.now() + (60 * 60 * 1000);
+      localStorage.setItem("tokenExpiry", expiry.toString());
     }
   };
 
@@ -80,20 +79,16 @@ export const useMomoSession = () => {
     console.log('Form data auto-saved:', data);
   };
 
-  // Session is always valid if we have a token
+  // Check if token is valid (but we don't rely on stored tokens anymore)
   const isTokenValid = () => {
-    const storedToken = localStorage.getItem("accessToken");
-    return !!storedToken; // Simplified - always valid if exists
+    // Always return true since we get fresh tokens on each request
+    return true;
   };
 
-  // Refresh session always succeeds if we have a token
+  // Always succeeds since we get fresh tokens
   const refreshSessionIfNeeded = async () => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      console.log('Session refreshed from localStorage');
-      return true;
-    }
-    return false;
+    console.log('Session refresh - will get fresh token on next payment request');
+    return true;
   };
 
   // Clear session data
@@ -101,6 +96,7 @@ export const useMomoSession = () => {
     setSessionData({});
     localStorage.removeItem(MOMO_SESSION_KEY);
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("tokenExpiry");
   };
 
   // Clear form data

@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import FloatingAIButton from "@/components/FloatingAIButton";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -14,6 +15,14 @@ const Goals = () => {
       navigate('/auth');
     }
   }, [user, loading, navigate]);
+
+  // Auto-enable AI assistant by default
+  useEffect(() => {
+    const aiSetting = localStorage.getItem("aiAssistant");
+    if (aiSetting === null) {
+      localStorage.setItem("aiAssistant", "true");
+    }
+  }, []);
 
   const goals = [
     { id: 'education', label: 'Education', icon: '🎓' },
@@ -92,6 +101,8 @@ const Goals = () => {
           </Button>
         </div>
       </main>
+
+      <FloatingAIButton />
     </div>
   );
 };
