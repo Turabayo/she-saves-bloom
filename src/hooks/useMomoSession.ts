@@ -37,7 +37,7 @@ export const useMomoSession = () => {
     });
 
     // Initialize session data for sandbox with token expiry tracking
-    const tokenExpiry = "1752097269883"; // Provided token expiry
+    const tokenExpiry = "1752103383000"; // Updated token expiry: July 10, 2025 ~00:03 UTC
     localStorage.setItem("tokenExpiry", tokenExpiry);
     
     const sessionFromStorage = {
