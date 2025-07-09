@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -8,14 +7,15 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
 }
 
-// MTN MoMo Sandbox Configuration
+// MTN MoMo Sandbox Configuration - Exact values as specified
 const MOMO_CONFIG = {
   baseUrl: 'https://sandbox.momodeveloper.mtn.com',
   subscriptionKey: 'e088d79cb68442d6b631a1783d1fd5be',
-  targetEnvironment: 'sandbox',
+  authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSMjU2In0.eyJjbGllbnRJZCI6IjIzYTU3NzhkLThkZTAtNGZkMS1hYTU3LThhMzcxYjEwOWE5YSIsImV4cGlyZXMiOiIyMDI1LTA3LTA4VDAzOjQyOjMyLjk5OCIsInNlc3Npb25JZCI6IjJlZTJiYjE5LTYzMTEtNDA1NS1hZDIxLWMzZDRkNjRkMGRmZCJ9.f_caN5uRsYuX3f6rbnh8faE1Ksn2cIpRnL0zewrD4zNgs15CwdIwiPwqvTorO572AZOVs5C8vR_HLgLAykrcpqoBzXDbJa2eFluyWYvvmUEjVnHdyEVERQnnxd3rVzlgqZFcGo9p8QWCpTnSlqNGMfI6uYml-G5D00O9n4X458zkiCCADgpLbanNLMrlbuKGqri50ox-nI_A2N1PMM94q4u4HZjUFqCJs0wlJOeDnO-rp87dCirO_qn9tj0fMHyaDzlD5AHS-ZeD134e213KaOWyUGsxZdoSF_j4z4_2R-KAXOhb1jQv8EnR8GPyrMND1etoc1lOuPUGK26eMgY_Wg',
   currency: 'EUR',
-  apiUserId: '780c177b-fdcf-4c9f-8a51-499ee395574f',
-  apiKey: 'fe085ed5b4034d7da99b58bc6e8c4f03'
+  targetEnvironment: 'sandbox',
+  externalId: '123456789',
+  testPayerId: '46733123454'
 }
 
 // Generate UUID v4
@@ -27,51 +27,16 @@ function generateUUID(): string {
   });
 }
 
-// Sanitize phone number - force test number for sandbox
+// Sanitize phone number - always use test number for sandbox
 function sanitizePhone(rawPhone: string): string {
-  // Always use the test number for sandbox
-  return "0780000000";
-}
-
-// Get new access token
-async function getAccessToken(): Promise<{ success: boolean; token?: string; error?: string }> {
-  console.log('=== Getting New Access Token ===');
-  
-  try {
-    const response = await fetch(`${MOMO_CONFIG.baseUrl}/collection/token/`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Basic ${btoa(`${MOMO_CONFIG.apiUserId}:${MOMO_CONFIG.apiKey}`)}`,
-        'X-Target-Environment': MOMO_CONFIG.targetEnvironment,
-        'Ocp-Apim-Subscription-Key': MOMO_CONFIG.subscriptionKey,
-        'Content-Type': 'application/json'
-      }
-    });
-
-    console.log(`Token request status: ${response.status}`);
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Token request failed:', errorText);
-      return { success: false, error: `Token request failed: ${response.status}` };
-    }
-
-    const tokenData = await response.json();
-    console.log('Token received successfully');
-    
-    return { 
-      success: true, 
-      token: `Bearer ${tokenData.access_token}`,
-    };
-
-  } catch (error) {
-    console.error('Error getting access token:', error);
-    return { success: false, error: `Network error: ${error.message}` };
-  }
+  // Remove spaces, + and country code for processing
+  const cleaned = rawPhone.replace(/[\s+]/g, '').replace(/^250/, '');
+  // Always return test payer ID for sandbox
+  return MOMO_CONFIG.testPayerId;
 }
 
 // Initiate payment with MTN MoMo
-async function initiatePayment(phone: string, amount: number, accessToken: string): Promise<{ success: boolean; referenceId?: string; error?: string }> {
+async function initiatePayment(phone: string, amount: number): Promise<{ success: boolean; referenceId?: string; error?: string }> {
   const referenceId = generateUUID();
   const sanitizedPhone = sanitizePhone(phone);
   
@@ -80,15 +45,14 @@ async function initiatePayment(phone: string, amount: number, accessToken: strin
   console.log(`Original phone: ${phone}`);
   console.log(`Sanitized phone: ${sanitizedPhone}`);
   console.log(`Reference ID: ${referenceId}`);
-  console.log(`Using token: ${accessToken.substring(0, 20)}...`);
 
   const requestBody = {
     amount: amount.toString(),
     currency: MOMO_CONFIG.currency,
-    externalId: referenceId,
+    externalId: MOMO_CONFIG.externalId,
     payer: {
       partyIdType: 'MSISDN',
-      partyId: sanitizedPhone
+      partyId: MOMO_CONFIG.testPayerId
     },
     payerMessage: 'Top-up from SheSaves',
     payeeNote: 'Thank you for using SheSaves'
@@ -100,7 +64,7 @@ async function initiatePayment(phone: string, amount: number, accessToken: strin
     'X-Reference-Id': referenceId,
     'X-Target-Environment': MOMO_CONFIG.targetEnvironment,
     'Ocp-Apim-Subscription-Key': MOMO_CONFIG.subscriptionKey,
-    'Authorization': accessToken,
+    'Authorization': MOMO_CONFIG.authorization,
     'Content-Type': 'application/json'
   };
 
@@ -115,14 +79,12 @@ async function initiatePayment(phone: string, amount: number, accessToken: strin
     console.log(`Status: ${response.status}`);
     console.log(`Status Text: ${response.statusText}`);
     
-    const responseText = await response.text();
-    console.log(`Response body: ${responseText}`);
-    
     if (response.status === 202) {
       console.log(`✅ Payment initiated successfully with reference ID: ${referenceId}`);
       return { success: true, referenceId };
     } else {
-      console.error(`❌ Payment initiation failed: ${response.status}`);
+      const responseText = await response.text();
+      console.error(`❌ Payment initiation failed: ${response.status} - ${responseText}`);
       return { 
         success: false, 
         error: `Payment failed with status ${response.status}: ${responseText}` 
@@ -191,24 +153,8 @@ serve(async (req) => {
       );
     }
 
-    // Get fresh access token
-    const tokenResult = await getAccessToken();
-    if (!tokenResult.success) {
-      console.error('Failed to get access token:', tokenResult.error);
-      return new Response(
-        JSON.stringify({ 
-          success: false, 
-          error: `Authentication failed: ${tokenResult.error}` 
-        }),
-        { 
-          status: 401,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
-    }
-
-    // Initiate payment with fresh token
-    const paymentResult = await initiatePayment(phone, amount, tokenResult.token!);
+    // Initiate payment
+    const paymentResult = await initiatePayment(phone, amount);
     
     if (!paymentResult.success) {
       console.error('Payment initiation failed:', paymentResult.error);

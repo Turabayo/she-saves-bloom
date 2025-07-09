@@ -105,7 +105,7 @@ const Dashboard = () => {
           </div>
 
           {/* Insights Card */}
-          <InsightsCard insights={insights} />
+          <InsightsCard />
         </div>
       </main>
 

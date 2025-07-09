@@ -32,20 +32,37 @@ const TopUp = () => {
       phone: savedPhone
     });
 
-    // Initialize session data for sandbox
+    // Auto-enable assistant
+    localStorage.setItem("aiAssistant", "true");
+
+    // Initialize session data for sandbox with token expiry tracking
     if (!sessionData.environment) {
+      const tokenExpiry = "1752097269883"; // Provided token expiry
+      localStorage.setItem("tokenExpiry", tokenExpiry);
+      
       saveSessionData({
         environment: 'sandbox',
         subscriptionKey: 'e088d79cb68442d6b631a1783d1fd5be',
         accessToken: localStorage.getItem("accessToken") || 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSMjU2In0...',
-        apiUserId: '780c177b-fdcf-4c9f-8a51-499ee395574f'
+        apiUserId: '780c177b-fdcf-4c9f-8a51-499ee395574f',
+        tokenExpiry: parseInt(tokenExpiry)
       });
     }
   }, []);
 
-  // Auto-save on form changes
+  // Auto-save on form changes with sanitization
   const handleFormChange = (field: 'amount' | 'phone', value: string) => {
-    const updatedForm = { ...formData, [field]: value };
+    let processedValue = value;
+    
+    if (field === 'phone') {
+      // Sanitize phone input: remove spaces, +, and 250
+      processedValue = value.replace(/[\s+]/g, '').replace(/^250/, '');
+      localStorage.setItem("topupPhone", processedValue);
+    } else {
+      localStorage.setItem("topupAmount", value);
+    }
+    
+    const updatedForm = { ...formData, [field]: processedValue };
     saveFormData(updatedForm);
   };
 
@@ -202,6 +219,9 @@ const TopUp = () => {
             <div className="mt-2 text-xs text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-block">
               Environment: sandbox mode
             </div>
+            <p className="text-sm text-gray-500 mt-4">
+              Use test number: <code className="bg-gray-100 px-2 py-1 rounded text-xs">0780000000</code> (MTN Rwanda)
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">

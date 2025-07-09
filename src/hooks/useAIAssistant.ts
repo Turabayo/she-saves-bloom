@@ -77,11 +77,11 @@ export const useAIAssistant = () => {
     } catch (error: any) {
       console.error('Error sending message:', error);
       
-      // Add graceful fallback message
+      // Add graceful fallback message as specified
       const fallbackMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: 'assistant',
-        content: "AI temporarily unavailable — try again soon. In the meantime, remember that consistent small savings can make a big difference in building your financial security!",
+        content: "Sorry! Assistant is offline. Try again shortly.",
         timestamp: new Date()
       };
 

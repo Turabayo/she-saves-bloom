@@ -36,11 +36,15 @@ export const useMomoSession = () => {
       phone: savedPhone
     });
 
-    // Initialize session data for sandbox - no token needed as we refresh automatically
+    // Initialize session data for sandbox with token expiry tracking
+    const tokenExpiry = "1752097269883"; // Provided token expiry
+    localStorage.setItem("tokenExpiry", tokenExpiry);
+    
     const sessionFromStorage = {
       environment: 'sandbox' as const,
       subscriptionKey: 'e088d79cb68442d6b631a1783d1fd5be',
       apiUserId: '780c177b-fdcf-4c9f-8a51-499ee395574f',
+      tokenExpiry: parseInt(tokenExpiry),
       lastUpdated: Date.now()
     };
     setSessionData(sessionFromStorage);
@@ -79,10 +83,11 @@ export const useMomoSession = () => {
     console.log('Form data auto-saved:', data);
   };
 
-  // Check if token is valid (but we don't rely on stored tokens anymore)
+  // Check if token is valid - using provided token expiry
   const isTokenValid = () => {
-    // Always return true since we get fresh tokens on each request
-    return true;
+    const tokenExpiry = localStorage.getItem("tokenExpiry");
+    if (!tokenExpiry) return false;
+    return Date.now() < parseInt(tokenExpiry);
   };
 
   // Always succeeds since we get fresh tokens
