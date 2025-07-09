@@ -6,6 +6,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
 };
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
@@ -141,11 +142,12 @@ Always maintain a warm, professional tone and provide specific, actionable advic
   } catch (error: any) {
     console.error('AI Assistant error:', error);
     
+    // Return fallback response with proper structure
     return new Response(
       JSON.stringify({
         success: false,
         error: error.message || 'Internal server error',
-        fallbackResponse: "AI temporarily unavailable — try again soon. In the meantime, remember that consistent small savings can make a big difference in building your financial security!"
+        fallbackMessage: "Sorry! Assistant is offline. Try again shortly."
       }),
       {
         status: 500,

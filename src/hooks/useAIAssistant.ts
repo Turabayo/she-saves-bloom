@@ -61,7 +61,15 @@ export const useAIAssistant = () => {
       }
 
       if (!data.success) {
-        throw new Error(data.error || 'AI request failed');
+        // Use fallback message from the response if available
+        const fallbackMessage: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          type: 'assistant',
+          content: data.fallbackMessage || "Sorry! Assistant is offline. Try again shortly.",
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, fallbackMessage]);
+        return;
       }
 
       // Add assistant response

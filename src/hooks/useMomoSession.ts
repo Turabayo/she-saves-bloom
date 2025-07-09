@@ -87,7 +87,15 @@ export const useMomoSession = () => {
   const isTokenValid = () => {
     const tokenExpiry = localStorage.getItem("tokenExpiry");
     if (!tokenExpiry) return false;
-    return Date.now() < parseInt(tokenExpiry);
+    const expiry = parseInt(tokenExpiry);
+    const now = Date.now();
+    const isValid = now < expiry;
+    
+    if (!isValid) {
+      console.log('Token expired:', { now, expiry, expired: now >= expiry });
+    }
+    
+    return isValid;
   };
 
   // Always succeeds since we get fresh tokens

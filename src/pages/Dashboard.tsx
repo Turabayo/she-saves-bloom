@@ -3,18 +3,22 @@ import { useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import InsightsCard from "@/components/InsightsCard";
 import FloatingAIButton from "@/components/FloatingAIButton";
+import TransactionHistory from "@/components/TransactionHistory";
 import { Button } from "@/components/ui/button";
 import { DollarSign, TrendingUp, Target, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useInvestments } from "@/hooks/useInvestments";
 import { useTransactionInsights } from "@/hooks/useTransactionInsights";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { investments, loading: investmentsLoading } = useInvestments();
   const { insights, loading: insightsLoading } = useTransactionInsights();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -29,6 +33,41 @@ const Dashboard = () => {
       localStorage.setItem("aiAssistant", "true");
     }
   }, []);
+
+  // Set up realtime notifications for successful payments
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('payment-notifications')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'momo_transactions',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          const newStatus = payload.new?.status;
+          const oldStatus = payload.old?.status;
+          
+          // Show notification when payment becomes successful
+          if (newStatus === 'SUCCESSFUL' && oldStatus !== 'SUCCESSFUL') {
+            toast({
+              title: "✅ MoMo Payment Confirmed",
+              description: "Your balance has been updated.",
+              duration: 5000,
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, toast]);
 
   if (authLoading || investmentsLoading || insightsLoading) {
     return (
@@ -106,6 +145,9 @@ const Dashboard = () => {
 
           {/* Insights Card */}
           <InsightsCard />
+
+          {/* Transaction History */}
+          <TransactionHistory />
         </div>
       </main>
 
