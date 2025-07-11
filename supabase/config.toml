@@ -1,1 +1,28 @@
 project_id = "jvtpxaojthbojgtkrqfe"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[auth]
+enabled = true
+port = 54320
+external_url = "http://localhost:54321"
+email_confirm_url = "http://localhost:3000/auth/confirm"
+additional_redirect_urls = ["https://lovable.dev/projects/d138b60e-7b6c-4bf6-b6a4-61eb4e3b9b3e"]
+jwt_expiry = 3600
+refresh_token_rotation_enabled = true
+security_captcha_enabled = false
+security_captcha_provider = "hcaptcha"
+
+[functions.ai-assistant]
+verify_jwt = true
+
+[functions.momo-payment]
+verify_jwt = true
+
+[functions.momo-webhook]
+verify_jwt = false
