@@ -57,17 +57,17 @@ const Auth = () => {
       {/* Header */}
       <header className="p-4 text-center">
         <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
-            <span className="text-white font-bold text-xl">S</span>
+          <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+            <span className="text-primary-foreground font-bold text-xl">S</span>
           </div>
-          <span className="text-2xl font-bold text-gray-900">SheSaves</span>
+          <span className="text-2xl font-bold text-foreground">SheSaves</span>
         </div>
         
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-foreground">
             {isLogin ? 'Welcome back' : 'Create Account'}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             {isLogin ? 'Sign in to your account' : 'Join thousands of women building their future'}
           </p>
         </div>
@@ -83,7 +83,7 @@ const Auth = () => {
                 placeholder="Full name"
                 value={formData.fullName}
                 onChange={(e) => setFormData({...formData, fullName: e.target.value})}
-                className="w-full p-4 text-lg border border-gray-300 rounded-lg"
+                className="w-full p-4 text-lg border-input rounded-lg"
                 required
               />
             )}
@@ -93,7 +93,7 @@ const Auth = () => {
               placeholder="Email address"
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
-              className="w-full p-4 text-lg border border-gray-300 rounded-lg"
+              className="w-full p-4 text-lg border-input rounded-lg"
               required
             />
 
@@ -103,7 +103,7 @@ const Auth = () => {
                 placeholder="Phone number (optional)"
                 value={formData.phone}
                 onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                className="w-full p-4 text-lg border border-gray-300 rounded-lg"
+                className="w-full p-4 text-lg border-input rounded-lg"
               />
             )}
 
@@ -113,13 +113,13 @@ const Auth = () => {
                 placeholder={isLogin ? "Password" : "Create password"}
                 value={formData.password}
                 onChange={(e) => setFormData({...formData, password: e.target.value})}
-                className="w-full p-4 text-lg border border-gray-300 rounded-lg pr-12"
+                className="w-full p-4 text-lg border-input rounded-lg pr-12"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
@@ -128,7 +128,7 @@ const Auth = () => {
 
           {isLogin && (
             <div className="text-left">
-              <button type="button" className="text-gray-600 text-sm">
+              <button type="button" className="text-muted-foreground text-sm hover:text-foreground">
                 Forgot password?
               </button>
             </div>
@@ -137,18 +137,18 @@ const Auth = () => {
           <Button 
             type="submit"
             disabled={loading}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 text-lg rounded-lg disabled:opacity-50"
+            className="w-full py-4 text-lg rounded-lg disabled:opacity-50"
           >
             {loading ? 'Loading...' : (isLogin ? 'Sign in' : 'Create Account')}
           </Button>
 
           <div className="text-center pt-4">
-            <span className="text-gray-600">
+            <span className="text-muted-foreground">
               {isLogin ? "Don't have an account? " : "Already have an account? "}
             </span>
             <button 
               type="button"
-              className="text-orange-500 font-medium"
+              className="text-primary font-medium hover:underline"
               onClick={toggleMode}
             >
               {isLogin ? 'Sign up' : 'Sign in'}

@@ -105,6 +105,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         description: error.message,
         variant: "destructive"
       });
+    } else {
+      toast({
+        title: "Successfully signed out",
+        description: "You have been signed out of your account.",
+      });
     }
   };
 

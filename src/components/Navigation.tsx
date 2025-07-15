@@ -24,11 +24,14 @@ const Navigation = () => {
       {/* Top Header */}
       <header className="bg-white border-b border-gray-200 p-4">
         <div className="max-w-md mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-sm">S</span>
+          <div 
+            className="flex items-center gap-3 cursor-pointer"
+            onClick={() => navigate('/dashboard')}
+          >
+            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-sm">S</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">SheSaves</span>
+            <span className="text-xl font-bold text-foreground">SheSaves</span>
           </div>
           
           <div className="flex items-center gap-4">
@@ -49,9 +52,10 @@ const Navigation = () => {
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => navigate('/settings')}
-                className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center"
+                className="w-8 h-8 bg-primary rounded-full flex items-center justify-center"
+                title="Settings"
               >
-                <span className="text-white font-bold text-xs">
+                <span className="text-primary-foreground font-bold text-xs">
                   {user?.user_metadata?.full_name?.[0] || user?.email?.[0] || 'A'}
                 </span>
               </button>
@@ -76,7 +80,7 @@ const Navigation = () => {
               key={item.path}
               onClick={() => navigate(item.path)}
               className={`flex-1 py-3 text-center text-xs font-medium ${
-                item.active ? 'text-orange-500' : 'text-gray-500'
+                item.active ? 'text-primary' : 'text-muted-foreground'
               }`}
             >
               {item.label}
