@@ -9,7 +9,7 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
 };
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const openRouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
 
 interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
@@ -92,32 +92,34 @@ Always maintain a warm, professional tone and provide specific, actionable advic
       { role: 'user', content: message }
     ];
 
-    console.log('Sending request to OpenAI with GPT-3.5-turbo');
+    console.log('Sending request to OpenRouter with DeepSeek');
 
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
+    if (!openRouterApiKey) {
+      throw new Error('OpenRouter API key not configured');
     }
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${openRouterApiKey}`,
         'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://shesaves.app',
+        'X-Title': 'SheSaves AI Assistant',
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo', // Using GPT-3.5 for reliability and cost
+        model: 'deepseek/deepseek-chat',
         messages: messages,
         max_tokens: 400,
         temperature: 0.7,
       }),
     });
 
-    console.log('OpenAI response status:', response.status);
+    console.log('OpenRouter response status:', response.status);
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('OpenAI API error:', errorData);
-      throw new Error(`OpenAI API error: ${response.status}`);
+      console.error('OpenRouter API error:', errorData);
+      throw new Error(`OpenRouter API error: ${response.status}`);
     }
 
     const data = await response.json();
