@@ -2,16 +2,19 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import { Settings } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const { t } = useLanguage();
 
   const navItems = [
-    { path: '/dashboard', label: 'Dashboard', active: location.pathname === '/dashboard' },
-    { path: '/investments', label: 'Investments', active: location.pathname === '/investments' },
-    { path: '/insights', label: 'Insights', active: location.pathname === '/insights' },
+    { path: '/dashboard', label: t('dashboard'), active: location.pathname === '/dashboard' },
+    { path: '/investments', label: t('investments'), active: location.pathname === '/investments' },
+    { path: '/insights', label: t('insights'), active: location.pathname === '/insights' },
   ];
 
   const handleSignOut = async () => {
@@ -52,12 +55,10 @@ const Navigation = () => {
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => navigate('/settings')}
-                className="w-8 h-8 bg-primary rounded-full flex items-center justify-center"
+                className="w-8 h-8 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors"
                 title="Settings"
               >
-                <span className="text-primary-foreground font-bold text-xs">
-                  {user?.user_metadata?.full_name?.[0] || user?.email?.[0] || 'A'}
-                </span>
+                <Settings size={16} className="text-primary-foreground" />
               </button>
               <Button
                 variant="ghost"
@@ -65,7 +66,7 @@ const Navigation = () => {
                 onClick={handleSignOut}
                 className="text-gray-600 hover:text-gray-900"
               >
-                Sign Out
+                {t('signOut')}
               </Button>
             </div>
           </div>
