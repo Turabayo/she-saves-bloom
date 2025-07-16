@@ -132,7 +132,7 @@ const TransactionHistory = () => {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="font-medium">
-                    {transaction.amount.toLocaleString()} {transaction.currency}
+                    {transaction.amount.toLocaleString()} RWF
                   </span>
                   {getStatusBadge(transaction.status)}
                 </div>
