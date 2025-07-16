@@ -216,18 +216,12 @@ const TopUp = () => {
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Top Up with MoMo</h1>
             <p className="text-gray-600">Add money to your savings using MTN Mobile Money</p>
-            <div className="mt-2 text-xs text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-block">
-              Environment: sandbox mode
-            </div>
-            <p className="text-sm text-gray-500 mt-4">
-              Use test number: <code className="bg-gray-100 px-2 py-1 rounded text-xs">0780000000</code> (MTN Rwanda)
-            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Amount */}
             <div>
-              <label className="block text-gray-900 font-medium mb-2">Amount (EUR - Sandbox)</label>
+              <label className="block text-gray-900 font-medium mb-2">Amount (RWF)</label>
               <div className="relative">
                 <DollarSign size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <Input
@@ -241,7 +235,7 @@ const TopUp = () => {
                   required
                 />
               </div>
-              <p className="text-sm text-gray-500 mt-1">Minimum amount: 1 EUR (Sandbox mode)</p>
+              <p className="text-sm text-gray-500 mt-1">Minimum amount: 1 RWF</p>
             </div>
 
             {/* Phone Number */}
@@ -258,9 +252,6 @@ const TopUp = () => {
                   required
                 />
               </div>
-              <p className="text-sm text-gray-500 mt-1">
-                Use test number: <code className="bg-gray-100 px-1 rounded">0780000000</code> (MTN Rwanda)
-              </p>
             </div>
 
             {/* Submit Button */}
@@ -282,12 +273,10 @@ const TopUp = () => {
 
           {/* Info */}
           <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-            <h3 className="font-medium text-blue-900 mb-2">How it works (Sandbox Mode):</h3>
+            <h3 className="font-medium text-blue-900 mb-2">How it works:</h3>
             <ul className="text-sm text-blue-800 space-y-1">
               <li>• Form values are saved automatically and restored on page reload</li>
-              <li>• Enter the amount you want to save (in EUR for sandbox)</li>
-              <li>• Use test number <code className="bg-blue-100 px-1 rounded">0780000000</code> (MTN Rwanda)</li>
-              <li>• You'll receive a payment prompt on your phone</li>
+              <li>• Enter the amount you want to save (in RWF)</li>
               <li>• Complete the payment to add funds to your savings</li>
             </ul>
           </div>
