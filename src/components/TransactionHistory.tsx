@@ -1,10 +1,9 @@
-import { useEffect, useState, useRef } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import { Loader } from "lucide-react";
+import { useMomoTransactions } from "@/hooks/useMomoTransactions";
 
 interface MomoTransaction {
   id: string;
@@ -17,81 +16,7 @@ interface MomoTransaction {
 }
 
 const TransactionHistory = () => {
-  const { user } = useAuth();
-  const [transactions, setTransactions] = useState<MomoTransaction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const channelRef = useRef(null);
-
-  useEffect(() => {
-    if (!user) return;
-
-    const fetchTransactions = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('momo_transactions')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(5);
-
-        if (error) {
-          console.error('Error fetching transactions:', error);
-        } else {
-          setTransactions(data || []);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTransactions();
-
-    // Clean up any existing channel first
-    if (channelRef.current) {
-      console.log('Cleaning up existing transaction history channel');
-      supabase.removeChannel(channelRef.current);
-      channelRef.current = null;
-    }
-
-    // Set up realtime subscription for transaction updates
-    const channelName = `transaction-history-${user.id}`;
-    console.log('Creating transaction history channel:', channelName);
-    
-    const channel = supabase
-      .channel(channelName)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'momo_transactions',
-          filter: `user_id=eq.${user.id}`
-        },
-        (payload) => {
-          console.log('Transaction updated in history:', payload.new);
-          setTransactions(prev => 
-            prev.map(t => 
-              t.id === payload.new.id 
-                ? { ...t, ...payload.new }
-                : t
-            )
-          );
-        }
-      )
-      .subscribe();
-
-    channelRef.current = channel;
-
-    return () => {
-      console.log('Cleaning up transaction history channel:', channelName);
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-        channelRef.current = null;
-      }
-    };
-  }, [user]);
+  const { transactions, loading } = useMomoTransactions();
 
   const getStatusBadge = (status: string) => {
     switch (status?.toLowerCase()) {
@@ -141,7 +66,7 @@ const TransactionHistory = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {transactions.map((transaction) => (
+          {transactions.slice(0, 5).map((transaction) => (
             <div
               key={transaction.id}
               className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useMomoTransactions } from "@/hooks/useMomoTransactions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, TrendingUp, Target, Minus, Loader2 } from "lucide-react";
@@ -16,7 +17,6 @@ import TransactionHistory from "@/components/TransactionHistory";
 import { TransactionCharts } from "@/components/TransactionCharts";
 import { WithdrawDialog } from "@/components/WithdrawDialog";
 import { WithdrawalHistory } from "@/components/WithdrawalHistory";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
@@ -27,7 +27,8 @@ const Dashboard = () => {
   const { topUps, loading: topUpsLoading, getMonthlyAverage } = useTopUps();
   const { loading: withdrawalsLoading } = useWithdrawals();
   const { toast } = useToast();
-  const channelRef = useRef(null);
+  const { subscribe } = useMomoTransactions();
+  const unsubscribeRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -45,56 +46,36 @@ const Dashboard = () => {
 
   // Set up realtime notifications for successful payments
   useEffect(() => {
-    if (!user) return;
+    if (!user || !subscribe) return;
 
-    // Clean up any existing channel first
-    if (channelRef.current) {
-      console.log('Cleaning up existing channel before creating new one');
-      supabase.removeChannel(channelRef.current);
-      channelRef.current = null;
-    }
+    console.log('Setting up payment notification subscription');
+    
+    // Subscribe to MoMo transaction updates
+    const unsubscribe = subscribe((update) => {
+      const newStatus = update.new?.status;
+      const oldStatus = update.old?.status;
+      
+      console.log('Payment status update:', { newStatus, oldStatus });
+      
+      if (newStatus === 'SUCCESSFUL' && oldStatus !== 'SUCCESSFUL') {
+        toast({
+          title: "✅ MoMo Payment Confirmed",
+          description: "Your balance has been updated.",
+          duration: 5000,
+        });
+      }
+    });
 
-    const channelName = `payment-notifications-${user.id}`;
-    console.log('Creating payment notifications channel:', channelName);
-
-    const channel = supabase
-      .channel(channelName)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'momo_transactions',
-          filter: `user_id=eq.${user.id}`
-        },
-        (payload) => {
-          const newStatus = payload.new?.status;
-          const oldStatus = payload.old?.status;
-          
-          console.log('Payment status change:', { oldStatus, newStatus });
-          
-          // Show notification when payment becomes successful
-          if (newStatus === 'SUCCESSFUL' && oldStatus !== 'SUCCESSFUL') {
-            toast({
-              title: "✅ MoMo Payment Confirmed",
-              description: "Your balance has been updated.",
-              duration: 5000,
-            });
-          }
-        }
-      )
-      .subscribe();
-
-    channelRef.current = channel;
+    unsubscribeRef.current = unsubscribe;
 
     return () => {
-      console.log('Cleaning up payment notifications channel:', channelName);
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-        channelRef.current = null;
+      console.log('Cleaning up payment notification subscription');
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
       }
     };
-  }, [user]); // Removed toast dependency
+  }, [user, subscribe, toast]);
 
   if (authLoading || insightsLoading || topUpsLoading || withdrawalsLoading) {
     return (
