@@ -122,18 +122,84 @@ export type Database = {
         }
         Relationships: []
       }
+      savings: {
+        Row: {
+          amount: number
+          created_at: string | null
+          goal_id: string
+          id: string
+          source: string | null
+          status: string | null
+          type: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          goal_id: string
+          id?: string
+          source?: string | null
+          status?: string | null
+          type?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          goal_id?: string
+          id?: string
+          source?: string | null
+          status?: string | null
+          type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "savings_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "savings_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      savings_goals: {
+        Row: {
+          category: string
+          created_at: string | null
+          goal_amount: number
+          id: string
+          name: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          goal_amount: number
+          id?: string
+          name: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          goal_amount?: number
+          id?: string
+          name?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount: number
           created_at: string | null
-          currency: string | null
-          description: string | null
-          external_id: string | null
+          goal_id: string | null
           id: string
-          investment_id: string | null
-          payment_method: string | null
-          phone: string | null
-          reference_id: string | null
+          method: string | null
           status: string | null
           type: string
           user_id: string
@@ -141,14 +207,9 @@ export type Database = {
         Insert: {
           amount: number
           created_at?: string | null
-          currency?: string | null
-          description?: string | null
-          external_id?: string | null
+          goal_id?: string | null
           id?: string
-          investment_id?: string | null
-          payment_method?: string | null
-          phone?: string | null
-          reference_id?: string | null
+          method?: string | null
           status?: string | null
           type: string
           user_id: string
@@ -156,24 +217,19 @@ export type Database = {
         Update: {
           amount?: number
           created_at?: string | null
-          currency?: string | null
-          description?: string | null
-          external_id?: string | null
+          goal_id?: string | null
           id?: string
-          investment_id?: string | null
-          payment_method?: string | null
-          phone?: string | null
-          reference_id?: string | null
+          method?: string | null
           status?: string | null
           type?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "transactions_investment_id_fkey"
-            columns: ["investment_id"]
+            foreignKeyName: "transactions_goal_id_fkey"
+            columns: ["goal_id"]
             isOneToOne: false
-            referencedRelation: "investments"
+            referencedRelation: "savings_goals"
             referencedColumns: ["id"]
           },
         ]
@@ -198,6 +254,44 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      withdrawals: {
+        Row: {
+          amount: number
+          created_at: string | null
+          goal_id: string | null
+          id: string
+          note: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          goal_id?: string | null
+          id?: string
+          note?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          goal_id?: string | null
+          id?: string
+          note?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "withdrawals_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "savings_goals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

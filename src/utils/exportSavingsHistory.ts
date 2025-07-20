@@ -5,18 +5,17 @@ interface TransactionData {
   id: string;
   amount: number;
   type: string;
-  description: string | null;
   status: string | null;
   created_at: string | null;
-  currency: string | null;
-  payment_method: string | null;
+  method: string | null;
+  goal_id: string | null;
+  user_id: string;
 }
 
-interface InvestmentData {
+interface GoalData {
   id: string;
   name: string;
-  amount: number;
-  target_amount: number | null;
+  goal_amount: number;
   category: string | null;
   created_at: string | null;
 }
@@ -36,17 +35,17 @@ export const exportSavingsHistory = async (): Promise<void> => {
 
     if (transactionsError) throw transactionsError;
 
-    // Fetch investments
-    const { data: investments, error: investmentsError } = await supabase
-      .from('investments')
+    // Fetch goals
+    const { data: goals, error: goalsError } = await supabase
+      .from('savings_goals')
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
-    if (investmentsError) throw investmentsError;
+    if (goalsError) throw goalsError;
 
     // Generate HTML report
-    const html = generateHTMLReport(transactions || [], investments || [], user);
+    const html = generateHTMLReport(transactions || [], goals || [], user);
     
     // Create and download the file
     const blob = new Blob([html], { type: 'text/html' });
@@ -66,14 +65,14 @@ export const exportSavingsHistory = async (): Promise<void> => {
 
 const generateHTMLReport = (
   transactions: TransactionData[], 
-  investments: InvestmentData[], 
+  goals: GoalData[], 
   user: any
 ): string => {
   const totalSavings = transactions
-    .filter(t => t.status === 'completed' && t.type === 'deposit')
+    .filter(t => t.status === 'success' && t.type === 'incoming')
     .reduce((sum, t) => sum + Number(t.amount), 0);
 
-  const totalInvestments = investments.reduce((sum, inv) => sum + Number(inv.amount), 0);
+  const totalGoals = goals.reduce((sum, goal) => sum + Number(goal.goal_amount), 0);
 
   return `
 <!DOCTYPE html>
@@ -121,16 +120,16 @@ const generateHTMLReport = (
                 <div class="amount">${totalSavings.toLocaleString()}</div>
             </div>
             <div class="summary-card">
-                <h3>Total Investments</h3>
-                <div class="amount">${totalInvestments.toLocaleString()}</div>
+                <h3>Total Goals Value</h3>
+                <div class="amount">${totalGoals.toLocaleString()}</div>
             </div>
             <div class="summary-card">
                 <h3>Total Transactions</h3>
                 <div class="amount">${transactions.length}</div>
             </div>
             <div class="summary-card">
-                <h3>Active Investments</h3>
-                <div class="amount">${investments.length}</div>
+                <h3>Active Goals</h3>
+                <div class="amount">${goals.length}</div>
             </div>
         </div>
 
@@ -151,10 +150,10 @@ const generateHTMLReport = (
                         ${transactions.slice(0, 50).map(transaction => `
                             <tr>
                                 <td>${transaction.created_at ? format(new Date(transaction.created_at), 'MMM dd, yyyy') : 'N/A'}</td>
-                                <td>${transaction.description || 'Transaction'}</td>
+                                <td>Transaction</td>
                                 <td style="text-transform: capitalize;">${transaction.type}</td>
-                                <td class="${transaction.type === 'deposit' ? 'amount-positive' : 'amount-negative'}">
-                                    ${transaction.type === 'deposit' ? '+' : ''}${Number(transaction.amount).toLocaleString()} ${transaction.currency || 'RWF'}
+                                <td class="${transaction.type === 'incoming' ? 'amount-positive' : 'amount-negative'}">
+                                    ${transaction.type === 'incoming' ? '+' : ''}${Number(transaction.amount).toLocaleString()} RWF
                                 </td>
                                 <td>
                                     <span class="status-${transaction.status || 'pending'}">${(transaction.status || 'pending').toUpperCase()}</span>
@@ -167,38 +166,31 @@ const generateHTMLReport = (
         </div>
 
         <div class="section">
-            <h2>Investment Portfolio</h2>
-            ${investments.length > 0 ? `
+            <h2>Savings Goals</h2>
+            ${goals.length > 0 ? `
                 <table>
                     <thead>
                         <tr>
-                            <th>Investment Name</th>
+                            <th>Goal Name</th>
                             <th>Category</th>
-                            <th>Current Amount</th>
                             <th>Target Amount</th>
-                            <th>Progress</th>
                             <th>Created</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${investments.map(investment => {
-                          const progress = investment.target_amount 
-                            ? Math.round((Number(investment.amount) / Number(investment.target_amount)) * 100)
-                            : 0;
+                        ${goals.map(goal => {
                           return `
                             <tr>
-                                <td style="font-weight: 600;">${investment.name}</td>
-                                <td>${investment.category || 'General'}</td>
-                                <td class="amount-positive">${Number(investment.amount).toLocaleString()} RWF</td>
-                                <td>${investment.target_amount ? Number(investment.target_amount).toLocaleString() + ' RWF' : 'No target'}</td>
-                                <td>${investment.target_amount ? progress + '%' : 'N/A'}</td>
-                                <td>${investment.created_at ? format(new Date(investment.created_at), 'MMM dd, yyyy') : 'N/A'}</td>
+                                <td style="font-weight: 600;">${goal.name}</td>
+                                <td>${goal.category || 'General'}</td>
+                                <td class="amount-positive">${Number(goal.goal_amount).toLocaleString()} RWF</td>
+                                <td>${goal.created_at ? format(new Date(goal.created_at), 'MMM dd, yyyy') : 'N/A'}</td>
                             </tr>
                           `;
                         }).join('')}
                     </tbody>
                 </table>
-            ` : '<div class="no-data">No investments found</div>'}
+            ` : '<div class="no-data">No goals found</div>'}
         </div>
 
         <div class="footer">

@@ -61,19 +61,19 @@ export const useTransactionInsights = () => {
       const monthlyAverage = totalDeposits / 6; // Last 6 months
       const savingsGrowth = totalDeposits - totalWithdrawals;
 
-      // Group by investment categories
+      // Group by goal categories
       const categoryMap = new Map();
       
       for (const transaction of transactions) {
-        if (transaction.investment_id) {
-          // Get investment details
-          const { data: investment } = await supabase
-            .from('investments')
+        if (transaction.goal_id) {
+          // Get goal details
+          const { data: goal } = await supabase
+            .from('savings_goals')
             .select('category')
-            .eq('id', transaction.investment_id)
+            .eq('id', transaction.goal_id)
             .single();
 
-          const category = investment?.category || 'General';
+          const category = goal?.category || 'General';
           const existing = categoryMap.get(category) || { amount: 0, count: 0 };
           categoryMap.set(category, {
             amount: existing.amount + transaction.amount,
