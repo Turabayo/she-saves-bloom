@@ -69,9 +69,9 @@ const generatePDFReport = async (
   const totalGoals = goals.reduce((sum, goal) => sum + Number(goal.goal_amount), 0);
   
   // PDF styling
-  const primaryColor = [79, 70, 229]; // RGB for primary color
-  const textColor = [51, 51, 51];
-  const lightGray = [156, 163, 175];
+  const primaryColor: [number, number, number] = [79, 70, 229]; // RGB for primary color
+  const textColor: [number, number, number] = [51, 51, 51];
+  const lightGray: [number, number, number] = [156, 163, 175];
   
   // Header
   pdf.setFillColor(...primaryColor);
