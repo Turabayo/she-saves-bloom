@@ -51,7 +51,7 @@ const TransactionHistory = () => {
     // Clean up any existing channel first
     if (channelRef.current) {
       console.log('Cleaning up existing transaction history channel');
-      channelRef.current.unsubscribe();
+      supabase.removeChannel(channelRef.current);
       channelRef.current = null;
     }
 
@@ -87,7 +87,7 @@ const TransactionHistory = () => {
     return () => {
       console.log('Cleaning up transaction history channel:', channelName);
       if (channelRef.current) {
-        channelRef.current.unsubscribe();
+        supabase.removeChannel(channelRef.current);
         channelRef.current = null;
       }
     };

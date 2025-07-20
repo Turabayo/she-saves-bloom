@@ -50,7 +50,7 @@ const Dashboard = () => {
     // Clean up any existing channel first
     if (channelRef.current) {
       console.log('Cleaning up existing channel before creating new one');
-      channelRef.current.unsubscribe();
+      supabase.removeChannel(channelRef.current);
       channelRef.current = null;
     }
 
@@ -90,7 +90,7 @@ const Dashboard = () => {
     return () => {
       console.log('Cleaning up payment notifications channel:', channelName);
       if (channelRef.current) {
-        channelRef.current.unsubscribe();
+        supabase.removeChannel(channelRef.current);
         channelRef.current = null;
       }
     };
