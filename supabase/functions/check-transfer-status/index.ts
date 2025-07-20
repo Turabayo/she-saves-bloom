@@ -11,6 +11,22 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 )
 
+async function getAccessToken() {
+  const apiKey = Deno.env.get('DISB_API_KEY')!
+  const subscriptionKey = Deno.env.get('DISB_SUBSCRIPTION_KEY')!
+
+  const res = await fetch('https://sandbox.momodeveloper.mtn.com/disbursement/token/', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Basic ${apiKey}`,
+      'Ocp-Apim-Subscription-Key': subscriptionKey
+    }
+  })
+
+  const data = await res.json()
+  return data.access_token
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -33,7 +49,7 @@ serve(async (req) => {
       })
     }
 
-    const accessToken = Deno.env.get('DISB_ACCESS_TOKEN')
+    const accessToken = await getAccessToken()
     const subscriptionKey = Deno.env.get('DISB_SUBSCRIPTION_KEY')
     const momoUrl = `https://sandbox.momodeveloper.mtn.com/disbursement/v1_0/transfer/${momo_reference_id}`
 
