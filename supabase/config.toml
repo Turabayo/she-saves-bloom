@@ -27,6 +27,12 @@ verify_jwt = true
 [functions.momo-webhook]
 verify_jwt = false
 
+[functions.request-to-pay]
+verify_jwt = true
+
+[functions.check-topup-status]
+verify_jwt = true
+
 [functions.withdraw-user]
 verify_jwt = true
 
