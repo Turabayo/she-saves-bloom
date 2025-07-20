@@ -110,38 +110,18 @@ const TopUp = () => {
     try {
       const amount = parseFloat(formData.amount);
 
-      // Create transaction record first
-      const { data: transaction, error: transactionError } = await supabase
-        .from('transactions')
-        .insert([
-          {
-            user_id: user.id,
-            amount: amount,
-            type: 'deposit',
-            phone: formData.phone,
-            status: 'pending',
-            payment_method: 'momo',
-            currency: 'EUR',
-            description: 'MoMo top-up'
-          }
-        ])
-        .select()
-        .single();
-
-      if (transactionError) throw transactionError;
-
-      console.log('Calling MoMo edge function with:', {
+      console.log('Calling request-to-pay edge function with:', {
+        user_id: user.id,
         amount,
-        phone: formData.phone,
-        transactionId: transaction.id
+        phone_number: formData.phone
       });
 
-      // Call MoMo API through edge function
-      const { data, error } = await supabase.functions.invoke('momo-payment', {
+      // Call new request-to-pay edge function
+      const { data, error } = await supabase.functions.invoke('request-to-pay', {
         body: {
+          user_id: user.id,
           amount: amount,
-          phone: formData.phone,
-          transactionId: transaction.id
+          phone_number: formData.phone
         }
       });
 

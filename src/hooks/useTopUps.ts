@@ -6,11 +6,17 @@ import { useToast } from '@/hooks/use-toast';
 export interface TopUp {
   id: string;
   amount: number;
-  phone: string;
+  phone_number: string;
   currency: string;
   status: string;
   created_at: string;
-  reference_id: string;
+  momo_reference_id: string;
+  external_id: string;
+  momo_transaction_id: string | null;
+  payer_message: string | null;
+  payee_note: string | null;
+  updated_at: string;
+  user_id: string;
 }
 
 export const useTopUps = () => {
@@ -24,7 +30,7 @@ export const useTopUps = () => {
 
     try {
       const { data, error } = await supabase
-        .from('momo_transactions')
+        .from('topups')
         .select('*')
         .eq('user_id', user.id)
         .eq('status', 'SUCCESSFUL')
