@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useInvestments } from "@/hooks/useInvestments";
 
-const Investments = () => {
+const Goals = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { investments, loading: investmentsLoading } = useInvestments();
@@ -46,8 +46,8 @@ const Investments = () => {
       <main className="px-4 pb-20">
         <div className="max-w-md mx-auto">
           <div className="py-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Investments</h1>
-            <p className="text-gray-600">Manage and track your investment funds</p>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Goals</h1>
+            <p className="text-gray-600">Manage and track your savings goals</p>
           </div>
 
           <div className="mb-6">
@@ -55,7 +55,7 @@ const Investments = () => {
               onClick={() => navigate('/add-investment')}
               className="bg-orange-500 hover:bg-orange-600 text-white rounded-lg"
             >
-              + Add Investment
+              + Add Goal
             </Button>
           </div>
 
@@ -89,13 +89,13 @@ const Investments = () => {
             </div>
           ) : (
             <div className="bg-white rounded-xl shadow-sm p-8 text-center">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No investments yet</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">No goals yet</h3>
               <p className="text-gray-600 mb-4">Start building your financial future today</p>
               <Button 
                 onClick={() => navigate('/add-investment')}
                 className="bg-orange-500 hover:bg-orange-600 text-white"
               >
-                Add Your First Investment
+                Add Your First Goal
               </Button>
             </div>
           )}
@@ -107,4 +107,4 @@ const Investments = () => {
   );
 };
 
-export default Investments;
+export default Goals;

@@ -9,10 +9,10 @@ import { useDevice } from "./hooks/use-device";
 import Index from "./pages/Index";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
-import Goals from "./pages/Goals";
+import GoalSelection from "./pages/Goals";
 import Dashboard from "./pages/Dashboard";
 import AddInvestment from "./pages/AddInvestment";
-import Investments from "./pages/Investments";
+import Goals from "./pages/Investments";
 import Insights from "./pages/Insights";
 import Community from "./pages/Community";
 import Assistant from "./pages/Assistant";
@@ -31,10 +31,10 @@ const AppContent = () => {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/auth" element={<Auth />} />
-          <Route path="/goals" element={<Goals />} />
+          <Route path="/goal-selection" element={<GoalSelection />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-investment" element={<AddInvestment />} />
-          <Route path="/investments" element={<Investments />} />
+          <Route path="/goals" element={<Goals />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/community" element={<Community />} />
           <Route path="/assistant" element={<Assistant />} />

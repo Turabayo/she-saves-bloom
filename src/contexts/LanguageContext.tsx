@@ -14,7 +14,7 @@ const translations = {
   en: {
     // Navigation
     dashboard: 'Dashboard',
-    investments: 'Investments',
+    goals: 'Goals',
     insights: 'Insights',
     signOut: 'Sign Out',
     
@@ -61,7 +61,7 @@ const translations = {
   fr: {
     // Navigation
     dashboard: 'Tableau de bord',
-    investments: 'Investissements',
+    goals: 'Objectifs',
     insights: 'Analyses',
     signOut: 'Déconnexion',
     

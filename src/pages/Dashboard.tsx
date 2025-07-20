@@ -7,11 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Plus, TrendingUp, Target, Minus, Loader2 } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useSavings } from "@/hooks/useSavings";
-import { useTransactionInsights } from "@/hooks/useTransactionInsights";
 import { useTopUps } from "@/hooks/useTopUps";
 import { useWithdrawals } from "@/hooks/useWithdrawals";
 import { formatCurrency, formatDate } from "@/utils/dateFormatter";
-import InsightsCard from "@/components/InsightsCard";
 import FloatingAIButton from "@/components/FloatingAIButton";
 import TransactionHistory from "@/components/TransactionHistory";
 import { TransactionCharts } from "@/components/TransactionCharts";
@@ -23,7 +21,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { getTotalSavings } = useSavings();
-  const { insights, loading: insightsLoading } = useTransactionInsights();
+  
   const { topUps, loading: topUpsLoading, getMonthlyAverage } = useTopUps();
   const { loading: withdrawalsLoading } = useWithdrawals();
   const { toast } = useToast();
@@ -69,7 +67,7 @@ const Dashboard = () => {
     previousTransactionsRef.current = [...currentTransactions];
   }, [momoHook.transactions, user, toast]);
 
-  if (authLoading || insightsLoading || topUpsLoading || withdrawalsLoading) {
+  if (authLoading || topUpsLoading || withdrawalsLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -192,8 +190,6 @@ const Dashboard = () => {
               </Card>
             )}
 
-            {/* Insights Card */}
-            <InsightsCard />
 
             {/* Transaction History */}
             <TransactionHistory />
@@ -273,10 +269,7 @@ const Dashboard = () => {
           </div>
 
           {/* Bottom Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1">
-              <InsightsCard />
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="lg:col-span-1">
               <WithdrawalHistory />
             </div>
