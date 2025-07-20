@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useMomoTransactions } from "@/hooks/useMomoTransactions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, TrendingUp, Target, Minus, Loader2 } from "lucide-react";
@@ -25,8 +24,6 @@ const Dashboard = () => {
   const { topUps, loading: topUpsLoading, getMonthlyAverage } = useTopUps();
   const { loading: withdrawalsLoading } = useWithdrawals();
   const { toast } = useToast();
-  const momoHook = useMomoTransactions();
-  const previousTransactionsRef = useRef<any[]>([]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -41,31 +38,6 @@ const Dashboard = () => {
       localStorage.setItem("aiAssistant", "true");
     }
   }, []);
-
-  // Monitor transactions for successful payments and show toast
-  useEffect(() => {
-    if (!user || !momoHook.transactions) return;
-
-    const currentTransactions = momoHook.transactions;
-    const previousTransactions = previousTransactionsRef.current;
-
-    // Check for newly successful transactions
-    currentTransactions.forEach((transaction) => {
-      const previousTransaction = previousTransactions.find(t => t.id === transaction.id);
-      
-      if (transaction.status === 'SUCCESSFUL' && 
-          (!previousTransaction || previousTransaction.status !== 'SUCCESSFUL')) {
-        toast({
-          title: "✅ MoMo Payment Confirmed",
-          description: "Your balance has been updated.",
-          duration: 5000,
-        });
-      }
-    });
-
-    // Update the ref with current transactions
-    previousTransactionsRef.current = [...currentTransactions];
-  }, [momoHook.transactions, user, toast]);
 
   if (authLoading || topUpsLoading || withdrawalsLoading) {
     return (
