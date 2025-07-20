@@ -46,8 +46,11 @@ const Dashboard = () => {
   useEffect(() => {
     if (!user) return;
 
+    const channelName = `payment-notifications-${user.id}-${Date.now()}`;
+    console.log('Creating payment notifications channel:', channelName);
+
     const channel = supabase
-      .channel('payment-notifications')
+      .channel(channelName)
       .on(
         'postgres_changes',
         {
@@ -59,6 +62,8 @@ const Dashboard = () => {
         (payload) => {
           const newStatus = payload.new?.status;
           const oldStatus = payload.old?.status;
+          
+          console.log('Payment status change:', { oldStatus, newStatus });
           
           // Show notification when payment becomes successful
           if (newStatus === 'SUCCESSFUL' && oldStatus !== 'SUCCESSFUL') {
@@ -73,7 +78,8 @@ const Dashboard = () => {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      console.log('Cleaning up payment notifications channel:', channelName);
+      channel.unsubscribe();
     };
   }, [user, toast]);
 

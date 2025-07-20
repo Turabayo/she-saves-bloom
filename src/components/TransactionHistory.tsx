@@ -48,8 +48,11 @@ const TransactionHistory = () => {
     fetchTransactions();
 
     // Set up realtime subscription for transaction updates
+    const channelName = `transaction-history-${user.id}-${Date.now()}`;
+    console.log('Creating transaction history channel:', channelName);
+    
     const channel = supabase
-      .channel('momo-transactions-changes')
+      .channel(channelName)
       .on(
         'postgres_changes',
         {
@@ -59,7 +62,7 @@ const TransactionHistory = () => {
           filter: `user_id=eq.${user.id}`
         },
         (payload) => {
-          console.log('Transaction updated:', payload.new);
+          console.log('Transaction updated in history:', payload.new);
           setTransactions(prev => 
             prev.map(t => 
               t.id === payload.new.id 
@@ -72,7 +75,8 @@ const TransactionHistory = () => {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      console.log('Cleaning up transaction history channel:', channelName);
+      channel.unsubscribe();
     };
   }, [user]);
 
