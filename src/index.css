@@ -6,16 +6,16 @@
 
 @layer base {
   :root {
-    /* SheSaves Brand Colors */
-    --primary: 280 100% 70%;         /* Beautiful purple gradient start */
+    /* SheSaves Brand Colors - Orange Branding */
+    --primary: 25 95% 53%;           /* Beautiful orange */
     --primary-foreground: 0 0% 100%; /* White text on primary */
-    --primary-light: 285 100% 80%;   /* Lighter purple */
-    --primary-dark: 275 100% 60%;    /* Darker purple */
+    --primary-light: 30 100% 60%;    /* Lighter orange */
+    --primary-dark: 20 90% 45%;      /* Darker orange */
     
     /* Secondary & Supporting Colors */
-    --secondary: 320 100% 75%;       /* Pink accent */
+    --secondary: 15 100% 50%;        /* Red-orange accent */
     --secondary-foreground: 0 0% 100%;
-    --accent: 200 100% 70%;          /* Cyan for highlights */
+    --accent: 40 100% 50%;           /* Yellow-orange for highlights */
     --accent-foreground: 0 0% 100%;
     
     /* Neutral System */
@@ -31,7 +31,7 @@
     --muted-foreground: 240 5% 45%;
     --border: 240 5% 90%;
     --input: 240 5% 90%;
-    --ring: 280 100% 70%;
+    --ring: 25 95% 53%;
     
     /* Status Colors */
     --success: 120 100% 40%;
@@ -51,12 +51,16 @@
     --shadow-medium: 0 4px 20px -4px hsl(var(--primary) / 0.15);
     --shadow-strong: 0 8px 30px -8px hsl(var(--primary) / 0.2);
     
-    /* Chart Colors */
-    --chart-1: 280 100% 70%;  /* Primary purple */
-    --chart-2: 320 100% 75%;  /* Secondary pink */
-    --chart-3: 200 100% 70%;  /* Accent cyan */
+    /* Chart Colors - Orange Theme */
+    --chart-1: 25 95% 53%;    /* Primary orange */
+    --chart-2: 15 100% 50%;   /* Red-orange */
+    --chart-3: 40 100% 50%;   /* Yellow-orange */
     --chart-4: 120 100% 40%;  /* Success green */
-    --chart-5: 45 100% 50%;   /* Warning orange */
+    --chart-5: 200 100% 50%;  /* Blue for contrast */
+    --chart-6: 280 100% 60%;  /* Purple for variety */
+    --chart-7: 350 100% 45%;  /* Deep red */
+    --chart-8: 60 100% 45%;   /* Yellow-green */
+    --chart-9: 180 100% 40%;  /* Cyan */
     
     --radius: 0.75rem;
 
@@ -86,11 +90,11 @@
     --popover: 240 15% 10%;
     --popover-foreground: 0 0% 95%;
     
-    --primary: 280 100% 75%;
+    --primary: 30 100% 60%;
     --primary-foreground: 240 15% 8%;
-    --secondary: 320 100% 80%;
+    --secondary: 20 100% 55%;
     --secondary-foreground: 240 15% 8%;
-    --accent: 200 100% 75%;
+    --accent: 45 100% 55%;
     --accent-foreground: 240 15% 8%;
     
     --muted: 240 15% 15%;
