@@ -35,7 +35,10 @@ export const useMomoTransactions = () => {
   };
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
     const fetchTransactions = async () => {
       try {
@@ -68,7 +71,7 @@ export const useMomoTransactions = () => {
     }
 
     // Set up realtime subscription for transaction updates
-    const channelName = `momo-transactions-${user.id}`;
+    const channelName = `momo-transactions-${user.id}-${Date.now()}`;
     console.log('Creating momo transactions channel:', channelName);
     
     const channel = supabase
