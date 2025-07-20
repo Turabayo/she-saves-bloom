@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Calendar, CreditCard } from "lucide-react";
+import { ArrowLeft, CreditCard } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useInvestments } from "@/hooks/useInvestments";
 import { useToast } from "@/hooks/use-toast";
@@ -18,19 +18,22 @@ const AddInvestment = () => {
   const [formData, setFormData] = useState({
     name: "",
     amount: "",
-    target_amount: "",
     category: "",
-    date: "",
     note: ""
   });
   const [loading, setLoading] = useState(false);
 
   const categories = [
+    "Car",
+    "House",
+    "School",
+    "Shoes",
+    "Dress",
     "Emergency Fund",
-    "Education Fund", 
-    "Small Business",
-    "Retirement Fund",
-    "Home Purchase",
+    "Education Fund",
+    "Business",
+    "Travel",
+    "Wedding",
     "Other"
   ];
 
@@ -61,7 +64,7 @@ const AddInvestment = () => {
       const result = await addInvestment({
         name: formData.name,
         amount: parseFloat(formData.amount),
-        target_amount: formData.target_amount ? parseFloat(formData.target_amount) : undefined,
+        target_amount: parseFloat(formData.amount),
         category: formData.category
       });
 
@@ -70,27 +73,25 @@ const AddInvestment = () => {
       }
 
       toast({
-        title: "Investment added successfully!",
-        description: `${formData.name} has been added to your portfolio.`
+        title: "Goal added successfully!",
+        description: `${formData.name} has been added to your goals.`
       });
 
       // Reset form
       setFormData({
         name: "",
         amount: "",
-        target_amount: "",
         category: "",
-        date: "",
         note: ""
       });
 
-      // Navigate back to investments
-      navigate('/investments');
+      // Navigate back to goals
+      navigate('/goals');
     } catch (error: any) {
       console.error('Add investment error:', error);
       toast({
-        title: "Error adding investment",
-        description: error.message || "Unable to add investment. Please try again.",
+        title: "Error adding goal",
+        description: error.message || "Unable to add goal. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -117,10 +118,10 @@ const AddInvestment = () => {
       <main className="px-4 pt-6">
         <div className="max-w-md mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">Add Investment</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Add Goal</h1>
             <Button
               onClick={() => navigate('/top-up')}
-              className="bg-green-500 hover:bg-green-600 text-white flex items-center gap-2"
+              className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-2"
             >
               <CreditCard size={16} />
               Top Up
@@ -128,9 +129,9 @@ const AddInvestment = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Investment Name */}
+            {/* Goal Name */}
             <div>
-              <label className="block text-gray-900 font-medium mb-2">Investment Name</label>
+              <label className="block text-gray-900 font-medium mb-2">Goal Name</label>
               <Input
                 type="text"
                 value={formData.name}
@@ -143,7 +144,7 @@ const AddInvestment = () => {
 
             {/* Amount */}
             <div>
-              <label className="block text-gray-900 font-medium mb-2">Current Amount</label>
+              <label className="block text-gray-900 font-medium mb-2">Amount</label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
                 <Input
@@ -155,23 +156,6 @@ const AddInvestment = () => {
                   min="0"
                   step="0.01"
                   required
-                />
-              </div>
-            </div>
-
-            {/* Target Amount */}
-            <div>
-              <label className="block text-gray-900 font-medium mb-2">Target Amount (Optional)</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                <Input
-                  type="number"
-                  value={formData.target_amount}
-                  onChange={(e) => setFormData({...formData, target_amount: e.target.value})}
-                  className="pl-8 py-3 text-lg border border-gray-300 rounded-lg"
-                  placeholder="0.00"
-                  min="0"
-                  step="0.01"
                 />
               </div>
             </div>
@@ -191,27 +175,13 @@ const AddInvestment = () => {
               </Select>
             </div>
 
-            {/* Date */}
-            <div>
-              <label className="block text-gray-900 font-medium mb-2">Date</label>
-              <div className="relative">
-                <Input
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({...formData, date: e.target.value})}
-                  className="py-3 text-lg border border-gray-300 rounded-lg pr-10"
-                />
-                <Calendar size={20} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              </div>
-            </div>
-
             {/* Note */}
             <div>
               <label className="block text-gray-900 font-medium mb-2">Note (optional)</label>
               <Textarea
                 value={formData.note}
                 onChange={(e) => setFormData({...formData, note: e.target.value})}
-                placeholder="Add a note about this investment..."
+                placeholder="Add a note about this goal..."
                 className="py-3 text-lg border border-gray-300 rounded-lg"
                 rows={3}
               />
@@ -229,7 +199,7 @@ const AddInvestment = () => {
                   Adding...
                 </div>
               ) : (
-                "Add Investment"
+                "Add Goal"
               )}
             </Button>
           </form>
