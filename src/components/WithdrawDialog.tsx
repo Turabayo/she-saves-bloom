@@ -18,6 +18,7 @@ export const WithdrawDialog = ({ children }: WithdrawDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [amount, setAmount] = useState("");
   const [selectedGoalId, setSelectedGoalId] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [note, setNote] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -36,11 +37,20 @@ export const WithdrawDialog = ({ children }: WithdrawDialogProps) => {
       return;
     }
 
+    if (!phoneNumber) {
+      toast({
+        variant: "destructive",
+        description: "Please enter your phone number"
+      });
+      return;
+    }
+
     setIsLoading(true);
     
     try {
       await createWithdrawal({
         amount: parseFloat(amount),
+        phone_number: phoneNumber,
         goal_id: selectedGoalId || undefined,
         note: note || undefined
       });
@@ -52,6 +62,7 @@ export const WithdrawDialog = ({ children }: WithdrawDialogProps) => {
       setIsOpen(false);
       setAmount("");
       setSelectedGoalId("");
+      setPhoneNumber("");
       setNote("");
     } catch (error) {
       console.error('Error creating withdrawal:', error);
@@ -96,6 +107,18 @@ export const WithdrawDialog = ({ children }: WithdrawDialogProps) => {
               onChange={(e) => setAmount(e.target.value)}
               min="1"
               step="1"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone Number</Label>
+            <Input
+              id="phone"
+              type="tel"
+              placeholder="250788000000"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
               required
             />
           </div>

@@ -7,9 +7,17 @@ export interface Withdrawal {
   user_id: string;
   goal_id: string | null;
   amount: number;
+  currency: string;
+  external_id: string;
+  momo_reference_id: string;
+  phone_number: string;
   status: string;
   note: string | null;
+  momo_transaction_id: string | null;
+  payer_message: string | null;
+  payee_note: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 export const useWithdrawals = () => {
@@ -49,21 +57,19 @@ export const useWithdrawals = () => {
   const createWithdrawal = async (withdrawalData: {
     goal_id?: string;
     amount: number;
+    phone_number: string;
     note?: string;
   }) => {
     if (!user) throw new Error('User not authenticated');
 
-    const { data, error } = await supabase
-      .from('withdrawals')
-      .insert([
-        {
-          user_id: user.id,
-          status: 'pending',
-          ...withdrawalData
-        }
-      ])
-      .select()
-      .single();
+    // Call the withdraw-user edge function
+    const { data, error } = await supabase.functions.invoke('withdraw-user', {
+      body: {
+        user_id: user.id,
+        amount: withdrawalData.amount,
+        phone_number: withdrawalData.phone_number
+      }
+    });
 
     if (error) throw error;
 
