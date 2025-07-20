@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +20,7 @@ const TransactionHistory = () => {
   const { user } = useAuth();
   const [transactions, setTransactions] = useState<MomoTransaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const channelRef = useRef(null);
 
   useEffect(() => {
     if (!user) return;
@@ -47,8 +48,15 @@ const TransactionHistory = () => {
 
     fetchTransactions();
 
+    // Clean up any existing channel first
+    if (channelRef.current) {
+      console.log('Cleaning up existing transaction history channel');
+      channelRef.current.unsubscribe();
+      channelRef.current = null;
+    }
+
     // Set up realtime subscription for transaction updates
-    const channelName = `transaction-history-${user.id}-${Date.now()}`;
+    const channelName = `transaction-history-${user.id}`;
     console.log('Creating transaction history channel:', channelName);
     
     const channel = supabase
@@ -74,9 +82,14 @@ const TransactionHistory = () => {
       )
       .subscribe();
 
+    channelRef.current = channel;
+
     return () => {
       console.log('Cleaning up transaction history channel:', channelName);
-      channel.unsubscribe();
+      if (channelRef.current) {
+        channelRef.current.unsubscribe();
+        channelRef.current = null;
+      }
     };
   }, [user]);
 

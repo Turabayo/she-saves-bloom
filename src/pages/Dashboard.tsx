@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,6 +27,7 @@ const Dashboard = () => {
   const { topUps, loading: topUpsLoading, getMonthlyAverage } = useTopUps();
   const { loading: withdrawalsLoading } = useWithdrawals();
   const { toast } = useToast();
+  const channelRef = useRef(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -46,7 +47,14 @@ const Dashboard = () => {
   useEffect(() => {
     if (!user) return;
 
-    const channelName = `payment-notifications-${user.id}-${Date.now()}`;
+    // Clean up any existing channel first
+    if (channelRef.current) {
+      console.log('Cleaning up existing channel before creating new one');
+      channelRef.current.unsubscribe();
+      channelRef.current = null;
+    }
+
+    const channelName = `payment-notifications-${user.id}`;
     console.log('Creating payment notifications channel:', channelName);
 
     const channel = supabase
@@ -77,11 +85,16 @@ const Dashboard = () => {
       )
       .subscribe();
 
+    channelRef.current = channel;
+
     return () => {
       console.log('Cleaning up payment notifications channel:', channelName);
-      channel.unsubscribe();
+      if (channelRef.current) {
+        channelRef.current.unsubscribe();
+        channelRef.current = null;
+      }
     };
-  }, [user, toast]);
+  }, [user]); // Removed toast dependency
 
   if (authLoading || insightsLoading || topUpsLoading || withdrawalsLoading) {
     return (
