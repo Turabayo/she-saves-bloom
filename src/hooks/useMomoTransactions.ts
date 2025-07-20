@@ -22,17 +22,6 @@ export const useMomoTransactions = () => {
   const [transactions, setTransactions] = useState<MomoTransaction[]>([]);
   const [loading, setLoading] = useState(true);
   const channelRef = useRef<any>(null);
-  const subscribersRef = useRef<((update: MomoTransactionUpdate) => void)[]>([]);
-
-  // Subscribe to updates
-  const subscribe = (callback: (update: MomoTransactionUpdate) => void) => {
-    subscribersRef.current.push(callback);
-    
-    // Return unsubscribe function
-    return () => {
-      subscribersRef.current = subscribersRef.current.filter(cb => cb !== callback);
-    };
-  };
 
   useEffect(() => {
     if (!user) {
@@ -95,14 +84,6 @@ export const useMomoTransactions = () => {
                 : t
             )
           );
-
-          // Notify all subscribers
-          subscribersRef.current.forEach(callback => {
-            callback({
-              new: payload.new as MomoTransaction,
-              old: payload.old as MomoTransaction
-            });
-          });
         }
       )
       .subscribe();
@@ -115,14 +96,11 @@ export const useMomoTransactions = () => {
         supabase.removeChannel(channelRef.current);
         channelRef.current = null;
       }
-      // Clear all subscribers
-      subscribersRef.current = [];
     };
   }, [user]);
 
   return {
     transactions,
-    loading,
-    subscribe
+    loading
   };
 };

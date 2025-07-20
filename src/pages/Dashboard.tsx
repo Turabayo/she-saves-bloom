@@ -27,8 +27,8 @@ const Dashboard = () => {
   const { topUps, loading: topUpsLoading, getMonthlyAverage } = useTopUps();
   const { loading: withdrawalsLoading } = useWithdrawals();
   const { toast } = useToast();
-  const { subscribe } = useMomoTransactions();
-  const unsubscribeRef = useRef<(() => void) | null>(null);
+  const momoHook = useMomoTransactions();
+  const previousTransactionsRef = useRef<any[]>([]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -44,20 +44,19 @@ const Dashboard = () => {
     }
   }, []);
 
-  // Set up realtime notifications for successful payments
+  // Monitor transactions for successful payments and show toast
   useEffect(() => {
-    if (!user || !subscribe) return;
+    if (!user || !momoHook.transactions) return;
 
-    console.log('Setting up payment notification subscription');
-    
-    // Subscribe to MoMo transaction updates
-    const unsubscribe = subscribe((update) => {
-      const newStatus = update.new?.status;
-      const oldStatus = update.old?.status;
+    const currentTransactions = momoHook.transactions;
+    const previousTransactions = previousTransactionsRef.current;
+
+    // Check for newly successful transactions
+    currentTransactions.forEach((transaction) => {
+      const previousTransaction = previousTransactions.find(t => t.id === transaction.id);
       
-      console.log('Payment status update:', { newStatus, oldStatus });
-      
-      if (newStatus === 'SUCCESSFUL' && oldStatus !== 'SUCCESSFUL') {
+      if (transaction.status === 'SUCCESSFUL' && 
+          (!previousTransaction || previousTransaction.status !== 'SUCCESSFUL')) {
         toast({
           title: "✅ MoMo Payment Confirmed",
           description: "Your balance has been updated.",
@@ -66,16 +65,9 @@ const Dashboard = () => {
       }
     });
 
-    unsubscribeRef.current = unsubscribe;
-
-    return () => {
-      console.log('Cleaning up payment notification subscription');
-      if (unsubscribeRef.current) {
-        unsubscribeRef.current();
-        unsubscribeRef.current = null;
-      }
-    };
-  }, [user, subscribe, toast]);
+    // Update the ref with current transactions
+    previousTransactionsRef.current = [...currentTransactions];
+  }, [momoHook.transactions, user, toast]);
 
   if (authLoading || insightsLoading || topUpsLoading || withdrawalsLoading) {
     return (
