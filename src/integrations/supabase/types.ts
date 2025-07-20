@@ -193,6 +193,54 @@ export type Database = {
         }
         Relationships: []
       }
+      topups: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string | null
+          external_id: string
+          id: string
+          momo_reference_id: string
+          momo_transaction_id: string | null
+          payee_note: string | null
+          payer_message: string | null
+          phone_number: string
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string | null
+          external_id: string
+          id?: string
+          momo_reference_id: string
+          momo_transaction_id?: string | null
+          payee_note?: string | null
+          payer_message?: string | null
+          phone_number: string
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          external_id?: string
+          id?: string
+          momo_reference_id?: string
+          momo_transaction_id?: string | null
+          payee_note?: string | null
+          payer_message?: string | null
+          phone_number?: string
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount: number
