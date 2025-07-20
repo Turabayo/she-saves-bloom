@@ -5,12 +5,14 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useAIAssistant } from "@/hooks/useAIAssistant";
 import { useAuth } from "@/contexts/AuthContext";
+import { useDevice } from "@/hooks/use-device";
 
 const FloatingAIButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputMessage, setInputMessage] = useState("");
   const { user } = useAuth();
   const { messages, loading, sendMessage } = useAIAssistant();
+  const { isNative } = useDevice();
 
   // Don't show if AI is disabled
   const aiEnabled = localStorage.getItem("aiAssistant") !== "false";
@@ -34,7 +36,7 @@ const FloatingAIButton = () => {
     <>
       {/* Floating Button */}
       {!isOpen && (
-        <div className="fixed bottom-20 right-4 z-50">
+        <div className={`fixed ${isNative ? 'bottom-24' : 'bottom-20'} right-4 z-50`}>
           <Button
             onClick={() => setIsOpen(true)}
             className="w-14 h-14 rounded-full bg-orange-500 hover:bg-orange-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center"
@@ -49,7 +51,7 @@ const FloatingAIButton = () => {
 
       {/* Chat Panel */}
       {isOpen && (
-        <div className="fixed bottom-20 right-4 w-80 h-96 bg-white rounded-lg shadow-2xl z-50 flex flex-col border">
+        <div className={`fixed ${isNative ? 'bottom-24' : 'bottom-20'} right-4 w-80 h-96 bg-white rounded-lg shadow-2xl z-50 flex flex-col border max-w-[calc(100vw-2rem)]`}>
           {/* Header */}
           <div className="flex items-center justify-between p-3 border-b bg-orange-500 text-white rounded-t-lg">
             <div className="flex items-center gap-2">

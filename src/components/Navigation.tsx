@@ -4,12 +4,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useDevice } from "@/hooks/use-device";
 
 const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut } = useAuth();
   const { t } = useLanguage();
+  const { isNative, isIOS } = useDevice();
 
   const navItems = [
     { path: '/dashboard', label: t('dashboard'), active: location.pathname === '/dashboard' },
@@ -25,7 +27,7 @@ const Navigation = () => {
   return (
     <>
       {/* Top Header */}
-      <header className="bg-white border-b border-gray-200 p-4">
+      <header className={`bg-white border-b border-gray-200 p-4 ${isNative && isIOS ? 'pt-12' : ''}`}>
         <div className="max-w-md mx-auto flex items-center justify-between">
           <div 
             className="flex items-center gap-3 cursor-pointer"
@@ -38,7 +40,8 @@ const Navigation = () => {
           </div>
           
           <div className="flex items-center gap-4">
-            <nav className="flex gap-6">
+            {/* Hide desktop nav on mobile */}
+            <nav className="hidden md:flex gap-6">
               {navItems.map((item) => (
                 <button
                   key={item.path}
@@ -73,8 +76,8 @@ const Navigation = () => {
         </div>
       </header>
 
-      {/* Bottom Navigation for Mobile */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden">
+      {/* Bottom Navigation - Always show on mobile, including native apps */}
+      <div className={`fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden ${isNative ? 'pb-safe' : ''}`}>
         <div className="max-w-md mx-auto flex">
           {navItems.map((item) => (
             <button
