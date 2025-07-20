@@ -16,6 +16,12 @@ async function getAccessToken() {
   const apiKey = Deno.env.get('DISB_API_KEY') // base64 encoded!
   const subscriptionKey = Deno.env.get('DISB_SUBSCRIPTION_KEY')
 
+  console.log('Getting access token with:', { 
+    userId, 
+    apiKeyLength: apiKey?.length,
+    subscriptionKeyLength: subscriptionKey?.length 
+  })
+
   const res = await fetch('https://sandbox.momodeveloper.mtn.com/disbursement/token/', {
     method: 'POST',
     headers: {
@@ -24,7 +30,15 @@ async function getAccessToken() {
     }
   })
 
+  console.log('Access token response status:', res.status)
   const data = await res.json()
+  console.log('Access token response data:', data)
+  
+  if (!res.ok) {
+    console.error('Failed to get access token:', data)
+    throw new Error(`Token request failed: ${res.status} - ${JSON.stringify(data)}`)
+  }
+  
   return data.access_token
 }
 
@@ -72,6 +86,15 @@ serve(async (req) => {
 
     console.log('MoMo payload:', payload);
 
+    console.log('Using access token:', accessToken ? `${accessToken.substring(0, 10)}...` : 'NO TOKEN');
+    console.log('Transfer headers:', {
+      'Authorization': `Bearer ${accessToken}`,
+      'X-Reference-Id': referenceId,
+      'X-Target-Environment': 'sandbox',
+      'Ocp-Apim-Subscription-Key': subscriptionKey,
+      'Content-Type': 'application/json'
+    });
+
     const momoResponse = await fetch(momoUrl, {
       method: 'POST',
       headers: {
@@ -85,6 +108,12 @@ serve(async (req) => {
     })
 
     console.log('MoMo response status:', momoResponse.status);
+    
+    if (!momoResponse.ok) {
+      const errorText = await momoResponse.text();
+      console.error('MoMo transfer error response:', errorText);
+      console.error('MoMo response headers:', Object.fromEntries(momoResponse.headers.entries()));
+    }
     
     const status = momoResponse.status === 202 ? 'PENDING' : 'FAILED'
 
