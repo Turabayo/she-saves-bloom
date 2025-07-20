@@ -33,7 +33,7 @@ const AppContent = () => {
           <Route path="/auth" element={<Auth />} />
           <Route path="/goal-selection" element={<GoalSelection />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/add-investment" element={<AddInvestment />} />
+          <Route path="/add-goal" element={<AddInvestment />} />
           <Route path="/goals" element={<Goals />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/community" element={<Community />} />

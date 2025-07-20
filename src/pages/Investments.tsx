@@ -52,7 +52,7 @@ const Goals = () => {
 
           <div className="mb-6">
             <Button 
-              onClick={() => navigate('/add-investment')}
+              onClick={() => navigate('/add-goal')}
               className="bg-orange-500 hover:bg-orange-600 text-white rounded-lg"
             >
               + Add Goal
@@ -92,7 +92,7 @@ const Goals = () => {
               <h3 className="text-lg font-semibold text-gray-900 mb-2">No goals yet</h3>
               <p className="text-gray-600 mb-4">Start building your financial future today</p>
               <Button 
-                onClick={() => navigate('/add-investment')}
+                onClick={() => navigate('/add-goal')}
                 className="bg-orange-500 hover:bg-orange-600 text-white"
               >
                 Add Your First Goal
