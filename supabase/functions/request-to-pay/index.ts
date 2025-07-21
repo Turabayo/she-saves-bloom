@@ -1,4 +1,3 @@
-
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -19,7 +18,7 @@ serve(async (req) => {
   }
 
   try {
-    console.log('=== REQUEST TO PAY FUNCTION ===');
+    console.log('=== REQUEST TO PAY FUNCTION START ===');
     
     const { user_id, amount, phone_number } = await req.json()
     
@@ -38,7 +37,14 @@ serve(async (req) => {
     const COLL_API_KEY = Deno.env.get('COLL_API_KEY')
     const COLL_SUBSCRIPTION_KEY = Deno.env.get('COLL_SUBSCRIPTION_KEY')
 
+    console.log('Environment check:', {
+      hasUser: !!COLL_API_USER,
+      hasKey: !!COLL_API_KEY,
+      hasSub: !!COLL_SUBSCRIPTION_KEY
+    });
+
     if (!COLL_API_USER || !COLL_API_KEY || !COLL_SUBSCRIPTION_KEY) {
+      console.error('Missing environment variables');
       return new Response(JSON.stringify({ error: 'Missing environment variables' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -46,9 +52,9 @@ serve(async (req) => {
     }
 
     const basicToken = btoa(`${COLL_API_USER}:${COLL_API_KEY}`)
-    
-    // Use the specific Collection Token UUID as per requirements
     const collectionTokenUUID = '45c1fec9-dae8-4a9f-a00a-c5d282cb0259'
+
+    console.log('Getting access token...');
 
     let accessToken = ''
     try {
@@ -61,7 +67,11 @@ serve(async (req) => {
         },
       })
 
+      console.log('Token response status:', tokenRes.status);
+
       const tokenData = await tokenRes.json()
+      console.log('Token response data:', tokenData);
+      
       accessToken = tokenData.access_token
 
       if (!accessToken) {
@@ -80,10 +90,11 @@ serve(async (req) => {
     }
 
     const referenceId = crypto.randomUUID()
+    console.log('Generated reference ID:', referenceId);
 
     const payload = {
       amount: amount.toString(),
-      currency: 'RWF', // Changed to RWF as per requirements
+      currency: 'RWF',
       externalId: referenceId,
       payer: {
         partyIdType: 'MSISDN',
@@ -92,6 +103,8 @@ serve(async (req) => {
       payerMessage: 'SheSaves top-up',
       payeeNote: 'Keep going toward your goal!',
     }
+
+    console.log('Making MoMo request with payload:', payload);
 
     try {
       const momoRes = await fetch(`https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay`, {
@@ -106,6 +119,8 @@ serve(async (req) => {
         body: JSON.stringify(payload),
       })
 
+      console.log('MoMo response status:', momoRes.status);
+
       if (!momoRes.ok) {
         const errorBody = await momoRes.text()
         console.error('MTN MoMo error response:', errorBody)
@@ -118,21 +133,28 @@ serve(async (req) => {
       console.log('✅ MoMo payment request successful, reference:', referenceId);
       
       // Store the MoMo transaction in our database
-      const { error: insertError } = await supabase
-        .from('momo_transactions')
-        .insert({
-          user_id,
-          amount,
-          currency: 'RWF',
-          phone: phone_number,
-          reference_id: referenceId,
-          external_id: referenceId,
-          status: 'PENDING'
-        });
+      try {
+        const { error: insertError } = await supabase
+          .from('momo_transactions')
+          .insert({
+            user_id,
+            amount,
+            currency: 'RWF',
+            phone: phone_number,
+            reference_id: referenceId,
+            external_id: referenceId,
+            status: 'PENDING'
+          });
 
-      if (insertError) {
-        console.error('Database insert error:', insertError);
-        // Don't fail the API call, just log the error
+        if (insertError) {
+          console.error('Database insert error:', insertError);
+          // Don't fail the API call, just log the error
+        } else {
+          console.log('✅ Transaction stored in database');
+        }
+      } catch (dbError) {
+        console.error('Database error:', dbError);
+        // Don't fail the API call for database errors
       }
 
       return new Response(JSON.stringify({ success: true, referenceId }), {
@@ -148,7 +170,7 @@ serve(async (req) => {
     }
   } catch (err) {
     console.error('Request parsing error:', err)
-    return new Response(JSON.stringify({ error: 'Invalid request' }), {
+    return new Response(JSON.stringify({ error: 'Invalid request', details: err.message }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     })

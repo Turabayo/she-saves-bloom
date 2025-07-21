@@ -1,4 +1,3 @@
-
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js'
 
@@ -93,7 +92,7 @@ serve(async (req) => {
   }
 
   try {
-    console.log('=== WITHDRAW USER REQUEST ===');
+    console.log('=== WITHDRAW USER REQUEST START ===');
     
     const body = await req.json()
     const { user_id, amount, phone_number } = body
@@ -102,7 +101,7 @@ serve(async (req) => {
 
     if (!user_id || !amount || !phone_number) {
       console.error('Missing required fields');
-      return new Response('Missing required fields', { 
+      return new Response(JSON.stringify({ error: 'Missing required fields' }), { 
         status: 400,
         headers: { 'Content-Type': 'application/json', ...corsHeaders }
       })
