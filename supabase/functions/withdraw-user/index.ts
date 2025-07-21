@@ -21,8 +21,6 @@ async function getAccessToken() {
   console.log('Using Disbursement API User:', userId)
   console.log('API Key available:', !!apiKey)
   console.log('Subscription Key available:', !!subscriptionKey)
-  console.log('API Key (first 8 chars):', apiKey?.substring(0, 8))
-  console.log('Subscription Key (first 8 chars):', subscriptionKey?.substring(0, 8))
   
   if (!userId || !apiKey || !subscriptionKey) {
     console.error('Missing disbursement API credentials:', {
@@ -45,7 +43,6 @@ async function getAccessToken() {
   const tokenUrl = 'https://sandbox.momodeveloper.mtn.com/disbursement/token/'
   console.log('Token URL:', tokenUrl)
 
-  // ENSURE CORRECT HEADERS FOR ACCESS TOKEN REQUEST
   const headers = {
     'Authorization': `Basic ${base64Credentials}`,
     'Ocp-Apim-Subscription-Key': subscriptionKey,
@@ -105,7 +102,6 @@ async function sendSMSNotification(phoneNumber: string, message: string) {
     // Format phone number for SMS (ensure it starts with +250 for Rwanda)
     let formattedPhone = phoneNumber
     if (!formattedPhone.startsWith('+')) {
-      // If phone starts with 07/08, replace with +2507/+2508
       if (formattedPhone.startsWith('07') || formattedPhone.startsWith('08')) {
         formattedPhone = '+25' + formattedPhone
       } else if (formattedPhone.startsWith('25')) {
@@ -195,12 +191,8 @@ serve(async (req) => {
     console.log('=== TRANSFER REQUEST ===')
     console.log('Transfer URL:', momoUrl);
 
-    // FORCE EUR FOR SANDBOX ENVIRONMENT
-    const currency = 'EUR'
-    console.log('Environment: sandbox (forced)')
-    console.log('Currency being used:', currency)
-    
     // Convert amount to EUR for sandbox (approximate rate: 1 EUR = 1200 RWF)
+    const currency = 'EUR'
     const transferAmount = Math.max(1, Math.round(amount / 1200))
     console.log(`Converting ${amount} RWF to ${transferAmount} EUR for sandbox`)
     
@@ -218,7 +210,6 @@ serve(async (req) => {
 
     console.log('Transfer payload:', JSON.stringify(payload, null, 2));
 
-    // ENSURE CORRECT HEADERS FOR DISBURSEMENT CALL WITH AUTHORIZATION BEARER
     const transferHeaders = {
       'Authorization': `Bearer ${accessToken}`,
       'X-Reference-Id': referenceId,
@@ -248,7 +239,6 @@ serve(async (req) => {
     const responseText = await momoResponse.text()
     console.log('Transfer response body:', responseText);
     
-    // Process MoMo response and THEN execute SMS logic
     let status = 'FAILED'
     let smsMessage = ''
     let withdrawalProcessed = false
@@ -309,7 +299,7 @@ serve(async (req) => {
       }
     }
 
-    // SMS LOGIC EXECUTES AFTER MOMO RESPONSE .THEN() BLOCK
+    // Send SMS notification
     console.log('📱 Executing SMS notification after MoMo response...')
     const smsSuccess = await sendSMSNotification(phone_number, smsMessage)
     
