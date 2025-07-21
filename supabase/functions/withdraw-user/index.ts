@@ -21,6 +21,8 @@ async function getAccessToken() {
   console.log('Using Disbursement API User:', userId)
   console.log('API Key available:', !!apiKey)
   console.log('Subscription Key available:', !!subscriptionKey)
+  console.log('API Key (first 8 chars):', apiKey?.substring(0, 8))
+  console.log('Subscription Key (first 8 chars):', subscriptionKey?.substring(0, 8))
   
   if (!userId || !apiKey || !subscriptionKey) {
     console.error('Missing disbursement API credentials:', {
@@ -43,13 +45,19 @@ async function getAccessToken() {
   const tokenUrl = 'https://sandbox.momodeveloper.mtn.com/disbursement/token/'
   console.log('Token URL:', tokenUrl)
 
+  // ENSURE CORRECT HEADERS FOR ACCESS TOKEN REQUEST
   const headers = {
     'Authorization': `Basic ${base64Credentials}`,
     'Ocp-Apim-Subscription-Key': subscriptionKey,
-    'X-Reference-Id': userId
+    'X-Reference-Id': userId,
+    'Content-Type': 'application/json'
   }
   
-  console.log('Token request headers prepared')
+  console.log('Token request headers:')
+  console.log('- Authorization: Basic [REDACTED]')
+  console.log('- Ocp-Apim-Subscription-Key:', subscriptionKey.substring(0, 8) + '...')
+  console.log('- X-Reference-Id:', userId)
+  console.log('- Content-Type: application/json')
 
   const res = await fetch(tokenUrl, {
     method: 'POST',
@@ -85,6 +93,8 @@ async function getAccessToken() {
   }
   
   console.log('✅ Access token received successfully')
+  console.log('Token type:', data.token_type)
+  console.log('Token expires in:', data.expires_in, 'seconds')
   return data.access_token
 }
 
@@ -179,26 +189,20 @@ serve(async (req) => {
     // Get access token with enhanced debugging
     console.log('🔑 Getting access token...')
     const accessToken = await getAccessToken()
-    console.log('✅ Access token obtained')
+    console.log('✅ Access token obtained, length:', accessToken.length)
 
     const momoUrl = `https://sandbox.momodeveloper.mtn.com/disbursement/v1_0/transfer`
     console.log('=== TRANSFER REQUEST ===')
     console.log('Transfer URL:', momoUrl);
 
-    // IMPORTANT: Use EUR for sandbox environment, RWF for production
-    const isProduction = Deno.env.get('ENVIRONMENT') === 'production'
-    const currency = isProduction ? 'RWF' : 'EUR'
-    
-    console.log('Environment:', isProduction ? 'production' : 'sandbox')
+    // FORCE EUR FOR SANDBOX ENVIRONMENT
+    const currency = 'EUR'
+    console.log('Environment: sandbox (forced)')
     console.log('Currency being used:', currency)
     
-    // Convert amount to EUR for sandbox if needed
-    let transferAmount = amount
-    if (!isProduction && currency === 'EUR') {
-      // Convert RWF to EUR for sandbox (approximate rate: 1 EUR = 1200 RWF)
-      transferAmount = Math.max(1, Math.round(amount / 1200))
-      console.log(`Converting ${amount} RWF to ${transferAmount} EUR for sandbox`)
-    }
+    // Convert amount to EUR for sandbox (approximate rate: 1 EUR = 1200 RWF)
+    const transferAmount = Math.max(1, Math.round(amount / 1200))
+    console.log(`Converting ${amount} RWF to ${transferAmount} EUR for sandbox`)
     
     const payload = {
       amount: transferAmount.toString(),
@@ -214,16 +218,21 @@ serve(async (req) => {
 
     console.log('Transfer payload:', JSON.stringify(payload, null, 2));
 
+    // ENSURE CORRECT HEADERS FOR DISBURSEMENT CALL WITH AUTHORIZATION BEARER
     const transferHeaders = {
       'Authorization': `Bearer ${accessToken}`,
       'X-Reference-Id': referenceId,
       'X-Target-Environment': 'sandbox',
-      'Ocp-Apim-Subscription-Key': subscriptionKey,
+      'Ocp-Apim-Subscription-Key': subscriptionKey!,
       'Content-Type': 'application/json'
     }
 
-    console.log('Transfer headers prepared')
-    console.log('Authorization header format:', `Bearer ${accessToken.substring(0, 20)}...`)
+    console.log('Transfer headers:')
+    console.log('- Authorization: Bearer [REDACTED]')
+    console.log('- X-Reference-Id:', referenceId)
+    console.log('- X-Target-Environment: sandbox')
+    console.log('- Ocp-Apim-Subscription-Key:', subscriptionKey?.substring(0, 8) + '...')
+    console.log('- Content-Type: application/json')
 
     const momoResponse = await fetch(momoUrl, {
       method: 'POST',
@@ -239,12 +248,14 @@ serve(async (req) => {
     const responseText = await momoResponse.text()
     console.log('Transfer response body:', responseText);
     
-    // Determine status based on MTN response
+    // Process MoMo response and THEN execute SMS logic
     let status = 'FAILED'
     let smsMessage = ''
+    let withdrawalProcessed = false
     
     if (momoResponse.status === 202) {
       status = 'PENDING'
+      withdrawalProcessed = true
       smsMessage = `✅ Your SheSaves withdrawal of ${amount} RWF is being processed. You will receive confirmation shortly. Reference: ${referenceId.substring(0, 8)}`
       console.log('✅ Transfer request accepted by MTN (202)')
     } else {
@@ -254,27 +265,9 @@ serve(async (req) => {
       console.error('Error response body:', responseText);
       
       smsMessage = `❌ Your SheSaves withdrawal of ${amount} RWF failed. Error: ${momoResponse.status}. Please try again or contact support.`
-      
-      // Send failure SMS notification
-      await sendSMSNotification(phone_number, smsMessage)
-      
-      // Return error but with success structure for frontend
-      return new Response(JSON.stringify({ 
-        success: false,
-        error: 'transfer_failed', 
-        details: responseText,
-        status: momoResponse.status,
-        statusText: momoResponse.statusText,
-        currency_used: currency,
-        amount_sent: transferAmount,
-        reference_id: referenceId
-      }), { 
-        status: 200, // Return 200 so frontend can parse the error
-        headers: { 'Content-Type': 'application/json', ...corsHeaders }
-      })
     }
 
-    // Insert withdrawal record
+    // Insert withdrawal record regardless of success/failure for audit trail
     const { data: withdrawal, error: insertError } = await supabase
       .from('withdrawals')
       .insert({
@@ -293,57 +286,68 @@ serve(async (req) => {
 
     if (insertError) {
       console.error('Database insert error:', insertError);
-      return new Response(JSON.stringify({ 
-        success: false,
-        error: 'Failed to record withdrawal' 
-      }), { 
-        status: 200,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders }
-      })
+    } else {
+      console.log('✅ Withdrawal record created:', withdrawal);
     }
-
-    console.log('✅ Withdrawal record created:', withdrawal);
 
     // Insert into transactions table for transaction history
-    const { error: transactionError } = await supabase
-      .from('transactions')
-      .insert({
-        user_id,
-        amount,
-        type: 'withdrawal',
-        method: 'momo',
-        status: status.toLowerCase()
-      })
+    if (!insertError) {
+      const { error: transactionError } = await supabase
+        .from('transactions')
+        .insert({
+          user_id,
+          amount,
+          type: 'withdrawal',
+          method: 'momo',
+          status: status.toLowerCase()
+        })
 
-    if (transactionError) {
-      console.error('Failed to insert transaction:', transactionError)
-    } else {
-      console.log('✅ Transaction history updated')
+      if (transactionError) {
+        console.error('Failed to insert transaction:', transactionError)
+      } else {
+        console.log('✅ Transaction history updated')
+      }
     }
 
-    // Send SMS notification for successful requests
-    if (status === 'PENDING') {
-      console.log('📱 Sending success SMS notification...')
-      const smsSuccess = await sendSMSNotification(phone_number, smsMessage)
-      
-      if (!smsSuccess) {
-        console.warn('⚠️ SMS notification failed but withdrawal was processed')
-      }
+    // SMS LOGIC EXECUTES AFTER MOMO RESPONSE .THEN() BLOCK
+    console.log('📱 Executing SMS notification after MoMo response...')
+    const smsSuccess = await sendSMSNotification(phone_number, smsMessage)
+    
+    if (!smsSuccess) {
+      console.warn('⚠️ SMS notification failed but withdrawal was ' + (withdrawalProcessed ? 'processed' : 'attempted'))
     }
 
     console.log('=== WITHDRAWAL REQUEST COMPLETED ===');
 
-    return new Response(JSON.stringify({ 
-      success: true,
-      message: 'Withdrawal initiated', 
-      status,
-      referenceId,
-      withdrawal,
-      currency_converted: !isProduction ? `${amount} RWF → ${transferAmount} EUR` : 'none'
-    }), { 
-      status: 200,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders }
-    })
+    if (withdrawalProcessed) {
+      return new Response(JSON.stringify({ 
+        success: true,
+        message: 'Withdrawal initiated successfully', 
+        status,
+        referenceId,
+        withdrawal,
+        currency_converted: `${amount} RWF → ${transferAmount} EUR`,
+        sms_sent: smsSuccess
+      }), { 
+        status: 200,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      })
+    } else {
+      return new Response(JSON.stringify({ 
+        success: false,
+        error: 'transfer_failed', 
+        details: responseText,
+        status: momoResponse.status,
+        statusText: momoResponse.statusText,
+        currency_used: currency,
+        amount_sent: transferAmount,
+        reference_id: referenceId,
+        sms_sent: smsSuccess
+      }), { 
+        status: 200, // Return 200 so frontend can parse the error
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      })
+    }
 
   } catch (err) {
     console.error('=== WITHDRAW ERROR ===')
