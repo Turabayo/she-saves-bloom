@@ -135,16 +135,55 @@
   background: hsl(var(--muted-foreground) / 0.5);
 }
 
-/* Hide Lovable badge */
+/* Enhanced Lovable badge hiding rules */
 [data-lovable-badge],
+[data-lovable],
+[data-testid*="lovable"],
 iframe[src*="lovable"],
 div[class*="lovable"],
 a[href*="lovable.dev"]:has(img),
+a[href*="lovable.dev"],
 .lovable-badge,
+.lovable-watermark,
 *:has(> a[href*="lovable.dev"]),
-div:has(> a[href*="Edit in Lovable"]) {
+div:has(> a[href*="Edit in Lovable"]),
+*[class*="edit-in-lovable"],
+*[id*="lovable"],
+button:has(span:contains("Edit")),
+*:contains("Edit in Lovable"),
+*:contains("Made with Lovable"),
+*:contains("Powered by Lovable") {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+}
+
+/* Target potential badge containers */
+div[style*="position: fixed"],
+div[style*="position: absolute"] {
+  &:has(a[href*="lovable"]) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+}
+
+/* Additional selectors for common badge patterns */
+*[class*="watermark"],
+*[class*="badge"][class*="edit"],
+*[data-*="edit"],
+button[class*="floating"]:has(*:contains("Edit")) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
