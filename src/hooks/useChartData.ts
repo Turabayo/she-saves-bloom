@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,6 +15,7 @@ export const useChartData = () => {
         .from("transactions")
         .select("*")
         .eq("user_id", user.id)
+        .eq("status", "success") // Only successful transactions
         .order("created_at", { ascending: true });
       
       if (error) throw error;
@@ -31,6 +33,7 @@ export const useChartData = () => {
         .from("topups")
         .select("*")
         .eq("user_id", user.id)
+        .eq("status", "SUCCESSFUL") // Only successful topups
         .order("created_at", { ascending: true });
       
       if (error) throw error;
@@ -48,6 +51,7 @@ export const useChartData = () => {
         .from("withdrawals")
         .select("*")
         .eq("user_id", user.id)
+        .eq("status", "completed") // Only completed withdrawals
         .order("created_at", { ascending: true });
       
       if (error) throw error;
@@ -65,6 +69,7 @@ export const useChartData = () => {
         .from("savings")
         .select("*")
         .eq("user_id", user.id)
+        .eq("status", "success") // Only successful savings
         .order("created_at", { ascending: true });
       
       if (error) throw error;
@@ -73,7 +78,7 @@ export const useChartData = () => {
     enabled: !!user?.id,
   });
 
-  // Process data for charts
+  // Process data for charts - only count successful transactions
   const dailyVolumeData = transactionData.reduce((acc: any[], transaction) => {
     const date = new Date(transaction.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
     const existingEntry = acc.find(entry => entry.date === date);
@@ -105,6 +110,7 @@ export const useChartData = () => {
     return acc;
   }, []);
 
+  // Only count successful transactions in the pie chart
   const transactionTypeData = [
     { 
       name: "Top-ups", 
@@ -113,7 +119,7 @@ export const useChartData = () => {
     },
     { 
       name: "Withdrawals", 
-      value: withdrawalData.length, 
+      value: withdrawalData.length, // Now only successful withdrawals
       color: "hsl(var(--chart-2))" 
     },
     { 
@@ -128,12 +134,12 @@ export const useChartData = () => {
     }
   ];
 
-  // Agent performance data (using user data as proxy)
+  // Agent performance data (using user data as proxy) - only successful transactions
   const agentPerformanceData = [
     { 
       name: "Current User", 
-      withdrawals: withdrawalData.length, 
-      deposits: topupData.length 
+      withdrawals: withdrawalData.length, // Only successful withdrawals
+      deposits: topupData.length // Only successful deposits
     },
     { 
       name: "Other Users", 
