@@ -19,10 +19,16 @@ async function getAccessToken() {
   console.log('=== DISBURSEMENT API CONFIGURATION ===')
   console.log('Using Disbursement API User:', userId)
   console.log('API Key available:', !!apiKey)
+  console.log('API Key length:', apiKey?.length)
   console.log('Subscription Key available:', !!subscriptionKey)
+  console.log('Subscription Key length:', subscriptionKey?.length)
   
   if (!userId || !apiKey || !subscriptionKey) {
-    console.error('Missing disbursement API credentials')
+    console.error('Missing disbursement API credentials:', {
+      hasUserId: !!userId,
+      hasApiKey: !!apiKey,
+      hasSubscriptionKey: !!subscriptionKey
+    })
     throw new Error('Disbursement API credentials not configured')
   }
   
