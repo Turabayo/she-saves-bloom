@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -56,7 +55,6 @@ export const useWithdrawals = () => {
   };
 
   const createWithdrawal = async (withdrawalData: {
-    goal_id?: string | null;
     amount: number;
     phone_number: string;
     note?: string | null;
@@ -71,7 +69,6 @@ export const useWithdrawals = () => {
       user_id: user.id,
       amount: withdrawalData.amount,
       phone_number: withdrawalData.phone_number,
-      goal_id: withdrawalData.goal_id || null,
       note: withdrawalData.note || null
     };
 
