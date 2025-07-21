@@ -1,10 +1,16 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL')!,
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+)
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -13,7 +19,20 @@ serve(async (req) => {
   }
 
   try {
+    console.log('=== REQUEST TO PAY FUNCTION ===');
+    
     const { user_id, amount, phone_number } = await req.json()
+    
+    console.log('Request data:', { user_id, amount, phone_number });
+    
+    // Basic validation
+    if (!user_id || !amount || !phone_number) {
+      console.error('Missing required fields');
+      return new Response(JSON.stringify({ error: 'Missing required fields' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
 
     const COLL_API_USER = Deno.env.get('COLL_API_USER')
     const COLL_API_KEY = Deno.env.get('COLL_API_KEY')
@@ -94,6 +113,26 @@ serve(async (req) => {
           status: momoRes.status,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         })
+      }
+
+      console.log('✅ MoMo payment request successful, reference:', referenceId);
+      
+      // Store the MoMo transaction in our database
+      const { error: insertError } = await supabase
+        .from('momo_transactions')
+        .insert({
+          user_id,
+          amount,
+          currency: 'RWF',
+          phone: phone_number,
+          reference_id: referenceId,
+          external_id: referenceId,
+          status: 'PENDING'
+        });
+
+      if (insertError) {
+        console.error('Database insert error:', insertError);
+        // Don't fail the API call, just log the error
       }
 
       return new Response(JSON.stringify({ success: true, referenceId }), {

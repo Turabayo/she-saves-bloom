@@ -28,13 +28,13 @@ verify_jwt = true
 verify_jwt = false
 
 [functions.request-to-pay]
-verify_jwt = true
+verify_jwt = false
 
 [functions.check-topup-status]
-verify_jwt = true
+verify_jwt = false
 
 [functions.withdraw-user]
-verify_jwt = true
+verify_jwt = false
 
 [functions.check-transfer-status]
-verify_jwt = true
+verify_jwt = false
