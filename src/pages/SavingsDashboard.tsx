@@ -115,7 +115,7 @@ const SavingsDashboard = () => {
 
           <Card className="shadow-soft hover-lift">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Goals</CardTitle>
+              <CardTitle className="text-sm font-medium text-foreground">Active Goals</CardTitle>
               <Target className="h-4 w-4 text-secondary" />
             </CardHeader>
             <CardContent>
@@ -145,11 +145,11 @@ const SavingsDashboard = () => {
 
           <Card className="shadow-soft hover-lift">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Goal Value</CardTitle>
+              <CardTitle className="text-sm font-medium text-foreground">Goal Value</CardTitle>
               <ChartLine className="h-4 w-4 text-accent" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-accent">
+              <div className="text-2xl font-bold text-foreground">
                 {formatCurrency(totalGoalValue)}
               </div>
               <p className="text-xs text-muted-foreground">
@@ -211,7 +211,7 @@ const SavingsDashboard = () => {
             {activeGoals.length > 0 && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold">Active Goals</h2>
+                  <h2 className="text-xl font-semibold text-foreground">Active Goals</h2>
                   <Badge variant="secondary">{activeGoals.length}</Badge>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
