@@ -10,10 +10,50 @@ interface MomoSessionRequest {
   goalId?: string;
 }
 
+interface FormData {
+  amount: string;
+  phone: string;
+}
+
+interface SessionData {
+  environment: string;
+  subscriptionKey: string;
+  accessToken: string;
+  apiUserId: string;
+  tokenExpiry: number;
+}
+
 export const useMomoSession = () => {
   const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState<FormData>({
+    amount: localStorage.getItem("topupAmount") || "10",
+    phone: localStorage.getItem("topupPhone") || "0780000000"
+  });
+  const [sessionData, setSessionData] = useState<SessionData>({
+    environment: localStorage.getItem("environment") || "",
+    subscriptionKey: localStorage.getItem("subscriptionKey") || "",
+    accessToken: localStorage.getItem("accessToken") || "",
+    apiUserId: localStorage.getItem("apiUserId") || "",
+    tokenExpiry: parseInt(localStorage.getItem("tokenExpiry") || "0")
+  });
+
   const { user } = useAuth();
   const { toast } = useToast();
+
+  const saveFormData = (data: FormData) => {
+    setFormData(data);
+    localStorage.setItem("topupAmount", data.amount);
+    localStorage.setItem("topupPhone", data.phone);
+  };
+
+  const saveSessionData = (data: SessionData) => {
+    setSessionData(data);
+    localStorage.setItem("environment", data.environment);
+    localStorage.setItem("subscriptionKey", data.subscriptionKey);
+    localStorage.setItem("accessToken", data.accessToken);
+    localStorage.setItem("apiUserId", data.apiUserId);
+    localStorage.setItem("tokenExpiry", data.tokenExpiry.toString());
+  };
 
   const initiatePayment = async ({ amount, phoneNumber, goalId }: MomoSessionRequest) => {
     if (!user) {
@@ -91,6 +131,10 @@ export const useMomoSession = () => {
 
   return {
     initiatePayment,
-    loading
+    loading,
+    formData,
+    saveFormData,
+    sessionData,
+    saveSessionData
   };
 };
