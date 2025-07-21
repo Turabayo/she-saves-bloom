@@ -63,11 +63,24 @@ const handler = async (req: Request): Promise<Response> => {
       }),
     });
 
-    const responseData = await response.json();
-    console.log('Africa\'s Talking Response:', responseData);
+    console.log('Response status:', response.status);
+    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+    
+    const responseText = await response.text();
+    console.log('Raw response:', responseText);
+    
+    let responseData;
+    try {
+      responseData = JSON.parse(responseText);
+      console.log('Parsed Africa\'s Talking Response:', responseData);
+    } catch (parseError) {
+      console.error('Failed to parse response as JSON:', parseError);
+      console.error('Response text was:', responseText);
+      throw new Error(`Invalid JSON response from SMS service: ${responseText.substring(0, 100)}...`);
+    }
 
     if (!response.ok) {
-      throw new Error(`Africa's Talking API error: ${responseData.SMSMessageData?.Message || 'Unknown error'}`);
+      throw new Error(`Africa's Talking API error: ${responseData.SMSMessageData?.Message || responseText}`);
     }
 
     return new Response(JSON.stringify({

@@ -26,8 +26,40 @@ async function getAccessToken() {
     throw new Error('Disbursement API credentials not configured')
   }
   
+  // First, create API user if needed - this might be missing
+  try {
+    const createUserResponse = await fetch('https://sandbox.momodeveloper.mtn.com/v1_0/apiuser', {
+      method: 'POST',
+      headers: {
+        'X-Reference-Id': userId,
+        'Ocp-Apim-Subscription-Key': subscriptionKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        'providerCallbackHost': 'string'
+      })
+    })
+    console.log('Create user response status:', createUserResponse.status)
+    
+    // Generate API key if needed
+    const generateKeyResponse = await fetch(`https://sandbox.momodeveloper.mtn.com/v1_0/apiuser/${userId}/apikey`, {
+      method: 'POST',
+      headers: {
+        'Ocp-Apim-Subscription-Key': subscriptionKey
+      }
+    })
+    console.log('Generate key response status:', generateKeyResponse.status)
+    
+    if (generateKeyResponse.ok) {
+      const keyData = await generateKeyResponse.json()
+      console.log('Generated API key:', keyData.apiKey?.substring(0, 8) + '...')
+    }
+  } catch (setupError) {
+    console.log('Setup error (might be expected if user already exists):', setupError.message)
+  }
+  
   // Use the specific Disbursement Token UUID as per requirements
-  const disbursementTokenUUID = '701ea609-aaed-4188-bd90-b3572629ed5b'
+  const disbursementTokenUUID = userId // Use the user ID as the reference ID
 
   console.log('=== ACCESS TOKEN REQUEST ===')
   console.log('User ID:', userId)
