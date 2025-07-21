@@ -36,6 +36,7 @@ const AppContent = () => {
           <Route path="/add-goal" element={<AddInvestment />} />
           <Route path="/goals" element={<SavingsDashboard />} />
           <Route path="/insights" element={<Insights />} />
+          <Route path="/analytics" element={<Insights />} />
           <Route path="/community" element={<Community />} />
           <Route path="/assistant" element={<Assistant />} />
           <Route path="/settings" element={<Settings />} />
