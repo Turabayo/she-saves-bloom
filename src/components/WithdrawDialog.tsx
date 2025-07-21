@@ -51,13 +51,19 @@ export const WithdrawDialog = ({ children }: WithdrawDialogProps) => {
     try {
       console.log('=== SUBMITTING WITHDRAWAL ===')
       console.log('Amount:', amount, 'Phone:', phoneNumber)
+      console.log('Selected Goal ID:', selectedGoalId)
       
-      const result = await createWithdrawal({
+      // Construct payload with proper null handling - no undefined values
+      const withdrawalPayload = {
         amount: parseFloat(amount),
         phone_number: phoneNumber,
-        goal_id: selectedGoalId || undefined,
-        note: note || undefined
-      });
+        goal_id: selectedGoalId || null,
+        note: note || null
+      };
+
+      console.log('Withdrawal payload:', withdrawalPayload)
+
+      const result = await createWithdrawal(withdrawalPayload);
 
       console.log('Withdrawal result:', result)
 

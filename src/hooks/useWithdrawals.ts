@@ -56,23 +56,30 @@ export const useWithdrawals = () => {
   };
 
   const createWithdrawal = async (withdrawalData: {
-    goal_id?: string;
+    goal_id?: string | null;
     amount: number;
     phone_number: string;
-    note?: string;
+    note?: string | null;
   }) => {
     if (!user) throw new Error('User not authenticated');
 
     console.log('=== CALLING WITHDRAW-USER FUNCTION ===');
     console.log('Withdrawal data:', withdrawalData);
 
+    // Ensure no undefined values are passed to the edge function
+    const cleanedPayload = {
+      user_id: user.id,
+      amount: withdrawalData.amount,
+      phone_number: withdrawalData.phone_number,
+      goal_id: withdrawalData.goal_id || null,
+      note: withdrawalData.note || null
+    };
+
+    console.log('Cleaned payload for edge function:', cleanedPayload);
+
     // Call the withdraw-user edge function
     const { data, error } = await supabase.functions.invoke('withdraw-user', {
-      body: {
-        user_id: user.id,
-        amount: withdrawalData.amount,
-        phone_number: withdrawalData.phone_number
-      }
+      body: cleanedPayload
     });
 
     console.log('Edge function response:', { data, error });
