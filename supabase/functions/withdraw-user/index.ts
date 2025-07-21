@@ -134,8 +134,13 @@ async function getAccessToken() {
 }
 
 serve(async (req) => {
+  console.log('=== WITHDRAW FUNCTION CALLED ===');
+  console.log('Request method:', req.method);
+  console.log('Request URL:', req.url);
+  
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
+    console.log('Handling CORS preflight');
     return new Response(null, { headers: corsHeaders });
   }
 
