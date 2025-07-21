@@ -94,6 +94,32 @@ serve(async (req) => {
         // Don't fail the webhook, just log the error
       } else {
         console.log('✅ Transaction record created successfully');
+        
+        // Send SMS notification for successful top-up
+        try {
+          const smsMessage = `✅ Your top-up of ${momoTransaction.amount} ${momoTransaction.currency} was successful. Keep going toward your goal!`;
+          
+          const smsResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-sms`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+            },
+            body: JSON.stringify({
+              phoneNumber: momoTransaction.phone,
+              message: smsMessage,
+            }),
+          });
+
+          if (smsResponse.ok) {
+            console.log('✅ SMS notification sent successfully');
+          } else {
+            console.error('Failed to send SMS notification:', await smsResponse.text());
+          }
+        } catch (smsError) {
+          console.error('Error sending SMS notification:', smsError);
+          // Don't fail the webhook for SMS errors
+        }
       }
     }
 

@@ -198,6 +198,35 @@ serve(async (req) => {
     }
 
     console.log('Withdrawal record created:', withdrawal);
+
+    // Send SMS notification for withdrawal (both successful and pending)
+    try {
+      const smsMessage = status === 'PENDING' 
+        ? `⚠️ Withdrawal of ${amount} RWF is being processed. You will receive confirmation shortly.`
+        : `❌ Withdrawal of ${amount} RWF failed. Please try again or contact support.`;
+      
+      const smsResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-sms`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+        },
+        body: JSON.stringify({
+          phoneNumber: phone_number,
+          message: smsMessage,
+        }),
+      });
+
+      if (smsResponse.ok) {
+        console.log('✅ SMS notification sent successfully');
+      } else {
+        console.error('Failed to send SMS notification:', await smsResponse.text());
+      }
+    } catch (smsError) {
+      console.error('Error sending SMS notification:', smsError);
+      // Don't fail the withdrawal for SMS errors
+    }
+
     console.log('=== REQUEST COMPLETED ===');
 
     return new Response(JSON.stringify({ 
