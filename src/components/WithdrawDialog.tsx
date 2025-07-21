@@ -67,19 +67,20 @@ export const WithdrawDialog = ({ children }: WithdrawDialogProps) => {
     try {
       console.log('=== SUBMITTING WITHDRAWAL ===')
       console.log('Amount:', amount, 'Phone:', phoneNumber)
-      console.log('Selected Goal ID:', selectedGoalId)
+      console.log('Selected Goal ID (before cleaning):', selectedGoalId)
+      console.log('Note (before cleaning):', note)
       
-      // Construct payload with proper null handling - no undefined values
-      const withdrawalPayload = {
+      // Clean the payload - ensure no undefined values are passed
+      const cleanedPayload = {
         amount: parseFloat(amount),
         phone_number: phoneNumber,
-        goal_id: selectedGoalId || null,
-        note: note || null
+        goal_id: selectedGoalId && selectedGoalId !== "no-goals" ? selectedGoalId : null,
+        note: note?.trim() || null
       };
 
-      console.log('Withdrawal payload:', withdrawalPayload)
+      console.log('Cleaned withdrawal payload:', cleanedPayload)
 
-      const result = await createWithdrawal(withdrawalPayload);
+      const result = await createWithdrawal(cleanedPayload);
 
       console.log('Withdrawal result:', result)
 
@@ -189,9 +190,20 @@ export const WithdrawDialog = ({ children }: WithdrawDialogProps) => {
                 </SelectTrigger>
                 <SelectContent>
                   {availableGoals.length === 0 ? (
-                    <SelectItem value="no-goals" disabled>
-                      No savings goals with available funds
-                    </SelectItem>
+                    <>
+                      <SelectItem value="no-goals" disabled>
+                        No savings goals with available funds
+                      </SelectItem>
+                      <SelectItem value="sample-1" disabled>
+                        Emergency Fund - RWF 0 available
+                      </SelectItem>
+                      <SelectItem value="sample-2" disabled>
+                        School Fees - RWF 0 available
+                      </SelectItem>
+                      <SelectItem value="sample-3" disabled>
+                        Business Investment - RWF 0 available
+                      </SelectItem>
+                    </>
                   ) : (
                     availableGoals.map((goal) => (
                       <SelectItem key={goal.id} value={goal.id}>
