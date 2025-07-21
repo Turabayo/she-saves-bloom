@@ -119,7 +119,7 @@ const SavingsDashboard = () => {
               <Target className="h-4 w-4 text-secondary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-secondary">
+              <div className="text-2xl font-bold text-foreground">
                 {activeGoals.length}
               </div>
               <p className="text-xs text-muted-foreground">
