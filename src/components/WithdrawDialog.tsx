@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -48,27 +49,58 @@ export const WithdrawDialog = ({ children }: WithdrawDialogProps) => {
     setIsLoading(true);
     
     try {
-      await createWithdrawal({
+      console.log('=== SUBMITTING WITHDRAWAL ===')
+      console.log('Amount:', amount, 'Phone:', phoneNumber)
+      
+      const result = await createWithdrawal({
         amount: parseFloat(amount),
         phone_number: phoneNumber,
         goal_id: selectedGoalId || undefined,
         note: note || undefined
       });
 
-      toast({
-        description: "Withdrawal request submitted successfully!"
-      });
+      console.log('Withdrawal result:', result)
 
-      setIsOpen(false);
-      setAmount("");
-      setSelectedGoalId("");
-      setPhoneNumber("");
-      setNote("");
-    } catch (error) {
+      // Check if the result indicates success
+      if (result && result.success) {
+        toast({
+          description: `Withdrawal request submitted successfully! Reference: ${result.referenceId || 'N/A'}`
+        });
+
+        setIsOpen(false);
+        setAmount("");
+        setSelectedGoalId("");
+        setPhoneNumber("");
+        setNote("");
+      } else {
+        // Handle failure case
+        const errorMessage = result?.error || result?.details || "Failed to submit withdrawal request";
+        console.error('Withdrawal failed:', errorMessage);
+        
+        toast({
+          variant: "destructive",
+          description: `Withdrawal failed: ${errorMessage}`
+        });
+      }
+    } catch (error: any) {
       console.error('Error creating withdrawal:', error);
+      
+      // Parse the error message more carefully
+      let errorMessage = "Failed to submit withdrawal request";
+      
+      if (error.message) {
+        if (error.message.includes('transfer_failed')) {
+          errorMessage = "MTN MoMo transfer failed. Please check your phone number and try again.";
+        } else if (error.message.includes('credentials')) {
+          errorMessage = "Payment service configuration issue. Please contact support.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
       toast({
         variant: "destructive",
-        description: "Failed to submit withdrawal request"
+        description: errorMessage
       });
     } finally {
       setIsLoading(false);
@@ -109,6 +141,9 @@ export const WithdrawDialog = ({ children }: WithdrawDialogProps) => {
               step="1"
               required
             />
+            <p className="text-xs text-muted-foreground">
+              Note: Amount will be converted to EUR for sandbox testing
+            </p>
           </div>
 
           <div className="space-y-2">

@@ -45,7 +45,7 @@ async function getAccessToken() {
 
   const headers = {
     'Authorization': `Basic ${base64Credentials}`,
-    'Ocp-Apim-Subscription-Key': subscriptionKey!,
+    'Ocp-Apim-Subscription-Key': subscriptionKey,
     'X-Reference-Id': userId
   }
   
@@ -162,7 +162,10 @@ serve(async (req) => {
 
     if (!user_id || !amount || !phone_number) {
       console.error('Missing required fields');
-      return new Response(JSON.stringify({ error: 'Missing required fields' }), { 
+      return new Response(JSON.stringify({ 
+        error: 'Missing required fields',
+        success: false 
+      }), { 
         status: 400,
         headers: { 'Content-Type': 'application/json', ...corsHeaders }
       })
@@ -193,7 +196,7 @@ serve(async (req) => {
     let transferAmount = amount
     if (!isProduction && currency === 'EUR') {
       // Convert RWF to EUR for sandbox (approximate rate: 1 EUR = 1200 RWF)
-      transferAmount = Math.round(amount / 1200)
+      transferAmount = Math.max(1, Math.round(amount / 1200))
       console.log(`Converting ${amount} RWF to ${transferAmount} EUR for sandbox`)
     }
     
@@ -220,6 +223,7 @@ serve(async (req) => {
     }
 
     console.log('Transfer headers prepared')
+    console.log('Authorization header format:', `Bearer ${accessToken.substring(0, 20)}...`)
 
     const momoResponse = await fetch(momoUrl, {
       method: 'POST',
@@ -235,43 +239,40 @@ serve(async (req) => {
     const responseText = await momoResponse.text()
     console.log('Transfer response body:', responseText);
     
-    if (!momoResponse.ok) {
+    // Determine status based on MTN response
+    let status = 'FAILED'
+    let smsMessage = ''
+    
+    if (momoResponse.status === 202) {
+      status = 'PENDING'
+      smsMessage = `✅ Your SheSaves withdrawal of ${amount} RWF is being processed. You will receive confirmation shortly. Reference: ${referenceId.substring(0, 8)}`
+      console.log('✅ Transfer request accepted by MTN (202)')
+    } else {
       console.error('=== TRANSFER FAILED ===');
       console.error('HTTP Status:', momoResponse.status);
       console.error('Status Text:', momoResponse.statusText);
       console.error('Error response body:', responseText);
       
-      // Try to parse error as JSON for better error details
-      let errorDetails = responseText
-      try {
-        const errorJson = JSON.parse(responseText);
-        errorDetails = errorJson
-        console.error('Parsed error details:', errorJson);
-      } catch (e) {
-        console.error('Error response is not valid JSON');
-      }
+      smsMessage = `❌ Your SheSaves withdrawal of ${amount} RWF failed. Error: ${momoResponse.status}. Please try again or contact support.`
       
       // Send failure SMS notification
-      const failureMessage = `❌ Your SheSaves withdrawal of ${amount} RWF failed. Error: ${momoResponse.status}. Please try again or contact support.`
-      await sendSMSNotification(phone_number, failureMessage)
+      await sendSMSNotification(phone_number, smsMessage)
       
-      // Return detailed error information
+      // Return error but with success structure for frontend
       return new Response(JSON.stringify({ 
+        success: false,
         error: 'transfer_failed', 
-        details: errorDetails,
+        details: responseText,
         status: momoResponse.status,
         statusText: momoResponse.statusText,
         currency_used: currency,
         amount_sent: transferAmount,
         reference_id: referenceId
       }), { 
-        status: momoResponse.status,
+        status: 200, // Return 200 so frontend can parse the error
         headers: { 'Content-Type': 'application/json', ...corsHeaders }
       })
     }
-    
-    console.log('✅ Transfer request accepted by MTN')
-    const status = momoResponse.status === 202 ? 'PENDING' : 'FAILED'
 
     // Insert withdrawal record
     const { data: withdrawal, error: insertError } = await supabase
@@ -292,8 +293,11 @@ serve(async (req) => {
 
     if (insertError) {
       console.error('Database insert error:', insertError);
-      return new Response(JSON.stringify({ error: 'Failed to record withdrawal' }), { 
-        status: 500,
+      return new Response(JSON.stringify({ 
+        success: false,
+        error: 'Failed to record withdrawal' 
+      }), { 
+        status: 200,
         headers: { 'Content-Type': 'application/json', ...corsHeaders }
       })
     }
@@ -317,27 +321,25 @@ serve(async (req) => {
       console.log('✅ Transaction history updated')
     }
 
-    // Send SMS notification
-    const smsMessage = status === 'PENDING' 
-      ? `⚠️ Your SheSaves withdrawal of ${amount} RWF is being processed. You will receive confirmation shortly. Reference: ${referenceId.substring(0, 8)}`
-      : `❌ Your SheSaves withdrawal of ${amount} RWF failed. Please try again or contact support.`
-    
-    console.log('📱 Sending SMS notification...')
-    const smsSuccess = await sendSMSNotification(phone_number, smsMessage)
-    
-    if (!smsSuccess) {
-      console.warn('⚠️ SMS notification failed but withdrawal was processed')
+    // Send SMS notification for successful requests
+    if (status === 'PENDING') {
+      console.log('📱 Sending success SMS notification...')
+      const smsSuccess = await sendSMSNotification(phone_number, smsMessage)
+      
+      if (!smsSuccess) {
+        console.warn('⚠️ SMS notification failed but withdrawal was processed')
+      }
     }
 
     console.log('=== WITHDRAWAL REQUEST COMPLETED ===');
 
     return new Response(JSON.stringify({ 
+      success: true,
       message: 'Withdrawal initiated', 
       status,
       referenceId,
       withdrawal,
-      currency_converted: !isProduction ? `${amount} RWF → ${transferAmount} EUR` : 'none',
-      sms_sent: smsSuccess
+      currency_converted: !isProduction ? `${amount} RWF → ${transferAmount} EUR` : 'none'
     }), { 
       status: 200,
       headers: { 'Content-Type': 'application/json', ...corsHeaders }
@@ -349,23 +351,13 @@ serve(async (req) => {
     console.error('Error message:', err.message)
     console.error('Error stack:', err.stack)
     
-    // Send failure SMS if we have phone number
-    try {
-      const body = await req.clone().json()
-      if (body.phone_number && body.amount) {
-        const errorMessage = `❌ Your SheSaves withdrawal of ${body.amount} RWF failed due to a system error. Please try again later or contact support.`
-        await sendSMSNotification(body.phone_number, errorMessage)
-      }
-    } catch (smsErr) {
-      console.error('Failed to send error SMS:', smsErr)
-    }
-    
     return new Response(JSON.stringify({ 
+      success: false,
       error: 'Internal Error', 
       details: err.message,
       type: err.constructor.name
     }), { 
-      status: 500,
+      status: 200, // Return 200 so frontend can parse the error
       headers: { 'Content-Type': 'application/json', ...corsHeaders }
     })
   }

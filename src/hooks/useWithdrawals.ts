@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -62,6 +63,9 @@ export const useWithdrawals = () => {
   }) => {
     if (!user) throw new Error('User not authenticated');
 
+    console.log('=== CALLING WITHDRAW-USER FUNCTION ===');
+    console.log('Withdrawal data:', withdrawalData);
+
     // Call the withdraw-user edge function
     const { data, error } = await supabase.functions.invoke('withdraw-user', {
       body: {
@@ -71,8 +75,20 @@ export const useWithdrawals = () => {
       }
     });
 
-    if (error) throw error;
+    console.log('Edge function response:', { data, error });
 
+    if (error) {
+      console.error('Supabase function error:', error);
+      throw new Error(error.message || 'Failed to process withdrawal');
+    }
+
+    // Check if the response indicates success or failure
+    if (data && !data.success) {
+      console.error('Withdrawal failed:', data);
+      throw new Error(data.error || 'Withdrawal request failed');
+    }
+
+    console.log('✅ Withdrawal processed successfully:', data);
     await fetchWithdrawals(); // Refresh the list
     return data;
   };
