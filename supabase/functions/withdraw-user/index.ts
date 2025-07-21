@@ -120,9 +120,13 @@ serve(async (req) => {
     console.log('=== TRANSFER REQUEST ===')
     console.log('Transfer URL:', momoUrl);
 
+    // Use EUR for sandbox, RWF for production
+    const isProduction = Deno.env.get('ENVIRONMENT') === 'production'
+    const currency = isProduction ? 'RWF' : 'EUR'
+    
     const payload = {
       amount: amount.toString(),
-      currency: 'RWF',
+      currency: currency,
       externalId: user_id,
       payee: {
         partyIdType: 'MSISDN',
@@ -161,18 +165,35 @@ serve(async (req) => {
     console.log('Transfer response statusText:', momoResponse.statusText);
     console.log('Transfer response headers:', Object.fromEntries(momoResponse.headers.entries()));
     
+    // Get response body for logging
+    const responseText = await momoResponse.text()
+    console.log('=== Transfer Response Body ===', responseText);
+    
     if (!momoResponse.ok) {
-      const errorText = await momoResponse.text();
       console.error('=== TRANSFER FAILED ===');
-      console.error('Error response body:', errorText);
+      console.error('Error response body:', responseText);
       
-      // Try to parse error as JSON
+      // Try to parse error as JSON for better error details
+      let errorDetails = responseText
       try {
-        const errorJson = JSON.parse(errorText);
+        const errorJson = JSON.parse(responseText);
+        errorDetails = errorJson
         console.error('Parsed error:', errorJson);
       } catch (e) {
         console.error('Error response is not JSON');
       }
+      
+      // Return error with detailed information
+      return new Response(JSON.stringify({ 
+        error: 'transfer_failed', 
+        details: errorDetails,
+        status: momoResponse.status,
+        currency_used: currency,
+        reference_id: referenceId
+      }), { 
+        status: momoResponse.status,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      })
     }
     
     const status = momoResponse.status === 202 ? 'PENDING' : 'FAILED'
@@ -183,7 +204,7 @@ serve(async (req) => {
       .insert({
         user_id,
         amount,
-        currency: 'RWF',
+        currency: currency,
         phone_number,
         external_id: user_id,
         momo_reference_id: referenceId,

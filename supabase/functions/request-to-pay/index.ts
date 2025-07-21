@@ -92,9 +92,13 @@ serve(async (req) => {
     const referenceId = crypto.randomUUID()
     console.log('Generated reference ID:', referenceId);
 
+    // Use EUR for sandbox, RWF for production
+    const isProduction = Deno.env.get('ENVIRONMENT') === 'production'
+    const currency = isProduction ? 'RWF' : 'EUR'
+    
     const payload = {
       amount: amount.toString(),
-      currency: 'RWF',
+      currency: currency,
       externalId: referenceId,
       payer: {
         partyIdType: 'MSISDN',
@@ -119,12 +123,32 @@ serve(async (req) => {
         body: JSON.stringify(payload),
       })
 
-      console.log('MoMo response status:', momoRes.status);
+      console.log('=== MoMo Response Status ===', momoRes.status);
+      console.log('=== MoMo Response Headers ===', Object.fromEntries(momoRes.headers.entries()));
+      
+      // Get response body for logging
+      const responseText = await momoRes.text()
+      console.log('=== MoMo Response Body ===', responseText);
 
       if (!momoRes.ok) {
-        const errorBody = await momoRes.text()
-        console.error('MTN MoMo error response:', errorBody)
-        return new Response(JSON.stringify({ error: 'momo_failed', details: errorBody }), {
+        console.error('MTN MoMo error response:', responseText)
+        
+        // Try to parse as JSON for better error details
+        let errorDetails = responseText
+        try {
+          const errorJson = JSON.parse(responseText)
+          errorDetails = errorJson
+          console.error('Parsed error:', errorJson)
+        } catch (e) {
+          console.error('Error response is not JSON')
+        }
+        
+        return new Response(JSON.stringify({ 
+          error: 'momo_failed', 
+          details: errorDetails,
+          status: momoRes.status,
+          currency_used: currency
+        }), {
           status: momoRes.status,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         })
@@ -139,7 +163,7 @@ serve(async (req) => {
           .insert({
             user_id,
             amount,
-            currency: 'RWF',
+            currency: currency,
             phone: phone_number,
             reference_id: referenceId,
             external_id: referenceId,
