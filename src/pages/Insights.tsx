@@ -2,13 +2,21 @@
 import Navigation from "@/components/Navigation";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { useTransactionInsights } from "@/hooks/useTransactionInsights";
+import { useChartData } from "@/hooks/useChartData";
 import { formatCurrency } from "@/utils/dateFormatter";
-import { TrendingUp, DollarSign, Target, Activity } from "lucide-react";
+import { TrendingUp, DollarSign, Target, Activity, Users, CreditCard } from "lucide-react";
 
 const Insights = () => {
   const { insights, loading } = useTransactionInsights();
+  const { 
+    dailyVolumeData, 
+    transactionAmountData, 
+    transactionTypeData, 
+    agentPerformanceData, 
+    isLoading: chartLoading 
+  } = useChartData();
 
-  if (loading) {
+  if (loading || chartLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Navigation />
@@ -129,7 +137,146 @@ const Insights = () => {
 
           {/* Charts */}
           <div className="space-y-6">
-            {/* Savings Trend Chart */}
+            {/* Daily Transaction Volume */}
+            <div className="bg-card rounded-xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold text-card-foreground mb-4">Daily Transaction Volume</h3>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={dailyVolumeData || []}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <XAxis 
+                      dataKey="date" 
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                    />
+                    <YAxis 
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'hsl(var(--card))', 
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Legend />
+                    <Line type="monotone" dataKey="topup" stroke="hsl(var(--chart-1))" strokeWidth={2} name="Top-ups" />
+                    <Line type="monotone" dataKey="withdrawal" stroke="hsl(var(--chart-2))" strokeWidth={2} name="Withdrawals" />
+                    <Line type="monotone" dataKey="transfer" stroke="hsl(var(--chart-3))" strokeWidth={2} name="Transfers" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Daily Transaction Amount */}
+            <div className="bg-card rounded-xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold text-card-foreground mb-4">Daily Transaction Amount</h3>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={transactionAmountData || []}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <XAxis 
+                      dataKey="month" 
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                    />
+                    <YAxis 
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                      tickFormatter={(value) => `${(value/1000).toFixed(0)}K`}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'hsl(var(--card))', 
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px'
+                      }}
+                      formatter={(value) => [`${Number(value).toLocaleString()} RWF`, 'Amount']}
+                    />
+                    <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Transaction Types */}
+              <div className="bg-card rounded-xl p-6 shadow-sm">
+                <h3 className="text-lg font-semibold text-card-foreground mb-4">Transaction Types</h3>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={transactionTypeData || []}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {(transactionTypeData || []).map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={`hsl(var(--chart-${index % 5 + 1}))`} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: 'hsl(var(--card))', 
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px'
+                        }}
+                        formatter={(value) => [value, 'Count']}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* Agent Performance */}
+              <div className="bg-card rounded-xl p-6 shadow-sm">
+                <h3 className="text-lg font-semibold text-card-foreground mb-4">Top Agents by Performance</h3>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={agentPerformanceData || []}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <XAxis 
+                        dataKey="name" 
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                      />
+                      <YAxis 
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                      />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: 'hsl(var(--card))', 
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px'
+                        }}
+                        formatter={(value) => [value, 'Count']}
+                      />
+                      <Legend />
+                      <Bar dataKey="deposits" fill="hsl(var(--chart-1))" radius={[2, 2, 0, 0]} name="Deposits" />
+                      <Bar dataKey="withdrawals" fill="hsl(var(--chart-2))" radius={[2, 2, 0, 0]} name="Withdrawals" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+
+            {/* Savings by Category from Transaction Insights */}
             <div className="bg-card rounded-xl p-6 shadow-sm">
               <h3 className="text-lg font-semibold text-card-foreground mb-4">Savings by Category</h3>
               <div className="h-64">
@@ -196,7 +343,7 @@ const Insights = () => {
                 </div>
               </div>
 
-              {/* Performance Comparison */}
+              {/* Deposits vs Withdrawals */}
               <div className="bg-card rounded-xl p-6 shadow-sm">
                 <h3 className="text-lg font-semibold text-card-foreground mb-4">Deposits vs Withdrawals</h3>
                 <div className="h-64">

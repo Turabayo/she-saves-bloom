@@ -25,7 +25,11 @@ const Navigation = () => {
   };
 
   const handleLogoClick = () => {
-    navigate('/');
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/');
+    }
   };
 
   return (

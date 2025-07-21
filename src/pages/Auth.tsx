@@ -9,7 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 const Auth = () => {
   const navigate = useNavigate();
   const { signIn, signUp } = useAuth();
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
