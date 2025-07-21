@@ -1,136 +1,96 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
-interface MomoSessionData {
-  subscriptionKey?: string;
-  accessToken?: string;
-  apiUserId?: string;
-  environment?: 'sandbox' | 'production';
-  tokenExpiry?: number;
-  lastUpdated?: number;
+interface MomoSessionRequest {
+  amount: number;
+  phoneNumber: string;
+  goalId?: string;
 }
-
-interface FormData {
-  amount: string;
-  phone: string;
-}
-
-const MOMO_SESSION_KEY = 'momo_session_data';
-const MOMO_FORM_KEY = 'momo_form_data';
 
 export const useMomoSession = () => {
-  const [sessionData, setSessionData] = useState<MomoSessionData>({});
-  const [formData, setFormData] = useState<FormData>({
-    amount: '10',
-    phone: '0780000000'
-  });
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
 
-  // Load session data and form data from localStorage on mount
-  useEffect(() => {
-    // Load form data with auto-defaults
-    const savedAmount = localStorage.getItem("topupAmount") || "10";
-    const savedPhone = localStorage.getItem("topupPhone") || "0780000000";
-    
-    setFormData({
-      amount: savedAmount,
-      phone: savedPhone
-    });
-
-    // Initialize session data for sandbox with token expiry tracking
-    const tokenExpiry = "1752103383000"; // Updated token expiry: July 10, 2025 ~00:03 UTC
-    localStorage.setItem("tokenExpiry", tokenExpiry);
-    
-    const sessionFromStorage = {
-      environment: 'sandbox' as const,
-      subscriptionKey: 'e088d79cb68442d6b631a1783d1fd5be',
-      apiUserId: '780c177b-fdcf-4c9f-8a51-499ee395574f',
-      tokenExpiry: parseInt(tokenExpiry),
-      lastUpdated: Date.now()
-    };
-    setSessionData(sessionFromStorage);
-
-    console.log('Session hydrated from localStorage:', { amount: savedAmount, phone: savedPhone });
-  }, []);
-
-  // Save session data to localStorage
-  const saveSessionData = (data: Partial<MomoSessionData>) => {
-    const updatedData = {
-      ...sessionData,
-      ...data,
-      lastUpdated: Date.now()
-    };
-    setSessionData(updatedData);
-    localStorage.setItem(MOMO_SESSION_KEY, JSON.stringify(updatedData));
-    
-    // Store token and expiry separately for easy access
-    if (data.accessToken) {
-      localStorage.setItem("accessToken", data.accessToken);
-      // Token expires in 1 hour
-      const expiry = Date.now() + (60 * 60 * 1000);
-      localStorage.setItem("tokenExpiry", expiry.toString());
+  const initiatePayment = async ({ amount, phoneNumber, goalId }: MomoSessionRequest) => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to make a payment",
+        variant: "destructive"
+      });
+      return null;
     }
-  };
 
-  // Save form data to localStorage with auto-save
-  const saveFormData = (data: FormData) => {
-    setFormData(data);
-    localStorage.setItem(MOMO_FORM_KEY, JSON.stringify(data));
-    
-    // Auto-save individual values
-    localStorage.setItem("topupAmount", data.amount);
-    localStorage.setItem("topupPhone", data.phone);
-    
-    console.log('Form data auto-saved:', data);
-  };
+    setLoading(true);
+    try {
+      console.log('=== INITIATING MOMO PAYMENT ===');
+      console.log('Request data:', { amount, phoneNumber, goalId, userId: user.id });
 
-  // Check if token is valid - using provided token expiry
-  const isTokenValid = () => {
-    const tokenExpiry = localStorage.getItem("tokenExpiry");
-    if (!tokenExpiry) return false;
-    const expiry = parseInt(tokenExpiry);
-    const now = Date.now();
-    const isValid = now < expiry;
-    
-    if (!isValid) {
-      console.log('Token expired:', { now, expiry, expired: now >= expiry });
+      const { data, error } = await supabase.functions.invoke('request-to-pay', {
+        body: {
+          amount,
+          phoneNumber,
+          userId: user.id,
+          goalId
+        }
+      });
+
+      if (error) {
+        console.error('Payment initiation error:', error);
+        throw new Error(error.message || 'Failed to initiate payment');
+      }
+
+      console.log('✅ Payment initiated successfully:', data);
+
+      // Show success message
+      toast({
+        title: "Payment initiated",
+        description: `Please check your phone (${phoneNumber}) for the MoMo prompt to complete the payment of ${amount} RWF.`,
+      });
+
+      // Send SMS notification for payment initiation
+      try {
+        console.log('📱 Sending payment initiation SMS...');
+        
+        const smsMessage = `🔔 SheSaves payment request: Please check your phone for a MoMo prompt to pay ${amount} RWF. Complete the payment to add funds to your savings.`;
+        
+        const smsResponse = await supabase.functions.invoke('send-sms', {
+          body: {
+            phoneNumber: phoneNumber,
+            message: smsMessage,
+          }
+        });
+
+        if (smsResponse.error) {
+          console.error('SMS notification failed:', smsResponse.error);
+        } else {
+          console.log('✅ Payment initiation SMS sent successfully');
+        }
+      } catch (smsError) {
+        console.error('❌ Error sending payment initiation SMS:', smsError);
+        // Don't fail the payment for SMS errors
+      }
+
+      return data;
+    } catch (error: any) {
+      console.error('Error initiating payment:', error);
+      toast({
+        title: "Payment failed",
+        description: error.message || "Failed to initiate payment. Please try again.",
+        variant: "destructive"
+      });
+      return null;
+    } finally {
+      setLoading(false);
     }
-    
-    return isValid;
-  };
-
-  // Always succeeds since we get fresh tokens
-  const refreshSessionIfNeeded = async () => {
-    console.log('Session refresh - will get fresh token on next payment request');
-    return true;
-  };
-
-  // Clear session data
-  const clearSession = () => {
-    setSessionData({});
-    localStorage.removeItem(MOMO_SESSION_KEY);
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("tokenExpiry");
-  };
-
-  // Clear form data
-  const clearFormData = () => {
-    setFormData({
-      amount: '10',
-      phone: '0780000000'
-    });
-    localStorage.removeItem(MOMO_FORM_KEY);
-    localStorage.removeItem("topupAmount");
-    localStorage.removeItem("topupPhone");
   };
 
   return {
-    sessionData,
-    formData,
-    saveSessionData,
-    saveFormData,
-    isTokenValid,
-    refreshSessionIfNeeded,
-    clearSession,
-    clearFormData
+    initiatePayment,
+    loading
   };
 };

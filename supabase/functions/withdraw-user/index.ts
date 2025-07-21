@@ -1,3 +1,4 @@
+
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js'
 
@@ -19,9 +20,7 @@ async function getAccessToken() {
   console.log('=== DISBURSEMENT API CONFIGURATION ===')
   console.log('Using Disbursement API User:', userId)
   console.log('API Key available:', !!apiKey)
-  console.log('API Key length:', apiKey?.length)
   console.log('Subscription Key available:', !!subscriptionKey)
-  console.log('Subscription Key length:', subscriptionKey?.length)
   
   if (!userId || !apiKey || !subscriptionKey) {
     console.error('Missing disbursement API credentials:', {
@@ -32,52 +31,13 @@ async function getAccessToken() {
     throw new Error('Disbursement API credentials not configured')
   }
   
-  // First, create API user if needed - this might be missing
-  try {
-    const createUserResponse = await fetch('https://sandbox.momodeveloper.mtn.com/v1_0/apiuser', {
-      method: 'POST',
-      headers: {
-        'X-Reference-Id': userId,
-        'Ocp-Apim-Subscription-Key': subscriptionKey,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        'providerCallbackHost': 'string'
-      })
-    })
-    console.log('Create user response status:', createUserResponse.status)
-    
-    // Generate API key if needed
-    const generateKeyResponse = await fetch(`https://sandbox.momodeveloper.mtn.com/v1_0/apiuser/${userId}/apikey`, {
-      method: 'POST',
-      headers: {
-        'Ocp-Apim-Subscription-Key': subscriptionKey
-      }
-    })
-    console.log('Generate key response status:', generateKeyResponse.status)
-    
-    if (generateKeyResponse.ok) {
-      const keyData = await generateKeyResponse.json()
-      console.log('Generated API key:', keyData.apiKey?.substring(0, 8) + '...')
-    }
-  } catch (setupError) {
-    console.log('Setup error (might be expected if user already exists):', setupError.message)
-  }
-  
-  // Use the specific Disbursement Token UUID as per requirements
-  const disbursementTokenUUID = userId // Use the user ID as the reference ID
-
   console.log('=== ACCESS TOKEN REQUEST ===')
-  console.log('User ID:', userId)
-  console.log('API Key length:', apiKey?.length)
-  console.log('Subscription Key length:', subscriptionKey?.length)
-  console.log('Using Disbursement Token UUID:', disbursementTokenUUID)
   
   // Create base64 encoded credentials (userId:apiKey)
   const credentials = `${userId}:${apiKey}`
   const base64Credentials = btoa(credentials)
   
-  console.log('Credentials format:', `${userId}:${apiKey?.substring(0, 8)}...`)
+  console.log('Credentials format valid:', credentials.includes(':'))
   console.log('Base64 credentials length:', base64Credentials.length)
 
   const tokenUrl = 'https://sandbox.momodeveloper.mtn.com/disbursement/token/'
@@ -86,14 +46,10 @@ async function getAccessToken() {
   const headers = {
     'Authorization': `Basic ${base64Credentials}`,
     'Ocp-Apim-Subscription-Key': subscriptionKey!,
-    'X-Reference-Id': disbursementTokenUUID
+    'X-Reference-Id': userId
   }
   
-  console.log('Token request headers:', {
-    'Authorization': `Basic ${base64Credentials.substring(0, 20)}...`,
-    'Ocp-Apim-Subscription-Key': subscriptionKey,
-    'X-Reference-Id': disbursementTokenUUID
-  })
+  console.log('Token request headers prepared')
 
   const res = await fetch(tokenUrl, {
     method: 'POST',
@@ -103,7 +59,6 @@ async function getAccessToken() {
   console.log('=== ACCESS TOKEN RESPONSE ===')
   console.log('Response status:', res.status)
   console.log('Response statusText:', res.statusText)
-  console.log('Response headers:', Object.fromEntries(res.headers.entries()))
   
   const responseText = await res.text()
   console.log('Raw response:', responseText)
@@ -114,7 +69,7 @@ async function getAccessToken() {
     console.log('Parsed response data:', data)
   } catch (e) {
     console.error('Failed to parse response as JSON:', e)
-    throw new Error(`Invalid JSON response: ${responseText}`)
+    throw new Error(`Invalid JSON response from token endpoint: ${responseText}`)
   }
   
   if (!res.ok) {
@@ -126,11 +81,64 @@ async function getAccessToken() {
   
   if (!data.access_token) {
     console.error('No access token in response:', data)
-    throw new Error('No access token received')
+    throw new Error('No access token received from MTN API')
   }
   
-  console.log('Access token received (first 10 chars):', data.access_token.substring(0, 10) + '...')
+  console.log('✅ Access token received successfully')
   return data.access_token
+}
+
+async function sendSMSNotification(phoneNumber: string, message: string) {
+  try {
+    console.log('=== SENDING SMS NOTIFICATION ===')
+    
+    // Format phone number for SMS (ensure it starts with +250 for Rwanda)
+    let formattedPhone = phoneNumber
+    if (!formattedPhone.startsWith('+')) {
+      // If phone starts with 07/08, replace with +2507/+2508
+      if (formattedPhone.startsWith('07') || formattedPhone.startsWith('08')) {
+        formattedPhone = '+25' + formattedPhone
+      } else if (formattedPhone.startsWith('25')) {
+        formattedPhone = '+' + formattedPhone
+      } else if (formattedPhone.startsWith('0')) {
+        formattedPhone = '+250' + formattedPhone.substring(1)
+      } else {
+        formattedPhone = '+250' + formattedPhone
+      }
+    }
+    
+    console.log('Original phone:', phoneNumber)
+    console.log('Formatted phone:', formattedPhone)
+    console.log('SMS message:', message)
+    
+    const smsResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-sms`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+      },
+      body: JSON.stringify({
+        phoneNumber: formattedPhone,
+        message: message,
+      }),
+    })
+
+    const smsResult = await smsResponse.text()
+    console.log('SMS API response status:', smsResponse.status)
+    console.log('SMS API response body:', smsResult)
+
+    if (smsResponse.ok) {
+      console.log('✅ SMS notification sent successfully')
+      return true
+    } else {
+      console.error('❌ Failed to send SMS notification. Status:', smsResponse.status)
+      console.error('❌ SMS error response:', smsResult)
+      return false
+    }
+  } catch (smsError) {
+    console.error('❌ Exception in SMS sending:', smsError)
+    return false
+  }
 }
 
 serve(async (req) => {
@@ -164,21 +172,33 @@ serve(async (req) => {
     const subscriptionKey = Deno.env.get('DISB_SUBSCRIPTION_KEY')
     
     console.log('Generated reference ID:', referenceId)
-    console.log('Using subscription key for transfer:', subscriptionKey)
 
     // Get access token with enhanced debugging
+    console.log('🔑 Getting access token...')
     const accessToken = await getAccessToken()
+    console.log('✅ Access token obtained')
 
     const momoUrl = `https://sandbox.momodeveloper.mtn.com/disbursement/v1_0/transfer`
     console.log('=== TRANSFER REQUEST ===')
     console.log('Transfer URL:', momoUrl);
 
-    // Use EUR for sandbox, RWF for production
+    // IMPORTANT: Use EUR for sandbox environment, RWF for production
     const isProduction = Deno.env.get('ENVIRONMENT') === 'production'
     const currency = isProduction ? 'RWF' : 'EUR'
     
+    console.log('Environment:', isProduction ? 'production' : 'sandbox')
+    console.log('Currency being used:', currency)
+    
+    // Convert amount to EUR for sandbox if needed
+    let transferAmount = amount
+    if (!isProduction && currency === 'EUR') {
+      // Convert RWF to EUR for sandbox (approximate rate: 1 EUR = 1200 RWF)
+      transferAmount = Math.round(amount / 1200)
+      console.log(`Converting ${amount} RWF to ${transferAmount} EUR for sandbox`)
+    }
+    
     const payload = {
-      amount: amount.toString(),
+      amount: transferAmount.toString(),
       currency: currency,
       externalId: user_id,
       payee: {
@@ -199,13 +219,7 @@ serve(async (req) => {
       'Content-Type': 'application/json'
     }
 
-    console.log('Transfer headers:', {
-      'Authorization': `Bearer ${accessToken.substring(0, 10)}...`,
-      'X-Reference-Id': referenceId,
-      'X-Target-Environment': 'sandbox',
-      'Ocp-Apim-Subscription-Key': subscriptionKey,
-      'Content-Type': 'application/json'
-    });
+    console.log('Transfer headers prepared')
 
     const momoResponse = await fetch(momoUrl, {
       method: 'POST',
@@ -216,14 +230,15 @@ serve(async (req) => {
     console.log('=== TRANSFER RESPONSE ===')
     console.log('Transfer response status:', momoResponse.status);
     console.log('Transfer response statusText:', momoResponse.statusText);
-    console.log('Transfer response headers:', Object.fromEntries(momoResponse.headers.entries()));
     
     // Get response body for logging
     const responseText = await momoResponse.text()
-    console.log('=== Transfer Response Body ===', responseText);
+    console.log('Transfer response body:', responseText);
     
     if (!momoResponse.ok) {
       console.error('=== TRANSFER FAILED ===');
+      console.error('HTTP Status:', momoResponse.status);
+      console.error('Status Text:', momoResponse.statusText);
       console.error('Error response body:', responseText);
       
       // Try to parse error as JSON for better error details
@@ -231,17 +246,23 @@ serve(async (req) => {
       try {
         const errorJson = JSON.parse(responseText);
         errorDetails = errorJson
-        console.error('Parsed error:', errorJson);
+        console.error('Parsed error details:', errorJson);
       } catch (e) {
-        console.error('Error response is not JSON');
+        console.error('Error response is not valid JSON');
       }
       
-      // Return error with detailed information
+      // Send failure SMS notification
+      const failureMessage = `❌ Your SheSaves withdrawal of ${amount} RWF failed. Error: ${momoResponse.status}. Please try again or contact support.`
+      await sendSMSNotification(phone_number, failureMessage)
+      
+      // Return detailed error information
       return new Response(JSON.stringify({ 
         error: 'transfer_failed', 
         details: errorDetails,
         status: momoResponse.status,
+        statusText: momoResponse.statusText,
         currency_used: currency,
+        amount_sent: transferAmount,
         reference_id: referenceId
       }), { 
         status: momoResponse.status,
@@ -249,6 +270,7 @@ serve(async (req) => {
       })
     }
     
+    console.log('✅ Transfer request accepted by MTN')
     const status = momoResponse.status === 202 ? 'PENDING' : 'FAILED'
 
     // Insert withdrawal record
@@ -257,7 +279,7 @@ serve(async (req) => {
       .insert({
         user_id,
         amount,
-        currency: currency,
+        currency: 'RWF', // Always store as RWF in database
         phone_number,
         external_id: user_id,
         momo_reference_id: referenceId,
@@ -276,7 +298,7 @@ serve(async (req) => {
       })
     }
 
-    console.log('Withdrawal record created:', withdrawal);
+    console.log('✅ Withdrawal record created:', withdrawal);
 
     // Insert into transactions table for transaction history
     const { error: transactionError } = await supabase
@@ -295,60 +317,27 @@ serve(async (req) => {
       console.log('✅ Transaction history updated')
     }
 
-    // Send SMS notification for withdrawal initiation
-    try {
-      const smsMessage = status === 'PENDING' 
-        ? `⚠️ Your SheSaves withdrawal of ${amount} ${currency} is being processed. You will receive confirmation shortly.`
-        : `❌ Your SheSaves withdrawal of ${amount} ${currency} failed. Please try again or contact support.`;
-      
-      // Format phone number for SMS (ensure it starts with +250 for Rwanda)
-      let formattedPhone = phone_number
-      if (!formattedPhone.startsWith('+')) {
-        // If phone starts with 07/08, replace with +2507/+2508
-        if (formattedPhone.startsWith('07') || formattedPhone.startsWith('08')) {
-          formattedPhone = '+25' + formattedPhone
-        } else if (formattedPhone.startsWith('25')) {
-          formattedPhone = '+' + formattedPhone
-        } else {
-          formattedPhone = '+250' + formattedPhone
-        }
-      }
-      
-      console.log('Sending SMS to:', formattedPhone)
-      
-      const smsResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-sms`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
-        },
-        body: JSON.stringify({
-          phoneNumber: formattedPhone,
-          message: smsMessage,
-        }),
-      })
-
-      const smsResult = await smsResponse.text()
-      console.log('SMS API response status:', smsResponse.status)
-      console.log('SMS API response:', smsResult)
-
-      if (smsResponse.ok) {
-        console.log('✅ SMS notification sent successfully')
-      } else {
-        console.error('❌ Failed to send SMS notification:', smsResult)
-      }
-    } catch (smsError) {
-      console.error('❌ Error sending SMS notification:', smsError)
-      // Don't fail the withdrawal for SMS errors
+    // Send SMS notification
+    const smsMessage = status === 'PENDING' 
+      ? `⚠️ Your SheSaves withdrawal of ${amount} RWF is being processed. You will receive confirmation shortly. Reference: ${referenceId.substring(0, 8)}`
+      : `❌ Your SheSaves withdrawal of ${amount} RWF failed. Please try again or contact support.`
+    
+    console.log('📱 Sending SMS notification...')
+    const smsSuccess = await sendSMSNotification(phone_number, smsMessage)
+    
+    if (!smsSuccess) {
+      console.warn('⚠️ SMS notification failed but withdrawal was processed')
     }
 
-    console.log('=== REQUEST COMPLETED ===');
+    console.log('=== WITHDRAWAL REQUEST COMPLETED ===');
 
     return new Response(JSON.stringify({ 
       message: 'Withdrawal initiated', 
       status,
       referenceId,
-      withdrawal
+      withdrawal,
+      currency_converted: !isProduction ? `${amount} RWF → ${transferAmount} EUR` : 'none',
+      sms_sent: smsSuccess
     }), { 
       status: 200,
       headers: { 'Content-Type': 'application/json', ...corsHeaders }
@@ -356,10 +345,26 @@ serve(async (req) => {
 
   } catch (err) {
     console.error('=== WITHDRAW ERROR ===')
-    console.error('Error details:', err)
+    console.error('Error type:', err.constructor.name)
     console.error('Error message:', err.message)
     console.error('Error stack:', err.stack)
-    return new Response(JSON.stringify({ error: 'Internal Error', details: err.message }), { 
+    
+    // Send failure SMS if we have phone number
+    try {
+      const body = await req.clone().json()
+      if (body.phone_number && body.amount) {
+        const errorMessage = `❌ Your SheSaves withdrawal of ${body.amount} RWF failed due to a system error. Please try again later or contact support.`
+        await sendSMSNotification(body.phone_number, errorMessage)
+      }
+    } catch (smsErr) {
+      console.error('Failed to send error SMS:', smsErr)
+    }
+    
+    return new Response(JSON.stringify({ 
+      error: 'Internal Error', 
+      details: err.message,
+      type: err.constructor.name
+    }), { 
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders }
     })
