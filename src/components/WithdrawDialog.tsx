@@ -24,8 +24,24 @@ export const WithdrawDialog = ({ children }: WithdrawDialogProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { createWithdrawal } = useWithdrawals();
-  const { goals: savingsGoals } = useSavingsGoals();
+  const { goals: savingsGoals, loading: goalsLoading } = useSavingsGoals();
   const { toast } = useToast();
+
+  // Debug logging
+  console.log('=== SAVINGS GOALS DEBUG ===');
+  console.log('Goals loading:', goalsLoading);
+  console.log('All savings goals:', savingsGoals);
+  console.log('Goals count:', savingsGoals.length);
+
+  const availableGoals = savingsGoals.filter(goal => {
+    // Only show goals that have some savings
+    const goalSavings = goal.current_amount || 0;
+    console.log(`Goal "${goal.name}": current_amount = ${goalSavings}`);
+    return goalSavings > 0;
+  });
+
+  console.log('Available goals for withdrawal:', availableGoals);
+  console.log('Available goals count:', availableGoals.length);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,12 +129,6 @@ export const WithdrawDialog = ({ children }: WithdrawDialogProps) => {
     }
   };
 
-  const availableGoals = savingsGoals.filter(goal => {
-    // Only show goals that have some savings
-    const goalSavings = goal.current_amount || 0;
-    return goalSavings > 0;
-  });
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -166,18 +176,37 @@ export const WithdrawDialog = ({ children }: WithdrawDialogProps) => {
 
           <div className="space-y-2">
             <Label htmlFor="goal">From Savings Goal (Optional)</Label>
-            <Select value={selectedGoalId} onValueChange={setSelectedGoalId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a goal or leave empty for general withdrawal" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableGoals.map((goal) => (
-                  <SelectItem key={goal.id} value={goal.id}>
-                    {goal.name} - RWF {goal.current_amount?.toLocaleString() || 0} available
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {goalsLoading ? (
+              <div className="text-sm text-muted-foreground">Loading goals...</div>
+            ) : (
+              <Select value={selectedGoalId} onValueChange={setSelectedGoalId}>
+                <SelectTrigger>
+                  <SelectValue placeholder={
+                    availableGoals.length === 0 
+                      ? "No goals with savings available" 
+                      : "Select a goal or leave empty for general withdrawal"
+                  } />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableGoals.length === 0 ? (
+                    <SelectItem value="no-goals" disabled>
+                      No savings goals with available funds
+                    </SelectItem>
+                  ) : (
+                    availableGoals.map((goal) => (
+                      <SelectItem key={goal.id} value={goal.id}>
+                        {goal.name} - RWF {goal.current_amount?.toLocaleString() || 0} available
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            )}
+            {availableGoals.length === 0 && !goalsLoading && (
+              <p className="text-xs text-muted-foreground">
+                Create savings goals and save money to see them here
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
