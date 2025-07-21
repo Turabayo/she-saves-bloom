@@ -7,13 +7,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, CreditCard } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useInvestments } from "@/hooks/useInvestments";
+import { useSavingsGoals } from "@/hooks/useSavingsGoals";
 import { useToast } from "@/hooks/use-toast";
 
 const AddInvestment = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { addInvestment } = useInvestments();
+  const { createGoal } = useSavingsGoals();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
@@ -61,16 +61,11 @@ const AddInvestment = () => {
     setLoading(true);
 
     try {
-      const result = await addInvestment({
+      await createGoal({
         name: formData.name,
-        amount: parseFloat(formData.amount),
-        target_amount: parseFloat(formData.amount),
+        goal_amount: parseFloat(formData.amount),
         category: formData.category
       });
-
-      if (result?.error) {
-        throw new Error(result.error.message);
-      }
 
       toast({
         title: "Goal added successfully!",

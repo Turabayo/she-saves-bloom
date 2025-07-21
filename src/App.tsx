@@ -12,7 +12,7 @@ import Auth from "./pages/Auth";
 import GoalSelection from "./pages/Goals";
 import Dashboard from "./pages/Dashboard";
 import AddInvestment from "./pages/AddInvestment";
-import Goals from "./pages/Investments";
+import SavingsDashboard from "./pages/SavingsDashboard";
 import Insights from "./pages/Insights";
 import Community from "./pages/Community";
 import Assistant from "./pages/Assistant";
@@ -34,7 +34,7 @@ const AppContent = () => {
           <Route path="/goal-selection" element={<GoalSelection />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-goal" element={<AddInvestment />} />
-          <Route path="/goals" element={<Goals />} />
+          <Route path="/goals" element={<SavingsDashboard />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/community" element={<Community />} />
           <Route path="/assistant" element={<Assistant />} />

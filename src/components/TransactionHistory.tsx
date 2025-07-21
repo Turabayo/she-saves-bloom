@@ -3,20 +3,20 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import { Loader } from "lucide-react";
-import { useMomoTransactions } from "@/hooks/useMomoTransactions";
+import { useTopUps } from "@/hooks/useTopUps";
 
-interface MomoTransaction {
+interface TopUpTransaction {
   id: string;
   amount: number;
   currency: string;
-  phone: string;
+  phone_number: string;
   status: string;
   created_at: string;
   updated_at: string;
 }
 
 const TransactionHistory = () => {
-  const { transactions, loading } = useMomoTransactions();
+  const { topUps, loading } = useTopUps();
 
   const getStatusBadge = (status: string) => {
     switch (status?.toLowerCase()) {
@@ -46,7 +46,7 @@ const TransactionHistory = () => {
     );
   }
 
-  if (transactions.length === 0) {
+  if (topUps.length === 0) {
     return (
       <Card>
         <CardHeader>
@@ -66,25 +66,25 @@ const TransactionHistory = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {transactions.slice(0, 5).map((transaction) => (
+          {topUps.slice(0, 5).map((topUp) => (
             <div
-              key={transaction.id}
+              key={topUp.id}
               className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
             >
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="font-medium">
-                    {transaction.amount.toLocaleString()} RWF
+                    {topUp.amount.toLocaleString()} {topUp.currency}
                   </span>
-                  {getStatusBadge(transaction.status)}
+                  {getStatusBadge(topUp.status)}
                 </div>
                 <div className="text-sm text-gray-600">
-                  {format(new Date(transaction.created_at), 'MMM dd, yyyy HH:mm')}
+                  {format(new Date(topUp.created_at), 'MMM dd, yyyy HH:mm')}
                 </div>
               </div>
               <div className="text-right">
                 <div className="text-sm text-gray-600">
-                  {transaction.phone}
+                  {topUp.phone_number}
                 </div>
               </div>
             </div>

@@ -19,9 +19,9 @@ import { useToast } from "@/hooks/use-toast";
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { getTotalSavings } = useSavings();
+  const { savings } = useSavings();
   
-  const { topUps, loading: topUpsLoading, getMonthlyAverage } = useTopUps();
+  const { topUps, loading: topUpsLoading, getTotalSavings, getMonthlyAverage } = useTopUps();
   const { loading: withdrawalsLoading } = useWithdrawals();
   const { toast } = useToast();
 
