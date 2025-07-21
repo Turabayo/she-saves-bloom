@@ -33,16 +33,17 @@ async function getAccessToken() {
   
   console.log('=== ACCESS TOKEN REQUEST ===')
   
-  // Create base64 encoded credentials (userId:apiKey)
+  // Create base64 encoded credentials exactly as MTN expects: userId:apiKey
   const credentials = `${userId}:${apiKey}`
   const base64Credentials = btoa(credentials)
   
   console.log('Credentials format valid:', credentials.includes(':'))
-  console.log('Base64 credentials length:', base64Credentials.length)
+  console.log('Base64 credentials created successfully')
 
   const tokenUrl = 'https://sandbox.momodeveloper.mtn.com/disbursement/token/'
   console.log('Token URL:', tokenUrl)
 
+  // Construct headers exactly as per MTN API documentation
   const headers = {
     'Authorization': `Basic ${base64Credentials}`,
     'Ocp-Apim-Subscription-Key': subscriptionKey,
@@ -50,49 +51,63 @@ async function getAccessToken() {
     'Content-Type': 'application/json'
   }
   
-  console.log('Token request headers:')
-  console.log('- Authorization: Basic [REDACTED]')
-  console.log('- Ocp-Apim-Subscription-Key:', subscriptionKey.substring(0, 8) + '...')
+  console.log('Token request headers constructed:')
+  console.log('- Authorization: Basic [HIDDEN]')
+  console.log('- Ocp-Apim-Subscription-Key: [HIDDEN]')
   console.log('- X-Reference-Id:', userId)
   console.log('- Content-Type: application/json')
 
-  const res = await fetch(tokenUrl, {
-    method: 'POST',
-    headers
-  })
-
-  console.log('=== ACCESS TOKEN RESPONSE ===')
-  console.log('Response status:', res.status)
-  console.log('Response statusText:', res.statusText)
-  
-  const responseText = await res.text()
-  console.log('Raw response:', responseText)
-  
-  let data
   try {
-    data = JSON.parse(responseText)
-    console.log('Parsed response data:', data)
-  } catch (e) {
-    console.error('Failed to parse response as JSON:', e)
-    throw new Error(`Invalid JSON response from token endpoint: ${responseText}`)
+    console.log('Sending token request to MTN API...')
+    const res = await fetch(tokenUrl, {
+      method: 'POST',
+      headers
+    })
+
+    console.log('=== ACCESS TOKEN RESPONSE ===')
+    console.log('Response status:', res.status)
+    console.log('Response statusText:', res.statusText)
+    
+    const responseText = await res.text()
+    console.log('Raw response:', responseText)
+    
+    let data
+    try {
+      data = JSON.parse(responseText)
+      console.log('Parsed response data available')
+    } catch (e) {
+      console.error('Failed to parse response as JSON:', e)
+      throw new Error(`Invalid JSON response from token endpoint: ${responseText}`)
+    }
+    
+    if (!res.ok) {
+      console.error('=== TOKEN REQUEST FAILED ===')
+      console.error('Status:', res.status)
+      console.error('Error details:', data)
+      
+      // Provide specific error messages for common issues
+      if (res.status === 401) {
+        throw new Error(`Authentication failed: Invalid credentials or subscription key. Status: ${res.status}`)
+      } else if (res.status === 400) {
+        throw new Error(`Bad request: Check API user ID and request format. Status: ${res.status}`)
+      } else {
+        throw new Error(`Token request failed: ${res.status} - ${JSON.stringify(data)}`)
+      }
+    }
+    
+    if (!data.access_token) {
+      console.error('No access token in response:', data)
+      throw new Error('No access token received from MTN API')
+    }
+    
+    console.log('✅ Access token received successfully')
+    console.log('Token type:', data.token_type)
+    console.log('Token expires in:', data.expires_in, 'seconds')
+    return data.access_token
+  } catch (error) {
+    console.error('Token request error:', error)
+    throw error
   }
-  
-  if (!res.ok) {
-    console.error('=== TOKEN REQUEST FAILED ===')
-    console.error('Status:', res.status)
-    console.error('Response:', data)
-    throw new Error(`Token request failed: ${res.status} - ${JSON.stringify(data)}`)
-  }
-  
-  if (!data.access_token) {
-    console.error('No access token in response:', data)
-    throw new Error('No access token received from MTN API')
-  }
-  
-  console.log('✅ Access token received successfully')
-  console.log('Token type:', data.token_type)
-  console.log('Token expires in:', data.expires_in, 'seconds')
-  return data.access_token
 }
 
 async function sendSMSNotification(phoneNumber: string, message: string) {
@@ -182,10 +197,10 @@ serve(async (req) => {
     
     console.log('Generated reference ID:', referenceId)
 
-    // Get access token with enhanced debugging
+    // Get access token with proper error handling
     console.log('🔑 Getting access token...')
     const accessToken = await getAccessToken()
-    console.log('✅ Access token obtained, length:', accessToken.length)
+    console.log('✅ Access token obtained successfully')
 
     const momoUrl = `https://sandbox.momodeveloper.mtn.com/disbursement/v1_0/transfer`
     console.log('=== TRANSFER REQUEST ===')
@@ -218,11 +233,11 @@ serve(async (req) => {
       'Content-Type': 'application/json'
     }
 
-    console.log('Transfer headers:')
-    console.log('- Authorization: Bearer [REDACTED]')
+    console.log('Transfer headers constructed:')
+    console.log('- Authorization: Bearer [HIDDEN]')
     console.log('- X-Reference-Id:', referenceId)
     console.log('- X-Target-Environment: sandbox')
-    console.log('- Ocp-Apim-Subscription-Key:', subscriptionKey?.substring(0, 8) + '...')
+    console.log('- Ocp-Apim-Subscription-Key: [HIDDEN]')
     console.log('- Content-Type: application/json')
 
     const momoResponse = await fetch(momoUrl, {
