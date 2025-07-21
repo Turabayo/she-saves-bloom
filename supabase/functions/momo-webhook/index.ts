@@ -97,7 +97,7 @@ serve(async (req) => {
         
         // Send SMS notification for successful top-up
         try {
-          const smsMessage = `✅ Your top-up of ${momoTransaction.amount} ${momoTransaction.currency} was successful. Keep going toward your goal!`;
+          const smsMessage = `✅ Hello, your SheSaves top-up of ${momoTransaction.amount} ${momoTransaction.currency} was successful 🎉`;
           
           const smsResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-sms`, {
             method: 'POST',

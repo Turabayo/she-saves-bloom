@@ -102,6 +102,33 @@ serve(async (req) => {
 
     console.log('Withdrawal status updated:', updatedWithdrawal);
 
+    // Send SMS notification on successful withdrawal
+    if (status === 'SUCCESSFUL' && updatedWithdrawal) {
+      try {
+        const smsMessage = `✅ Your SheSaves withdrawal of ${updatedWithdrawal.amount} RWF was successful 🎉`;
+        
+        const smsResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-sms`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+          },
+          body: JSON.stringify({
+            phoneNumber: updatedWithdrawal.phone_number,
+            message: smsMessage,
+          }),
+        });
+
+        if (smsResponse.ok) {
+          console.log('✅ Withdrawal success SMS sent');
+        } else {
+          console.error('Failed to send withdrawal success SMS:', await smsResponse.text());
+        }
+      } catch (smsError) {
+        console.error('Error sending withdrawal success SMS:', smsError);
+      }
+    }
+
     return new Response(JSON.stringify({ 
       status, 
       result,

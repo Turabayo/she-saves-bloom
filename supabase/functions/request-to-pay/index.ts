@@ -27,6 +27,9 @@ serve(async (req) => {
     }
 
     const basicToken = btoa(`${COLL_API_USER}:${COLL_API_KEY}`)
+    
+    // Use the specific Collection Token UUID as per requirements
+    const collectionTokenUUID = '45c1fec9-dae8-4a9f-a00a-c5d282cb0259'
 
     let accessToken = ''
     try {
@@ -35,6 +38,7 @@ serve(async (req) => {
         headers: {
           Authorization: `Basic ${basicToken}`,
           'Ocp-Apim-Subscription-Key': COLL_SUBSCRIPTION_KEY,
+          'X-Reference-Id': collectionTokenUUID,
         },
       })
 
@@ -60,14 +64,14 @@ serve(async (req) => {
 
     const payload = {
       amount: amount.toString(),
-      currency: 'EUR', // Always EUR in sandbox
+      currency: 'RWF', // Changed to RWF as per requirements
       externalId: referenceId,
       payer: {
         partyIdType: 'MSISDN',
         partyId: phone_number,
       },
-      payerMessage: 'Top up via SheSaves',
-      payeeNote: 'Goal Savings',
+      payerMessage: 'SheSaves top-up',
+      payeeNote: 'Keep going toward your goal!',
     }
 
     try {

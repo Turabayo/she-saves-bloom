@@ -16,11 +16,15 @@ async function getAccessToken() {
   const userId = Deno.env.get('DISB_API_USER')
   const apiKey = Deno.env.get('DISB_API_KEY')
   const subscriptionKey = Deno.env.get('DISB_SUBSCRIPTION_KEY')
+  
+  // Use the specific Disbursement Token UUID as per requirements
+  const disbursementTokenUUID = '701ea609-aaed-4188-bd90-b3572629ed5b'
 
   console.log('=== ACCESS TOKEN REQUEST ===')
   console.log('User ID:', userId)
   console.log('API Key length:', apiKey?.length)
   console.log('Subscription Key length:', subscriptionKey?.length)
+  console.log('Using Disbursement Token UUID:', disbursementTokenUUID)
   
   // Create base64 encoded credentials (userId:apiKey)
   const credentials = `${userId}:${apiKey}`
@@ -34,12 +38,14 @@ async function getAccessToken() {
 
   const headers = {
     'Authorization': `Basic ${base64Credentials}`,
-    'Ocp-Apim-Subscription-Key': subscriptionKey!
+    'Ocp-Apim-Subscription-Key': subscriptionKey!,
+    'X-Reference-Id': disbursementTokenUUID
   }
   
   console.log('Token request headers:', {
     'Authorization': `Basic ${base64Credentials.substring(0, 20)}...`,
-    'Ocp-Apim-Subscription-Key': subscriptionKey
+    'Ocp-Apim-Subscription-Key': subscriptionKey,
+    'X-Reference-Id': disbursementTokenUUID
   })
 
   const res = await fetch(tokenUrl, {
@@ -117,13 +123,13 @@ serve(async (req) => {
 
     const payload = {
       amount: amount.toString(),
-      currency: 'EUR',
+      currency: 'RWF',
       externalId: user_id,
       payee: {
         partyIdType: 'MSISDN',
         partyId: phone_number
       },
-      payerMessage: 'Withdraw from SheSaves',
+      payerMessage: 'SheSaves withdrawal',
       payeeNote: 'Thank you for using SheSaves!'
     }
 
@@ -199,11 +205,11 @@ serve(async (req) => {
 
     console.log('Withdrawal record created:', withdrawal);
 
-    // Send SMS notification for withdrawal (both successful and pending)
+    // Send SMS notification for withdrawal initiation
     try {
       const smsMessage = status === 'PENDING' 
-        ? `⚠️ Withdrawal of ${amount} RWF is being processed. You will receive confirmation shortly.`
-        : `❌ Withdrawal of ${amount} RWF failed. Please try again or contact support.`;
+        ? `⚠️ Your SheSaves withdrawal of ${amount} RWF is being processed. You will receive confirmation shortly.`
+        : `❌ Your SheSaves withdrawal of ${amount} RWF failed. Please try again or contact support.`;
       
       const smsResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-sms`, {
         method: 'POST',
