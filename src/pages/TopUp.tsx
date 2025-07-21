@@ -144,7 +144,7 @@ const TopUp = () => {
       });
 
       setTimeout(() => {
-        navigate('/investments');
+        navigate('/dashboard');
       }, 3000);
 
     } catch (error: any) {
