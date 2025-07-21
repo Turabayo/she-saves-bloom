@@ -50,12 +50,6 @@ const Landing = () => {
             <span className="text-3xl font-bold text-foreground">SheSaves</span>
           </div>
           <div className="flex items-center gap-4">
-            <button 
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              onClick={() => navigate('/auth')}
-            >
-              Sign In
-            </button>
             <Button onClick={() => navigate('/auth')}>
               Get Started
             </Button>
@@ -89,7 +83,10 @@ const Landing = () => {
                 variant="outline" 
                 size="lg"
                 className="text-lg px-8 py-6"
-                onClick={() => navigate('/auth')}
+                onClick={() => {
+                  const whyChooseSection = document.getElementById('why-choose-shesaves');
+                  whyChooseSection?.scrollIntoView({ behavior: 'smooth' });
+                }}
               >
                 Learn More
               </Button>
@@ -99,7 +96,7 @@ const Landing = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-6 bg-muted/30">
+      <section id="why-choose-shesaves" className="py-20 px-6 bg-muted/30">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-foreground mb-4">
@@ -223,21 +220,13 @@ const Landing = () => {
           <p className="text-xl text-muted-foreground mb-8">
             Join thousands of women who are building their financial independence with SheSaves
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex justify-center">
             <Button 
               size="lg"
               className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all"
               onClick={() => navigate('/auth')}
             >
-              Create Your Account
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg"
-              className="text-lg px-8 py-6"
-              onClick={() => navigate('/auth')}
-            >
-              Sign In
+              Try SheSaves Now
             </Button>
           </div>
         </div>
