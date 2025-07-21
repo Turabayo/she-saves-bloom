@@ -134,3 +134,17 @@
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.5);
 }
+
+/* Hide Lovable badge */
+[data-lovable-badge],
+iframe[src*="lovable"],
+div[class*="lovable"],
+a[href*="lovable.dev"]:has(img),
+.lovable-badge,
+*:has(> a[href*="lovable.dev"]),
+div:has(> a[href*="Edit in Lovable"]) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
