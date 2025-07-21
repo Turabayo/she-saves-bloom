@@ -32,53 +32,43 @@ const Insights = () => {
     );
   }
 
-  if (!insights || insights.transactionCount === 0) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Navigation />
-        <main className="px-4 pb-20">
-          <div className="max-w-4xl mx-auto">
-            <div className="py-6">
-              <h1 className="text-2xl font-bold text-foreground mb-2">Insights</h1>
-              <p className="text-muted-foreground">Review your savings performance and trends</p>
-            </div>
+  // Always show charts with default data if no insights available
+  const defaultInsights = {
+    transactionCount: 0,
+    savingsGrowth: 0,
+    monthlyAverage: 0,
+    totalDeposits: 0,
+    totalWithdrawals: 0,
+    topCategories: []
+  };
 
-            <div className="bg-card rounded-xl p-8 text-center shadow-sm">
-              <TrendingUp size={48} className="text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-card-foreground mb-2">No Data Available Yet</h3>
-              <p className="text-muted-foreground mb-4">
-                Start saving and making transactions to see your insights and analytics here.
-              </p>
-              <button 
-                onClick={() => window.location.href = '/dashboard'}
-                className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/90"
-              >
-                Go to Dashboard
-              </button>
-            </div>
-          </div>
-        </main>
-      </div>
-    );
-  }
+  const currentInsights = insights || defaultInsights;
 
   // Prepare chart data from insights
-  const monthlyData = insights.topCategories.slice(0, 6).map((category, index) => ({
-    month: `Category ${index + 1}`,
-    amount: category.amount,
-    name: category.category
-  }));
+  const monthlyData = currentInsights.topCategories.length > 0 
+    ? currentInsights.topCategories.slice(0, 6).map((category, index) => ({
+        month: `Category ${index + 1}`,
+        amount: category.amount,
+        name: category.category
+      }))
+    : [
+        { month: 'Category 1', amount: 0, name: 'No data' }
+      ];
 
-  const categoryData = insights.topCategories.map((category, index) => ({
-    name: category.category,
-    value: category.amount,
-    count: category.count,
-    color: `hsl(${(index * 45) % 360}, 70%, 50%)`
-  }));
+  const categoryData = currentInsights.topCategories.length > 0 
+    ? currentInsights.topCategories.map((category, index) => ({
+        name: category.category,
+        value: category.amount,
+        count: category.count,
+        color: `hsl(${(index * 45) % 360}, 70%, 50%)`
+      }))
+    : [
+        { name: 'No data', value: 1, count: 0, color: 'hsl(var(--chart-1))' }
+      ];
 
   const performanceData = [
-    { name: 'Deposits', value: insights.totalDeposits, color: 'hsl(var(--chart-1))' },
-    { name: 'Withdrawals', value: insights.totalWithdrawals, color: 'hsl(var(--chart-2))' }
+    { name: 'Deposits', value: currentInsights.totalDeposits, color: 'hsl(var(--chart-1))' },
+    { name: 'Withdrawals', value: currentInsights.totalWithdrawals, color: 'hsl(var(--chart-2))' }
   ];
 
   return (
@@ -99,39 +89,39 @@ const Insights = () => {
                 <DollarSign size={24} className="text-green-600" />
                 <span className="text-sm font-medium text-muted-foreground">Total Savings Growth</span>
               </div>
-              <h3 className="text-2xl font-bold text-card-foreground">
-                {formatCurrency(insights.savingsGrowth)}
-              </h3>
-            </div>
+               <h3 className="text-2xl font-bold text-card-foreground">
+                 {formatCurrency(currentInsights.savingsGrowth)}
+               </h3>
+             </div>
 
-            <div className="bg-card rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-2">
-                <TrendingUp size={24} className="text-blue-600" />
-                <span className="text-sm font-medium text-muted-foreground">Monthly Average</span>
-              </div>
-              <h3 className="text-2xl font-bold text-card-foreground">
-                {formatCurrency(insights.monthlyAverage)}
-              </h3>
-            </div>
+             <div className="bg-card rounded-xl p-6 shadow-sm">
+               <div className="flex items-center gap-3 mb-2">
+                 <TrendingUp size={24} className="text-blue-600" />
+                 <span className="text-sm font-medium text-muted-foreground">Monthly Average</span>
+               </div>
+               <h3 className="text-2xl font-bold text-card-foreground">
+                 {formatCurrency(currentInsights.monthlyAverage)}
+               </h3>
+             </div>
 
-            <div className="bg-card rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-2">
-                <Target size={24} className="text-purple-600" />
-                <span className="text-sm font-medium text-muted-foreground">Total Deposits</span>
-              </div>
-              <h3 className="text-2xl font-bold text-card-foreground">
-                {formatCurrency(insights.totalDeposits)}
-              </h3>
-            </div>
+             <div className="bg-card rounded-xl p-6 shadow-sm">
+               <div className="flex items-center gap-3 mb-2">
+                 <Target size={24} className="text-purple-600" />
+                 <span className="text-sm font-medium text-muted-foreground">Total Deposits</span>
+               </div>
+               <h3 className="text-2xl font-bold text-card-foreground">
+                 {formatCurrency(currentInsights.totalDeposits)}
+               </h3>
+             </div>
 
-            <div className="bg-card rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-2">
-                <Activity size={24} className="text-orange-600" />
-                <span className="text-sm font-medium text-muted-foreground">Transactions</span>
-              </div>
-              <h3 className="text-2xl font-bold text-card-foreground">
-                {insights.transactionCount}
-              </h3>
+             <div className="bg-card rounded-xl p-6 shadow-sm">
+               <div className="flex items-center gap-3 mb-2">
+                 <Activity size={24} className="text-orange-600" />
+                 <span className="text-sm font-medium text-muted-foreground">Transactions</span>
+               </div>
+               <h3 className="text-2xl font-bold text-card-foreground">
+                 {currentInsights.transactionCount}
+               </h3>
             </div>
           </div>
 

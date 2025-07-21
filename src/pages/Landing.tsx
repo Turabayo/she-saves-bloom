@@ -256,7 +256,7 @@ const Landing = () => {
             Empowering women through financial independence
           </p>
           <p className="text-sm text-muted-foreground mt-4">
-            © 2024 SheSaves. All rights reserved.
+            © 2025 SheSaves. All rights reserved.
           </p>
         </div>
       </footer>
