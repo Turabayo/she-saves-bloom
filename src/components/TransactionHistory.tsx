@@ -3,24 +3,51 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import { Loader } from "lucide-react";
-import { useTopUps } from "@/hooks/useTopUps";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
-interface TopUpTransaction {
+interface Transaction {
   id: string;
   amount: number;
-  currency: string;
-  phone_number: string;
+  type: string;
+  method: string;
   status: string;
   created_at: string;
-  updated_at: string;
 }
 
 const TransactionHistory = () => {
-  const { topUps, loading } = useTopUps();
+  const { user } = useAuth();
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      if (!user) return;
+      
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('transactions')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        setTransactions(data || []);
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+        setTransactions([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, [user]);
 
   const getStatusBadge = (status: string) => {
     switch (status?.toLowerCase()) {
-      case 'successful':
+      case 'success':
         return <Badge variant="default" className="bg-green-100 text-green-800">Success</Badge>;
       case 'pending':
         return <Badge variant="secondary">Pending</Badge>;
@@ -29,6 +56,10 @@ const TransactionHistory = () => {
       default:
         return <Badge variant="outline">{status || 'Unknown'}</Badge>;
     }
+  };
+
+  const getTypeIcon = (type: string) => {
+    return type === 'deposit' ? '↗️' : '↙️';
   };
 
   if (loading) {
@@ -46,14 +77,14 @@ const TransactionHistory = () => {
     );
   }
 
-  if (topUps.length === 0) {
+  if (transactions.length === 0) {
     return (
       <Card>
         <CardHeader>
           <CardTitle>Transaction History</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-500 text-center py-8">No transactions yet</p>
+          <p className="text-gray-500 text-center py-8">No transactions yet. Start saving by making your first top-up!</p>
         </CardContent>
       </Card>
     );
@@ -62,29 +93,33 @@ const TransactionHistory = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Recent Top-ups</CardTitle>
+        <CardTitle>Recent Transactions</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {topUps.slice(0, 5).map((topUp) => (
+          {transactions.slice(0, 10).map((transaction) => (
             <div
-              key={topUp.id}
+              key={transaction.id}
               className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
             >
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
+                  <span className="text-lg">{getTypeIcon(transaction.type)}</span>
                   <span className="font-medium">
-                    {topUp.amount.toLocaleString()} {topUp.currency}
+                    {transaction.amount.toLocaleString()} RWF
                   </span>
-                  {getStatusBadge(topUp.status)}
+                  {getStatusBadge(transaction.status)}
                 </div>
                 <div className="text-sm text-gray-600">
-                  {format(new Date(topUp.created_at), 'MMM dd, yyyy HH:mm')}
+                  {format(new Date(transaction.created_at), 'MMM dd, yyyy HH:mm')}
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-sm text-gray-600">
-                  {topUp.phone_number}
+                <div className="text-sm font-medium capitalize">
+                  {transaction.type}
+                </div>
+                <div className="text-xs text-gray-500 capitalize">
+                  {transaction.method}
                 </div>
               </div>
             </div>

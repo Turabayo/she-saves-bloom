@@ -176,6 +176,69 @@ serve(async (req) => {
         } else {
           console.log('✅ Transaction stored in database');
         }
+
+        // Insert into transactions table for transaction history
+        const { error: transactionError } = await supabase
+          .from('transactions')
+          .insert({
+            user_id,
+            amount,
+            type: 'deposit',
+            method: 'momo',
+            status: 'success'
+          })
+
+        if (transactionError) {
+          console.error('Failed to insert transaction:', transactionError)
+        } else {
+          console.log('✅ Transaction history updated')
+        }
+
+        // Send SMS notification for successful top-up
+        try {
+          const smsMessage = `✅ Your SheSaves top-up of ${amount} ${currency} has been initiated successfully! You will receive a MoMo prompt shortly.`
+          
+          // Format phone number for SMS (ensure it starts with +250 for Rwanda)
+          let formattedPhone = phone_number
+          if (!formattedPhone.startsWith('+')) {
+            // If phone starts with 07/08, replace with +2507/+2508
+            if (formattedPhone.startsWith('07') || formattedPhone.startsWith('08')) {
+              formattedPhone = '+25' + formattedPhone
+            } else if (formattedPhone.startsWith('25')) {
+              formattedPhone = '+' + formattedPhone
+            } else {
+              formattedPhone = '+250' + formattedPhone
+            }
+          }
+          
+          console.log('Sending SMS to:', formattedPhone)
+          
+          const smsResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-sms`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+            },
+            body: JSON.stringify({
+              phoneNumber: formattedPhone,
+              message: smsMessage,
+            }),
+          })
+
+          const smsResult = await smsResponse.text()
+          console.log('SMS API response status:', smsResponse.status)
+          console.log('SMS API response:', smsResult)
+
+          if (smsResponse.ok) {
+            console.log('✅ SMS notification sent successfully')
+          } else {
+            console.error('❌ Failed to send SMS notification:', smsResult)
+          }
+        } catch (smsError) {
+          console.error('❌ Error sending SMS notification:', smsError)
+          // Don't fail the top-up for SMS errors
+        }
+
       } catch (dbError) {
         console.error('Database error:', dbError);
         // Don't fail the API call for database errors

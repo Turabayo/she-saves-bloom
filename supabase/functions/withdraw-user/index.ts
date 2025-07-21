@@ -16,6 +16,16 @@ async function getAccessToken() {
   const apiKey = Deno.env.get('DISB_API_KEY')
   const subscriptionKey = Deno.env.get('DISB_SUBSCRIPTION_KEY')
   
+  console.log('=== DISBURSEMENT API CONFIGURATION ===')
+  console.log('Using Disbursement API User:', userId)
+  console.log('API Key available:', !!apiKey)
+  console.log('Subscription Key available:', !!subscriptionKey)
+  
+  if (!userId || !apiKey || !subscriptionKey) {
+    console.error('Missing disbursement API credentials')
+    throw new Error('Disbursement API credentials not configured')
+  }
+  
   // Use the specific Disbursement Token UUID as per requirements
   const disbursementTokenUUID = '701ea609-aaed-4188-bd90-b3572629ed5b'
 
@@ -225,11 +235,43 @@ serve(async (req) => {
 
     console.log('Withdrawal record created:', withdrawal);
 
+    // Insert into transactions table for transaction history
+    const { error: transactionError } = await supabase
+      .from('transactions')
+      .insert({
+        user_id,
+        amount,
+        type: 'withdrawal',
+        method: 'momo',
+        status: status.toLowerCase()
+      })
+
+    if (transactionError) {
+      console.error('Failed to insert transaction:', transactionError)
+    } else {
+      console.log('✅ Transaction history updated')
+    }
+
     // Send SMS notification for withdrawal initiation
     try {
       const smsMessage = status === 'PENDING' 
-        ? `⚠️ Your SheSaves withdrawal of ${amount} RWF is being processed. You will receive confirmation shortly.`
-        : `❌ Your SheSaves withdrawal of ${amount} RWF failed. Please try again or contact support.`;
+        ? `⚠️ Your SheSaves withdrawal of ${amount} ${currency} is being processed. You will receive confirmation shortly.`
+        : `❌ Your SheSaves withdrawal of ${amount} ${currency} failed. Please try again or contact support.`;
+      
+      // Format phone number for SMS (ensure it starts with +250 for Rwanda)
+      let formattedPhone = phone_number
+      if (!formattedPhone.startsWith('+')) {
+        // If phone starts with 07/08, replace with +2507/+2508
+        if (formattedPhone.startsWith('07') || formattedPhone.startsWith('08')) {
+          formattedPhone = '+25' + formattedPhone
+        } else if (formattedPhone.startsWith('25')) {
+          formattedPhone = '+' + formattedPhone
+        } else {
+          formattedPhone = '+250' + formattedPhone
+        }
+      }
+      
+      console.log('Sending SMS to:', formattedPhone)
       
       const smsResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-sms`, {
         method: 'POST',
@@ -238,18 +280,22 @@ serve(async (req) => {
           'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
         },
         body: JSON.stringify({
-          phoneNumber: phone_number,
+          phoneNumber: formattedPhone,
           message: smsMessage,
         }),
-      });
+      })
+
+      const smsResult = await smsResponse.text()
+      console.log('SMS API response status:', smsResponse.status)
+      console.log('SMS API response:', smsResult)
 
       if (smsResponse.ok) {
-        console.log('✅ SMS notification sent successfully');
+        console.log('✅ SMS notification sent successfully')
       } else {
-        console.error('Failed to send SMS notification:', await smsResponse.text());
+        console.error('❌ Failed to send SMS notification:', smsResult)
       }
     } catch (smsError) {
-      console.error('Error sending SMS notification:', smsError);
+      console.error('❌ Error sending SMS notification:', smsError)
       // Don't fail the withdrawal for SMS errors
     }
 
