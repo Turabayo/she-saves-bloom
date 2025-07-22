@@ -58,8 +58,8 @@ const Landing = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto text-center">
+      <section className="py-12 md:py-20 px-4 md:px-12">
+        <div className="flex flex-col text-center p-4 max-w-screen-xl mx-auto gap-y-6">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
               Financial Empowerment for 
@@ -70,7 +70,7 @@ const Landing = () => {
               Track savings goals, make secure mobile payments, and get instant SMS notifications 
               for all your transactions. Start your journey to financial independence today.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center gap-y-6">
               <Button 
                 size="lg"
                 className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all"
@@ -96,8 +96,8 @@ const Landing = () => {
       </section>
 
       {/* Features Section */}
-      <section id="why-choose-shesaves" className="py-20 px-6 bg-muted/30">
-        <div className="max-w-7xl mx-auto">
+      <section id="why-choose-shesaves" className="py-12 md:py-20 px-4 md:px-12 bg-muted/30">
+        <div className="flex flex-col p-4 max-w-screen-xl mx-auto gap-y-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-foreground mb-4">
               Why Choose SheSaves?
@@ -107,7 +107,7 @@ const Landing = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
             {features.map((feature, index) => (
               <Card key={index} className="p-6 text-center hover:shadow-lg transition-all hover:-translate-y-1">
                 <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
@@ -126,9 +126,9 @@ const Landing = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <section className="py-12 md:py-20 px-4 md:px-12">
+        <div className="flex flex-col md:flex-row p-4 max-w-screen-xl mx-auto gap-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-center">
             <div>
               <h2 className="text-4xl font-bold text-foreground mb-6">
                 Everything You Need to Save Successfully
@@ -137,7 +137,7 @@ const Landing = () => {
                 SheSaves provides all the tools you need to reach your financial goals, 
                 from tracking savings for your dream car to planning for your children's education.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 gap-y-6">
                 {benefits.map((benefit, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
@@ -173,8 +173,8 @@ const Landing = () => {
       </section>
 
       {/* Mobile Money Section */}
-      <section className="py-20 px-6 bg-muted/30">
-        <div className="max-w-7xl mx-auto text-center">
+      <section className="py-12 md:py-20 px-4 md:px-12 bg-muted/30">
+        <div className="flex flex-col text-center p-4 max-w-screen-xl mx-auto gap-y-6">
           <h2 className="text-4xl font-bold text-foreground mb-6">
             Mobile Money Made Simple
           </h2>
@@ -183,7 +183,7 @@ const Landing = () => {
             Track all your transactions with detailed analytics and insights.
           </p>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
             <Card className="p-6 text-center">
               <CreditCard className="w-12 h-12 text-primary mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-3">Easy Top-ups</h3>
@@ -212,8 +212,8 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="py-12 md:py-20 px-4 md:px-12">
+        <div className="flex flex-col text-center p-4 max-w-screen-xl mx-auto gap-y-6">
           <h2 className="text-4xl font-bold text-foreground mb-6">
             Ready to Take Control of Your Financial Future?
           </h2>
@@ -233,8 +233,8 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 bg-muted border-t">
-        <div className="max-w-7xl mx-auto text-center">
+      <footer className="py-8 md:py-12 px-4 md:px-12 bg-muted border-t">
+        <div className="flex flex-col text-center p-4 max-w-screen-xl mx-auto gap-y-6">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
               <span className="text-primary-foreground font-bold">S</span>

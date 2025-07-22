@@ -15,7 +15,7 @@ import { TransactionCharts } from "@/components/TransactionCharts";
 import { WithdrawDialog } from "@/components/WithdrawDialog";
 import { WithdrawalHistory } from "@/components/WithdrawalHistory";
 import { useToast } from "@/hooks/use-toast";
-import { LatestUpdateCard } from "@/components/LatestUpdateCard";
+
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -72,10 +72,6 @@ const Dashboard = () => {
               <p className="text-muted-foreground">Here's your financial overview</p>
             </div>
 
-            {/* Latest Update */}
-            <div className="mb-6">
-              <LatestUpdateCard />
-            </div>
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 gap-4 mb-6">
@@ -186,10 +182,6 @@ const Dashboard = () => {
             <p className="text-lg text-muted-foreground">Here's your complete financial dashboard</p>
           </div>
 
-          {/* Latest Update */}
-          <div className="mb-8">
-            <LatestUpdateCard />
-          </div>
 
           {/* Stats Cards Row */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
