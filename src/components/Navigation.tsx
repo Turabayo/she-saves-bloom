@@ -16,7 +16,7 @@ const Navigation = () => {
   const navItems = [
     { path: '/dashboard', label: t('dashboard'), icon: Home, active: location.pathname === '/dashboard' },
     { path: '/goals', label: t('goals'), icon: Target, active: location.pathname === '/goals' },
-    { path: '/expenses', label: 'Expenses', icon: Receipt, active: location.pathname === '/expenses' },
+    { path: '/expenses', label: t('incomeExpenseTracker'), icon: Receipt, active: location.pathname === '/expenses' },
     { path: '/insights', label: t('insights'), icon: BarChart3, active: location.pathname === '/insights' },
   ];
 

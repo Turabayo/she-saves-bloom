@@ -16,13 +16,14 @@ export const LanguageSelector = ({ open, onOpenChange }: LanguageSelectorProps) 
   const languages = [
     { code: 'en' as const, name: t('english'), flag: '🇺🇸' },
     { code: 'fr' as const, name: t('french'), flag: '🇫🇷' },
+    { code: 'rw' as const, name: 'Kinyarwanda', flag: '🇷🇼' },
   ];
 
-  const handleLanguageChange = (newLanguage: 'en' | 'fr') => {
+  const handleLanguageChange = (newLanguage: 'en' | 'fr' | 'rw') => {
     setLanguage(newLanguage);
     toast({
       title: t('languageChanged'),
-      description: `Language changed to ${newLanguage === 'en' ? 'English' : 'Français'}`,
+      description: `Language changed to ${newLanguage === 'en' ? 'English' : newLanguage === 'fr' ? 'Français' : 'Kinyarwanda'}`,
     });
     onOpenChange(false);
   };

@@ -3,18 +3,21 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { AddExpenseDialog } from '@/components/AddExpenseDialog';
 import { ExpensesList } from '@/components/ExpensesList';
+import { IncomeList } from '@/components/IncomeList';
 import { ExpenseInsights } from '@/components/ExpenseInsights';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Expenses: React.FC = () => {
   const [showAddExpense, setShowAddExpense] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Expense Tracker</h1>
-          <p className="text-muted-foreground">Track and analyze your spending habits</p>
+          <h1 className="text-3xl font-bold tracking-tight">{t('incomeExpenseTracker')}</h1>
+          <p className="text-muted-foreground">Track and analyze your income and spending habits</p>
         </div>
         
         <Button onClick={() => setShowAddExpense(true)}>
@@ -23,13 +26,18 @@ const Expenses: React.FC = () => {
         </Button>
       </div>
 
-      <Tabs defaultValue="list" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="list">Expenses List</TabsTrigger>
-          <TabsTrigger value="insights">Insights</TabsTrigger>
+      <Tabs defaultValue="income" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="income">{t('income')}</TabsTrigger>
+          <TabsTrigger value="expenses">{t('expenses')}</TabsTrigger>
+          <TabsTrigger value="insights">{t('insights')}</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="list">
+        <TabsContent value="income">
+          <IncomeList />
+        </TabsContent>
+        
+        <TabsContent value="expenses">
           <ExpensesList />
         </TabsContent>
         

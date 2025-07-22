@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-type Language = 'en' | 'fr';
+type Language = 'en' | 'fr' | 'rw';
 
 interface LanguageContextType {
   language: Language;
@@ -17,6 +17,9 @@ const translations = {
     goals: 'Goals',
     insights: 'Insights',
     signOut: 'Sign Out',
+    incomeExpenseTracker: 'Income & Expense Tracker',
+    income: 'Income',
+    expenses: 'Expenses',
     
     // Settings
     settings: 'Settings',
@@ -57,6 +60,54 @@ const translations = {
     aiDisabledDesc: 'AI Assistant has been turned off',
     signOutSuccess: 'Signed out successfully',
     signOutDesc: 'You have been logged out of your account',
+    
+    // Income & Expense Tracker
+    addIncome: 'Add Income',
+    source: 'Source',
+    incomeSourcePlaceholder: 'Salary, freelance, business...',
+    incomeHistory: 'Income History',
+    noIncomeRecorded: 'No income recorded yet',
+    addFirstIncome: 'Add your first income',
+    adding: 'Adding...',
+    noteOptional: 'Add a note (optional)',
+    optional: 'optional',
+    
+    // Scheduled Savings
+    scheduledSavings: 'Scheduled Savings',
+    noScheduledSavings: 'No scheduled savings yet',
+    createSchedule: 'Create Schedule',
+    upcomingThisWeek: 'upcoming this week',
+    more: 'more',
+    createScheduledSaving: 'Create Scheduled Saving',
+    savingName: 'Saving Name',
+    savingNamePlaceholder: 'Emergency fund, vacation...',
+    frequency: 'Frequency',
+    weekly: 'Weekly',
+    monthly: 'Monthly',
+    oneTime: 'One-time',
+    linkedGoal: 'Linked Goal',
+    selectGoal: 'Select a goal',
+    noGoal: 'No specific goal',
+    nextExecutionDate: 'Next Execution Date',
+    creating: 'Creating...',
+    
+    // Voice Input
+    recordingStarted: 'Recording Started',
+    speakNow: 'Speak now...',
+    error: 'Error',
+    microphoneAccessDenied: 'Microphone access denied',
+    transcriptionComplete: 'Transcription Complete',
+    voiceProcessed: 'Voice input processed successfully',
+    voiceProcessingFailed: 'Failed to process voice input',
+    
+    // AI Tips
+    aiTip: 'AI Financial Tip',
+    dailyTip: 'Daily Financial Tip',
+    
+    // General
+    amount: 'Amount',
+    date: 'Date',
+    note: 'Note',
   },
   fr: {
     // Navigation
@@ -64,6 +115,9 @@ const translations = {
     goals: 'Objectifs',
     insights: 'Analyses',
     signOut: 'Déconnexion',
+    incomeExpenseTracker: 'Suivi Revenus et Dépenses',
+    income: 'Revenus',
+    expenses: 'Dépenses',
     
     // Settings
     settings: 'Paramètres',
@@ -104,6 +158,152 @@ const translations = {
     aiDisabledDesc: 'L\'assistant IA a été désactivé',
     signOutSuccess: 'Déconnexion réussie',
     signOutDesc: 'Vous avez été déconnecté de votre compte',
+    
+    // Income & Expense Tracker
+    addIncome: 'Ajouter Revenu',
+    source: 'Source',
+    incomeSourcePlaceholder: 'Salaire, freelance, entreprise...',
+    incomeHistory: 'Historique des Revenus',
+    noIncomeRecorded: 'Aucun revenu enregistré',
+    addFirstIncome: 'Ajouter votre premier revenu',
+    adding: 'Ajout...',
+    noteOptional: 'Ajouter une note (optionnel)',
+    optional: 'optionnel',
+    
+    // Scheduled Savings
+    scheduledSavings: 'Épargne Programmée',
+    noScheduledSavings: 'Aucune épargne programmée',
+    createSchedule: 'Créer Planning',
+    upcomingThisWeek: 'à venir cette semaine',
+    more: 'plus',
+    createScheduledSaving: 'Créer Épargne Programmée',
+    savingName: 'Nom de l\'épargne',
+    savingNamePlaceholder: 'Fonds d\'urgence, vacances...',
+    frequency: 'Fréquence',
+    weekly: 'Hebdomadaire',
+    monthly: 'Mensuel',
+    oneTime: 'Une fois',
+    linkedGoal: 'Objectif Lié',
+    selectGoal: 'Sélectionner un objectif',
+    noGoal: 'Aucun objectif spécifique',
+    nextExecutionDate: 'Prochaine Date d\'Exécution',
+    creating: 'Création...',
+    
+    // Voice Input
+    recordingStarted: 'Enregistrement Démarré',
+    speakNow: 'Parlez maintenant...',
+    error: 'Erreur',
+    microphoneAccessDenied: 'Accès au microphone refusé',
+    transcriptionComplete: 'Transcription Terminée',
+    voiceProcessed: 'Entrée vocale traitée avec succès',
+    voiceProcessingFailed: 'Échec du traitement de l\'entrée vocale',
+    
+    // AI Tips
+    aiTip: 'Conseil IA Financier',
+    dailyTip: 'Conseil Financier du Jour',
+    
+    // General
+    amount: 'Montant',
+    date: 'Date',
+    note: 'Note',
+  },
+  rw: {
+    // Navigation
+    dashboard: 'Ikigega',
+    goals: 'Intego',
+    insights: 'Isesengura',
+    signOut: 'Sohoka',
+    incomeExpenseTracker: 'Gukurikirana Inyungu n\'Amafaranga',
+    income: 'Inyungu',
+    expenses: 'Amafaranga',
+    
+    // Settings
+    settings: 'Igenamiterere',
+    profile: 'Umwirondoro',
+    password: 'Ijambobanga',
+    changePassword: 'Guhindura Ijambobanga',
+    language: 'Ururimi',
+    aiAssistant: 'Umufasha wa AI',
+    aiAssistantDesc: 'Gushyira muri gahunda ubufasha bwa AI mu bicuruzwa',
+    exportSavingsHistory: 'Kohereza Amateka y\'Ikigega',
+    helpSupport: 'Ubufasha na Gushyigikira',
+    
+    // Password Change
+    currentPassword: 'Ijambobanga Rikorwa',
+    newPassword: 'Ijambobanga Rishya',
+    confirmPassword: 'Emeza Ijambobanga Rishya',
+    updatePassword: 'Kuvugurura Ijambobanga',
+    cancel: 'Kureka',
+    
+    // Language Selection
+    english: 'Icyongereza',
+    french: 'Igifaransa',
+    selectLanguage: 'Hitamo Ururimi',
+    
+    // Export & Help
+    exportSuccess: 'Ukohereza rwagenze neza',
+    exportError: 'Ikosa mu gukora ukohereza',
+    helpTitle: 'Uko ukoresha SheSaves',
+    helpContent: 'SheSaves ikugufasha gucunga amafaranga yawe n\'ishoramari. Koresha menu ugereranije kandi wongere ishoramari, ukurikirane aho ugeze, kandi ubone ubunye bwa AI.',
+    
+    // Toasts
+    passwordUpdated: 'Ijambobanga ryavuguruwe neza',
+    passwordError: 'Ikosa mu kuvugurura ijambobanga',
+    languageChanged: 'Ururimi rwahinduwe neza',
+    aiEnabled: 'Umufasha wa AI yashyizwe',
+    aiDisabled: 'Umufasha wa AI yahagaritswe',
+    aiEnabledDesc: 'Umufasha wa AI urakora',
+    aiDisabledDesc: 'Umufasha wa AI wahagaritswe',
+    signOutSuccess: 'Wasohokye neza',
+    signOutDesc: 'Wasohokye muri konti yawe',
+    
+    // Income & Expense Tracker
+    addIncome: 'Ongeramo Inyungu',
+    source: 'Inkomoko',
+    incomeSourcePlaceholder: 'Umushahara, akazi gato, ubucuruzi...',
+    incomeHistory: 'Amateka y\'Inyungu',
+    noIncomeRecorded: 'Nta nyungu zanditswe',
+    addFirstIncome: 'Ongeramo inyungu yawe ya mbere',
+    adding: 'Ugongera...',
+    noteOptional: 'Ongeraho incamake (bitari ngombwa)',
+    optional: 'bitari ngombwa',
+    
+    // Scheduled Savings
+    scheduledSavings: 'Ikigega Cyateganyijwe',
+    noScheduledSavings: 'Nta kigega cyateganyijwe',
+    createSchedule: 'Kora Gahunda',
+    upcomingThisWeek: 'bizaza muri iki cyumweru',
+    more: 'byandi',
+    createScheduledSaving: 'Kora Ikigega Cyateganyijwe',
+    savingName: 'Izina ry\'Ikigega',
+    savingNamePlaceholder: 'Amafaranga y\'ubuhungiro, urugendo...',
+    frequency: 'Ibikurikirana',
+    weekly: 'Icyumweru',
+    monthly: 'Ukwezi',
+    oneTime: 'Inshuro imwe',
+    linkedGoal: 'Intego Ifitanye Isano',
+    selectGoal: 'Hitamo intego',
+    noGoal: 'Nta ntego yihariye',
+    nextExecutionDate: 'Itariki Ikurikira y\'Ubwikorezi',
+    creating: 'Urakora...',
+    
+    // Voice Input
+    recordingStarted: 'Gufata Amajwi Byatangiye',
+    speakNow: 'Vuga ubu...',
+    error: 'Ikosa',
+    microphoneAccessDenied: 'Ukwemerera kwa mikrofone kwanze',
+    transcriptionComplete: 'Guhindura Amajwi mu Nyandiko Byarangiye',
+    voiceProcessed: 'Injiza y\'ijwi yakoreshejwe neza',
+    voiceProcessingFailed: 'Gukoresha injiza y\'ijwi byanze',
+    
+    // AI Tips
+    aiTip: 'Inama za AI ku Bicuruzwa',
+    dailyTip: 'Inama ya Buri munsi ku Bicuruzwa',
+    
+    // General
+    amount: 'Umubare',
+    date: 'Itariki',
+    note: 'Incamake',
   }
 };
 
@@ -112,7 +312,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language') as Language;
-    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'fr')) {
+    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'fr' || savedLanguage === 'rw')) {
       setLanguage(savedLanguage);
     }
   }, []);
