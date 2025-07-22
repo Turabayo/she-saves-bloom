@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SavingsGoalCard } from "@/components/SavingsGoalCard";
 import { CreateGoalDialog } from "@/components/CreateGoalDialog";
+import { TopUpDialog } from "@/components/TopUpDialog";
 import Navigation from "@/components/Navigation";
 import FloatingAIButton from "@/components/FloatingAIButton";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -33,8 +34,10 @@ const formatCurrency = (amount: number) => {
 const SavingsDashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { goals, loading: goalsLoading } = useSavingsGoals();
+  const { goals, loading: goalsLoading, refetch: refetchGoals } = useSavingsGoals();
   const { getTotalSavings } = useSavings();
+  const [selectedGoalForTopUp, setSelectedGoalForTopUp] = useState<string | null>(null);
+  const [showTopUpDialog, setShowTopUpDialog] = useState(false);
 
   // Redirect to auth if not authenticated
   useEffect(() => {
@@ -74,7 +77,8 @@ const SavingsDashboard = () => {
   const totalGoalValue = goals.reduce((sum, goal) => sum + goal.goal_amount, 0);
 
   const handleTopUp = (goalId: string) => {
-    navigate(`/top-up?goalId=${goalId}`);
+    setSelectedGoalForTopUp(goalId);
+    setShowTopUpDialog(true);
   };
 
   const handleWithdraw = (goalId: string) => {
@@ -271,6 +275,22 @@ const SavingsDashboard = () => {
           </Card>
         )}
       </div>
+
+      {/* Top Up Dialog */}
+      {selectedGoalForTopUp && (
+        <TopUpDialog
+          open={showTopUpDialog}
+          onOpenChange={setShowTopUpDialog}
+          goalId={selectedGoalForTopUp}
+          goalName={goals.find(g => g.id === selectedGoalForTopUp)?.name || ''}
+          currentAmount={goals.find(g => g.id === selectedGoalForTopUp)?.current_amount || 0}
+          targetAmount={goals.find(g => g.id === selectedGoalForTopUp)?.goal_amount || 0}
+          onSuccess={() => {
+            refetchGoals();
+            setSelectedGoalForTopUp(null);
+          }}
+        />
+      )}
 
       <FloatingAIButton />
     </div>

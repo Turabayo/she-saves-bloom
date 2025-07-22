@@ -5,6 +5,7 @@ import { AddExpenseDialog } from '@/components/AddExpenseDialog';
 import { ExpensesList } from '@/components/ExpensesList';
 import { IncomeList } from '@/components/IncomeList';
 import { ExpenseInsights } from '@/components/ExpenseInsights';
+import { IncomeInsights } from '@/components/IncomeInsights';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -27,8 +28,9 @@ const Expenses: React.FC = () => {
       </div>
 
       <Tabs defaultValue="income" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="income">{t('income')}</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="income">Income</TabsTrigger>
+          <TabsTrigger value="income-history">Income History</TabsTrigger>
           <TabsTrigger value="expenses">{t('expenses')}</TabsTrigger>
           <TabsTrigger value="insights">{t('insights')}</TabsTrigger>
         </TabsList>
@@ -37,12 +39,16 @@ const Expenses: React.FC = () => {
           <IncomeList />
         </TabsContent>
         
+        <TabsContent value="income-history">
+          <IncomeList />
+        </TabsContent>
+        
         <TabsContent value="expenses">
           <ExpensesList />
         </TabsContent>
         
         <TabsContent value="insights">
-          <ExpenseInsights />
+          <IncomeInsights />
         </TabsContent>
       </Tabs>
 
