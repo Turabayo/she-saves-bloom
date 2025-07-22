@@ -2,7 +2,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Settings, Home, Target, BarChart3, LogOut } from "lucide-react";
+import { Settings, Home, Target, BarChart3, LogOut, Receipt } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useDevice } from "@/hooks/use-device";
 
@@ -16,6 +16,7 @@ const Navigation = () => {
   const navItems = [
     { path: '/dashboard', label: t('dashboard'), icon: Home, active: location.pathname === '/dashboard' },
     { path: '/goals', label: t('goals'), icon: Target, active: location.pathname === '/goals' },
+    { path: '/expenses', label: 'Expenses', icon: Receipt, active: location.pathname === '/expenses' },
     { path: '/insights', label: t('insights'), icon: BarChart3, active: location.pathname === '/insights' },
   ];
 

@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import AddInvestment from "./pages/AddInvestment";
 import SavingsDashboard from "./pages/SavingsDashboard";
 import Insights from "./pages/Insights";
+import Expenses from "./pages/Expenses";
 import Community from "./pages/Community";
 import Assistant from "./pages/Assistant";
 import Settings from "./pages/Settings";
@@ -35,6 +36,7 @@ const AppContent = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-goal" element={<AddInvestment />} />
           <Route path="/goals" element={<SavingsDashboard />} />
+          <Route path="/expenses" element={<Expenses />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/analytics" element={<Insights />} />
           <Route path="/community" element={<Community />} />
