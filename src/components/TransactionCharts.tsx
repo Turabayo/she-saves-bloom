@@ -4,7 +4,7 @@ import { useChartData } from "@/hooks/useChartData";
 import { Loader2 } from "lucide-react";
 
 export const TransactionCharts = () => {
-  const { dailyVolumeData, transactionAmountData, transactionTypeData, agentPerformanceData, isLoading } = useChartData();
+  const { dailyVolumeData, transactionAmountData, transactionTypeData, isLoading } = useChartData();
 
   if (isLoading) {
     return (
@@ -44,7 +44,6 @@ export const TransactionCharts = () => {
               <Legend />
               <Line type="monotone" dataKey="topup" stroke="hsl(var(--chart-1))" strokeWidth={2} name="Top-ups" />
               <Line type="monotone" dataKey="withdrawal" stroke="hsl(var(--chart-2))" strokeWidth={2} name="Withdrawals" />
-              <Line type="monotone" dataKey="transfer" stroke="hsl(var(--chart-3))" strokeWidth={2} name="Transfers" />
             </LineChart>
           </ResponsiveContainer>
         </CardContent>
@@ -76,69 +75,40 @@ export const TransactionCharts = () => {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Transaction Types Pie Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Transaction Types</CardTitle>
-            <p className="text-sm text-muted-foreground">Distribution by Category</p>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={250} className="md:h-72">
-              <PieChart>
-                <Pie
-                  data={transactionTypeData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={60}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {transactionTypeData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'hsl(var(--card))', 
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px'
-                  }} 
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Agent Performance */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Top Agents by Performance</CardTitle>
-            <p className="text-sm text-muted-foreground">Agent Performance Metrics</p>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={250} className="md:h-72">
-              <BarChart data={agentPerformanceData} layout="horizontal">
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                <XAxis type="number" className="text-xs" />
-                <YAxis dataKey="name" type="category" className="text-xs" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'hsl(var(--card))', 
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px'
-                  }} 
-                />
-                <Legend />
-                <Bar dataKey="withdrawals" fill="hsl(var(--chart-1))" name="Withdrawals" />
-                <Bar dataKey="deposits" fill="hsl(var(--chart-2))" name="Deposits" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Transaction Types Pie Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Transaction Types</CardTitle>
+          <p className="text-sm text-muted-foreground">Distribution by Category</p>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={300} className="md:h-96">
+            <PieChart>
+              <Pie
+                data={transactionTypeData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {transactionTypeData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'hsl(var(--card))', 
+                  border: '1px solid hsl(var(--border))',
+                  borderRadius: '8px'
+                }} 
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
     </div>
   );
 };

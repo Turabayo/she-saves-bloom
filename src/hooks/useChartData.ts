@@ -78,24 +78,30 @@ export const useChartData = () => {
     enabled: !!user?.id,
   });
 
-  // Process data for charts - only count successful transactions
-  const dailyVolumeData = transactionData.reduce((acc: any[], transaction) => {
-    const date = new Date(transaction.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-    const existingEntry = acc.find(entry => entry.date === date);
+  // Process data for charts - combine topups and withdrawals by date
+  const dailyVolumeData = () => {
+    const dateMap = new Map();
     
-    if (existingEntry) {
-      existingEntry[transaction.type] = (existingEntry[transaction.type] || 0) + 1;
-    } else {
-      acc.push({
-        date,
-        [transaction.type]: 1,
-        topup: 0,
-        withdrawal: 0,
-        transfer: 0
-      });
-    }
-    return acc;
-  }, []);
+    // Process topups
+    topupData.forEach(topup => {
+      const date = new Date(topup.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      const existing = dateMap.get(date) || { date, topup: 0, withdrawal: 0 };
+      existing.topup += 1;
+      dateMap.set(date, existing);
+    });
+    
+    // Process withdrawals
+    withdrawalData.forEach(withdrawal => {
+      const date = new Date(withdrawal.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      const existing = dateMap.get(date) || { date, topup: 0, withdrawal: 0 };
+      existing.withdrawal += 1;
+      dateMap.set(date, existing);
+    });
+    
+    return Array.from(dateMap.values()).sort((a, b) => 
+      new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+  };
 
   const transactionAmountData = [...transactionData, ...topupData, ...withdrawalData].reduce((acc: any[], item) => {
     const month = new Date(item.created_at).toLocaleDateString('en-US', { month: 'short' });
@@ -149,10 +155,9 @@ export const useChartData = () => {
   ];
 
   return {
-    dailyVolumeData,
+    dailyVolumeData: dailyVolumeData(),
     transactionAmountData,
     transactionTypeData,
-    agentPerformanceData,
     isLoading: transactionsLoading || topupsLoading || withdrawalsLoading || savingsLoading
   };
 };
