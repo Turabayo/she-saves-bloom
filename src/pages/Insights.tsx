@@ -3,20 +3,21 @@ import Navigation from "@/components/Navigation";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { useTransactionInsights } from "@/hooks/useTransactionInsights";
 import { useChartData } from "@/hooks/useChartData";
+import { useSavingsGoals } from "@/hooks/useSavingsGoals";
 import { formatCurrency } from "@/utils/dateFormatter";
-import { TrendingUp, DollarSign, Target, Activity, Users, CreditCard } from "lucide-react";
+import { TrendingUp, DollarSign, Target, Activity } from "lucide-react";
 
 const Insights = () => {
   const { insights, loading } = useTransactionInsights();
+  const { goals, loading: goalsLoading } = useSavingsGoals();
   const { 
     dailyVolumeData, 
     transactionAmountData, 
     transactionTypeData, 
-    agentPerformanceData, 
     isLoading: chartLoading 
   } = useChartData();
 
-  if (loading || chartLoading) {
+  if (loading || chartLoading || goalsLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Navigation />
@@ -44,31 +45,40 @@ const Insights = () => {
 
   const currentInsights = insights || defaultInsights;
 
-  // Prepare chart data from insights
-  const monthlyData = currentInsights.topCategories.length > 0 
-    ? currentInsights.topCategories.slice(0, 6).map((category, index) => ({
-        month: `Category ${index + 1}`,
-        amount: category.amount,
-        name: category.category
+  // Prepare savings by category data from goals
+  const savingsByCategoryData = goals.length > 0 
+    ? goals.map((goal) => ({
+        name: goal.category,
+        amount: goal.current_amount || 0,
+        goal_amount: goal.goal_amount
       }))
     : [
-        { month: 'Category 1', amount: 0, name: 'No data' }
+        { name: 'No savings goals', amount: 0, goal_amount: 0 }
       ];
 
-  const categoryData = currentInsights.topCategories.length > 0 
-    ? currentInsights.topCategories.map((category, index) => ({
-        name: category.category,
-        value: category.amount,
-        count: category.count,
-        color: `hsl(${(index * 45) % 360}, 70%, 50%)`
+  // Prepare category distribution data from goals
+  const categoryData = goals.length > 0 
+    ? goals.map((goal, index) => ({
+        name: goal.category,
+        value: goal.current_amount || 0,
+        color: `hsl(${(index * 60) % 360}, 70%, 50%)`
       }))
     : [
-        { name: 'No data', value: 1, count: 0, color: 'hsl(var(--chart-1))' }
+        { name: 'No data', value: 1, color: 'hsl(var(--chart-1))' }
       ];
 
+  // Enhanced deposits vs withdrawals data
   const performanceData = [
-    { name: 'Deposits', value: currentInsights.totalDeposits, color: 'hsl(var(--chart-1))' },
-    { name: 'Withdrawals', value: currentInsights.totalWithdrawals, color: 'hsl(var(--chart-2))' }
+    { 
+      name: 'Deposits', 
+      value: currentInsights.totalDeposits > 0 ? currentInsights.totalDeposits : 0,
+      color: 'hsl(var(--chart-1))' 
+    },
+    { 
+      name: 'Withdrawals', 
+      value: currentInsights.totalWithdrawals > 0 ? currentInsights.totalWithdrawals : 0,
+      color: 'hsl(var(--chart-2))' 
+    }
   ];
 
   return (
@@ -194,84 +204,45 @@ const Insights = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Transaction Types */}
-              <div className="bg-card rounded-xl p-6 shadow-sm">
-                <h3 className="text-lg font-semibold text-card-foreground mb-4">Transaction Types</h3>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={transactionTypeData || []}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {(transactionTypeData || []).map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={`hsl(var(--chart-${index % 5 + 1}))`} />
-                        ))}
-                      </Pie>
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'hsl(var(--card))', 
-                          border: '1px solid hsl(var(--border))',
-                          borderRadius: '8px'
-                        }}
-                        formatter={(value) => [value, 'Count']}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* Agent Performance */}
-              <div className="bg-card rounded-xl p-6 shadow-sm">
-                <h3 className="text-lg font-semibold text-card-foreground mb-4">Top Agents by Performance</h3>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={agentPerformanceData || []}>
-                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                      <XAxis 
-                        dataKey="name" 
-                        axisLine={false}
-                        tickLine={false}
-                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                        angle={-45}
-                        textAnchor="end"
-                        height={80}
-                      />
-                      <YAxis 
-                        axisLine={false}
-                        tickLine={false}
-                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                      />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'hsl(var(--card))', 
-                          border: '1px solid hsl(var(--border))',
-                          borderRadius: '8px'
-                        }}
-                        formatter={(value) => [value, 'Count']}
-                      />
-                      <Legend />
-                      <Bar dataKey="deposits" fill="hsl(var(--chart-1))" radius={[2, 2, 0, 0]} name="Deposits" />
-                      <Bar dataKey="withdrawals" fill="hsl(var(--chart-2))" radius={[2, 2, 0, 0]} name="Withdrawals" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
+            {/* Transaction Types */}
+            <div className="bg-card rounded-xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold text-card-foreground mb-4">Transaction Types</h3>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={transactionTypeData || []}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {(transactionTypeData || []).map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={`hsl(var(--chart-${index % 5 + 1}))`} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'hsl(var(--card))', 
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px'
+                      }}
+                      formatter={(value) => [value, 'Count']}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
             </div>
 
-            {/* Savings by Category from Transaction Insights */}
+            {/* Savings by Category */}
             <div className="bg-card rounded-xl p-6 shadow-sm">
               <h3 className="text-lg font-semibold text-card-foreground mb-4">Savings by Category</h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={monthlyData}>
+                  <BarChart data={savingsByCategoryData}>
                     <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                     <XAxis 
                       dataKey="name" 
