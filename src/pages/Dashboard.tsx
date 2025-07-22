@@ -15,6 +15,7 @@ import { TransactionCharts } from "@/components/TransactionCharts";
 import { WithdrawDialog } from "@/components/WithdrawDialog";
 import { WithdrawalHistory } from "@/components/WithdrawalHistory";
 import { useToast } from "@/hooks/use-toast";
+import { LatestUpdateCard } from "@/components/LatestUpdateCard";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -69,6 +70,11 @@ const Dashboard = () => {
                 Welcome back, {user?.user_metadata?.full_name || 'there'}!
               </h1>
               <p className="text-muted-foreground">Here's your financial overview</p>
+            </div>
+
+            {/* Latest Update */}
+            <div className="mb-6">
+              <LatestUpdateCard />
             </div>
 
             {/* Stats Cards */}
@@ -178,6 +184,11 @@ const Dashboard = () => {
               Welcome back, {user?.user_metadata?.full_name || 'there'}!
             </h1>
             <p className="text-lg text-muted-foreground">Here's your complete financial dashboard</p>
+          </div>
+
+          {/* Latest Update */}
+          <div className="mb-8">
+            <LatestUpdateCard />
           </div>
 
           {/* Stats Cards Row */}
