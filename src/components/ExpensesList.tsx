@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Trash2, Filter } from 'lucide-react';
+import { Trash2, Filter, Plus } from 'lucide-react';
 import { useExpenses, Expense } from '@/hooks/useExpenses';
+import { AddExpenseDialog } from './AddExpenseDialog';
 import { format } from 'date-fns';
 
 const EXPENSE_CATEGORIES = ['All', 'Food', 'Transport', 'Rent', 'Health', 'School', 'Other'];
@@ -14,6 +15,7 @@ export const ExpensesList: React.FC = () => {
   const { expenses, loading, deleteExpense } = useExpenses();
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [dateFilter, setDateFilter] = useState('');
+  const [showAddDialog, setShowAddDialog] = useState(false);
 
   const filteredExpenses = expenses.filter((expense) => {
     const matchesCategory = categoryFilter === 'All' || expense.category === categoryFilter;
@@ -83,6 +85,11 @@ export const ExpensesList: React.FC = () => {
             className="w-40"
             placeholder="Filter by month"
           />
+          
+          <Button onClick={() => setShowAddDialog(true)} size="sm">
+            <Plus className="w-4 h-4 mr-2" />
+            Add Expense
+          </Button>
         </div>
       </CardHeader>
       
@@ -132,6 +139,11 @@ export const ExpensesList: React.FC = () => {
           </div>
         )}
       </CardContent>
+
+      <AddExpenseDialog 
+        open={showAddDialog} 
+        onOpenChange={setShowAddDialog} 
+      />
     </Card>
   );
 };
