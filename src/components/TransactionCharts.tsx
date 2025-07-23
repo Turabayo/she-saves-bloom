@@ -45,20 +45,16 @@ export const TransactionCharts = () => {
               <Line 
                 type="monotone" 
                 dataKey="topups" 
-                stroke="hsl(220, 70%, 60%)" 
-                strokeWidth={3} 
+                stroke="hsl(var(--chart-1))" 
+                strokeWidth={2} 
                 name="Top-ups"
-                dot={{ fill: "hsl(220, 70%, 60%)", strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, stroke: "hsl(220, 70%, 60%)", strokeWidth: 2 }}
               />
               <Line 
                 type="monotone" 
                 dataKey="withdrawals" 
-                stroke="hsl(140, 60%, 50%)" 
-                strokeWidth={3} 
+                stroke="hsl(var(--chart-2))" 
+                strokeWidth={2} 
                 name="Withdrawals"
-                dot={{ fill: "hsl(140, 60%, 50%)", strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, stroke: "hsl(140, 60%, 50%)", strokeWidth: 2 }}
               />
             </LineChart>
           </ResponsiveContainer>

@@ -163,9 +163,8 @@ const Insights = () => {
                       }}
                     />
                     <Legend />
-                    <Line type="monotone" dataKey="topup" stroke="hsl(var(--chart-1))" strokeWidth={2} name="Top-ups" />
-                    <Line type="monotone" dataKey="withdrawal" stroke="hsl(var(--chart-2))" strokeWidth={2} name="Withdrawals" />
-                    <Line type="monotone" dataKey="transfer" stroke="hsl(var(--chart-3))" strokeWidth={2} name="Transfers" />
+                    <Line type="monotone" dataKey="topups" stroke="hsl(var(--chart-1))" strokeWidth={2} name="Top-ups" />
+                    <Line type="monotone" dataKey="withdrawals" stroke="hsl(var(--chart-2))" strokeWidth={2} name="Withdrawals" />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
