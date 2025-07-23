@@ -82,25 +82,33 @@ export const useChartData = () => {
   const dailyVolumeData = () => {
     const dateMap = new Map();
     
-    // Process topups
+    // Process topups - use amounts instead of counts
     topupData.forEach(topup => {
-      const date = new Date(topup.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-      const existing = dateMap.get(date) || { date, topup: 0, withdrawal: 0 };
-      existing.topup += 1;
+      const date = new Date(topup.created_at).toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric' 
+      });
+      const existing = dateMap.get(date) || { date, topups: 0, withdrawals: 0 };
+      existing.topups += Number(topup.amount) || 0;
       dateMap.set(date, existing);
     });
     
-    // Process withdrawals
+    // Process withdrawals - use amounts instead of counts
     withdrawalData.forEach(withdrawal => {
-      const date = new Date(withdrawal.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-      const existing = dateMap.get(date) || { date, topup: 0, withdrawal: 0 };
-      existing.withdrawal += 1;
+      const date = new Date(withdrawal.created_at).toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric' 
+      });
+      const existing = dateMap.get(date) || { date, topups: 0, withdrawals: 0 };
+      existing.withdrawals += Number(withdrawal.amount) || 0;
       dateMap.set(date, existing);
     });
     
-    return Array.from(dateMap.values()).sort((a, b) => 
-      new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
+    return Array.from(dateMap.values()).sort((a, b) => {
+      const dateA = new Date(a.date + ' 2024');
+      const dateB = new Date(b.date + ' 2024');
+      return dateA.getTime() - dateB.getTime();
+    });
   };
 
   const transactionAmountData = [...transactionData, ...topupData, ...withdrawalData].reduce((acc: any[], item) => {
