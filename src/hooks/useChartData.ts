@@ -124,7 +124,7 @@ export const useChartData = () => {
     return acc;
   }, []);
 
-  // Only count successful transactions in the pie chart
+  // Only count successful transactions in the pie chart - remove transfers
   const transactionTypeData = [
     { 
       name: "Top-ups", 
@@ -133,20 +133,15 @@ export const useChartData = () => {
     },
     { 
       name: "Withdrawals", 
-      value: withdrawalData.length, // Now only successful withdrawals
+      value: withdrawalData.length,
       color: "hsl(var(--chart-2))" 
     },
     { 
       name: "Savings", 
       value: savingsData.length, 
       color: "hsl(var(--chart-3))" 
-    },
-    { 
-      name: "Transactions", 
-      value: transactionData.length, 
-      color: "hsl(var(--chart-4))" 
     }
-  ];
+  ].filter(item => item.value > 0); // Only show categories with data
 
   // Agent performance data (using user data as proxy) - only successful transactions
   const agentPerformanceData = [
