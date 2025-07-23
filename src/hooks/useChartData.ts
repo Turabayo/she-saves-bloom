@@ -15,7 +15,6 @@ export const useChartData = () => {
         .from("transactions")
         .select("*")
         .eq("user_id", user.id)
-        .eq("status", "success") // Only successful transactions
         .order("created_at", { ascending: true });
       
       if (error) throw error;
@@ -69,7 +68,6 @@ export const useChartData = () => {
         .from("savings")
         .select("*")
         .eq("user_id", user.id)
-        .eq("status", "success") // Only successful savings
         .order("created_at", { ascending: true });
       
       if (error) throw error;
