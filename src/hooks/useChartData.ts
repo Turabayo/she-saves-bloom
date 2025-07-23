@@ -78,37 +78,51 @@ export const useChartData = () => {
     enabled: !!user?.id,
   });
 
-  // Process data for charts - combine topups and withdrawals by date
+  // Process data for charts - combine topups and withdrawals by date with real data
   const dailyVolumeData = () => {
     const dateMap = new Map();
     
-    // Process topups - use amounts instead of counts
+    // Process topups - use actual amounts from database
     topupData.forEach(topup => {
-      const date = new Date(topup.created_at).toLocaleDateString('en-US', { 
+      const date = new Date(topup.created_at);
+      const dateKey = date.toLocaleDateString('en-US', { 
         month: 'short', 
-        day: 'numeric' 
+        day: 'numeric',
+        year: 'numeric'
       });
-      const existing = dateMap.get(date) || { date, topups: 0, withdrawals: 0 };
+      const existing = dateMap.get(dateKey) || { 
+        date: dateKey, 
+        topups: 0, 
+        withdrawals: 0,
+        sortDate: date
+      };
       existing.topups += Number(topup.amount) || 0;
-      dateMap.set(date, existing);
+      dateMap.set(dateKey, existing);
     });
     
-    // Process withdrawals - use amounts instead of counts
+    // Process withdrawals - use actual amounts from database
     withdrawalData.forEach(withdrawal => {
-      const date = new Date(withdrawal.created_at).toLocaleDateString('en-US', { 
+      const date = new Date(withdrawal.created_at);
+      const dateKey = date.toLocaleDateString('en-US', { 
         month: 'short', 
-        day: 'numeric' 
+        day: 'numeric',
+        year: 'numeric'
       });
-      const existing = dateMap.get(date) || { date, topups: 0, withdrawals: 0 };
+      const existing = dateMap.get(dateKey) || { 
+        date: dateKey, 
+        topups: 0, 
+        withdrawals: 0,
+        sortDate: date
+      };
       existing.withdrawals += Number(withdrawal.amount) || 0;
-      dateMap.set(date, existing);
+      dateMap.set(dateKey, existing);
     });
     
-    return Array.from(dateMap.values()).sort((a, b) => {
-      const dateA = new Date(a.date + ' 2024');
-      const dateB = new Date(b.date + ' 2024');
-      return dateA.getTime() - dateB.getTime();
-    });
+    // Sort by actual date and return only the last 30 days for better visualization
+    return Array.from(dateMap.values())
+      .sort((a, b) => a.sortDate.getTime() - b.sortDate.getTime())
+      .slice(-30) // Show last 30 days
+      .map(({ sortDate, ...rest }) => rest); // Remove sortDate from final result
   };
 
   const transactionAmountData = [...transactionData, ...topupData, ...withdrawalData].reduce((acc: any[], item) => {
