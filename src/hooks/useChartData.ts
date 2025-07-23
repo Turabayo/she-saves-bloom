@@ -33,7 +33,7 @@ export const useChartData = () => {
         .from("topups")
         .select("*")
         .eq("user_id", user.id)
-        .eq("status", "SUCCESSFUL") // Only successful topups
+        // Remove status filter to show all topups including failed ones
         .order("created_at", { ascending: true });
       
       if (error) throw error;
@@ -51,7 +51,7 @@ export const useChartData = () => {
         .from("withdrawals")
         .select("*")
         .eq("user_id", user.id)
-        .eq("status", "completed") // Only completed withdrawals
+        // Remove status filter to show all withdrawals including failed ones
         .order("created_at", { ascending: true });
       
       if (error) throw error;
