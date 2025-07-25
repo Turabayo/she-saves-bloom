@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">shesaves</string>
+    <string name="title_activity_main">shesaves</string>
+    <string name="package_name">app.lovable.f57f84ba56c24aa5bd1d0f19d5ef2b7f</string>
+    <string name="custom_url_scheme">app.lovable.f57f84ba56c24aa5bd1d0f19d5ef2b7f</string>
+</resources>
