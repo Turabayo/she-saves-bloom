@@ -6,13 +6,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useIncome } from "@/hooks/useIncome";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface AddIncomeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
 }
 
-export const AddIncomeDialog = ({ open, onOpenChange }: AddIncomeDialogProps) => {
+export const AddIncomeDialog = ({ open, onOpenChange, onSuccess }: AddIncomeDialogProps) => {
   const [amount, setAmount] = useState("");
   const [source, setSource] = useState("");
   const [note, setNote] = useState("");
@@ -21,6 +23,7 @@ export const AddIncomeDialog = ({ open, onOpenChange }: AddIncomeDialogProps) =>
   
   const { addIncome } = useIncome();
   const { t } = useLanguage();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,12 +38,21 @@ export const AddIncomeDialog = ({ open, onOpenChange }: AddIncomeDialogProps) =>
         date,
       });
       
+      // Show success message
+      toast({
+        title: "Income Added! 💰",
+        description: `Successfully added ${parseFloat(amount).toLocaleString()} RWF from ${source}`,
+      });
+      
       // Reset form
       setAmount("");
       setSource("");
       setNote("");
       setDate(new Date().toISOString().split('T')[0]);
       onOpenChange(false);
+      
+      // Call success callback to navigate to income tab
+      onSuccess?.();
     } catch (error) {
       // Error is handled in the hook
     } finally {

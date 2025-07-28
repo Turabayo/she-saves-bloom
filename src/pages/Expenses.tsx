@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import { ExpensesList } from '@/components/ExpensesList';
 import { IncomeList } from '@/components/IncomeList';
@@ -9,6 +9,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const Expenses: React.FC = () => {
   const { t } = useLanguage();
+  const [activeTab, setActiveTab] = useState("income");
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -21,7 +22,7 @@ const Expenses: React.FC = () => {
             <p className="text-muted-foreground">Track and analyze your income and spending habits</p>
           </div>
 
-          <Tabs defaultValue="income" className="space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="income">Income</TabsTrigger>
               <TabsTrigger value="expenses">{t('expenses')}</TabsTrigger>
@@ -29,11 +30,11 @@ const Expenses: React.FC = () => {
             </TabsList>
             
             <TabsContent value="income">
-              <IncomeList />
+              <IncomeList onIncomeAdded={() => setActiveTab("income")} />
             </TabsContent>
             
             <TabsContent value="expenses">
-              <ExpensesList />
+              <ExpensesList onExpenseAdded={() => setActiveTab("expenses")} />
             </TabsContent>
             
             <TabsContent value="insights">

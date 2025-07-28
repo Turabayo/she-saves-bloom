@@ -7,9 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus } from "lucide-react";
 import { useSavingsGoals } from "@/hooks/useSavingsGoals";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface CreateGoalDialogProps {
   trigger?: React.ReactNode;
+  onSuccess?: () => void;
 }
 
 const goalCategories = [
@@ -24,7 +26,7 @@ const goalCategories = [
   { value: 'Investment', label: '📈 Investment', description: 'Future investments' },
 ];
 
-export const CreateGoalDialog = ({ trigger }: CreateGoalDialogProps) => {
+export const CreateGoalDialog = ({ trigger, onSuccess }: CreateGoalDialogProps) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -35,6 +37,7 @@ export const CreateGoalDialog = ({ trigger }: CreateGoalDialogProps) => {
   
   const { createGoal } = useSavingsGoals();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,6 +78,14 @@ export const CreateGoalDialog = ({ trigger }: CreateGoalDialogProps) => {
       // Reset form and close dialog
       setFormData({ name: '', category: '', goal_amount: '' });
       setOpen(false);
+      
+      // Call onSuccess callback or navigate to goals
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        // Navigate to savings dashboard to see the updated goals
+        navigate('/dashboard');
+      }
       
     } catch (error) {
       console.error('Error creating goal:', error);

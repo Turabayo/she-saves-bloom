@@ -13,7 +13,11 @@ import { format } from "date-fns";
 
 const INCOME_SOURCES = ['All', 'Salary', 'Freelance', 'Business', 'Investment', 'Gift', 'Other'];
 
-export const IncomeList = () => {
+interface IncomeListProps {
+  onIncomeAdded?: () => void;
+}
+
+export const IncomeList = ({ onIncomeAdded }: IncomeListProps) => {
   const { income, loading, deleteIncome } = useIncome();
   const { t } = useLanguage();
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -148,7 +152,8 @@ export const IncomeList = () => {
 
       <AddIncomeDialog 
         open={showAddDialog} 
-        onOpenChange={setShowAddDialog} 
+        onOpenChange={setShowAddDialog}
+        onSuccess={onIncomeAdded}
       />
     </Card>
   );

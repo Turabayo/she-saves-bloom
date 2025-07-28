@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import { useGoalTopUp } from '@/hooks/useGoalTopUp';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 
 interface TopUpDialogProps {
   open: boolean;
@@ -27,6 +29,8 @@ export const TopUpDialog = ({
 }: TopUpDialogProps) => {
   const [amount, setAmount] = useState('');
   const { topUpGoal, loading } = useGoalTopUp();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const remainingAmount = targetAmount - currentAmount;
   const maxAmount = Math.max(0, remainingAmount);
@@ -51,7 +55,19 @@ export const TopUpDialog = ({
     if (success) {
       setAmount('');
       onOpenChange(false);
-      onSuccess?.();
+      
+      // Show additional confirmation toast
+      toast({
+        title: "Top-up Successful! 💰",
+        description: `Successfully added ${formatCurrency(topUpAmount)} to ${goalName}`,
+      });
+      
+      // Call onSuccess callback or navigate back to dashboard
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        navigate('/dashboard');
+      }
     }
   };
 

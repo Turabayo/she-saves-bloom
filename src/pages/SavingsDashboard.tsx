@@ -172,6 +172,7 @@ const SavingsDashboard = () => {
                 Create New Goal
               </Button>
             }
+            onSuccess={refetchGoals}
           />
           <Button 
             onClick={() => navigate('/analytics')}
@@ -270,6 +271,7 @@ const SavingsDashboard = () => {
                     Create Your First Goal
                   </Button>
                 }
+                onSuccess={refetchGoals}
               />
             </CardContent>
           </Card>

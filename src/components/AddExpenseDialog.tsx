@@ -6,10 +6,12 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useExpenses, ExpenseInput } from '@/hooks/useExpenses';
+import { useToast } from '@/hooks/use-toast';
 
 interface AddExpenseDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
 }
 
 const EXPENSE_CATEGORIES = [
@@ -21,8 +23,9 @@ const EXPENSE_CATEGORIES = [
   'Other'
 ];
 
-export const AddExpenseDialog: React.FC<AddExpenseDialogProps> = ({ open, onOpenChange }) => {
+export const AddExpenseDialog: React.FC<AddExpenseDialogProps> = ({ open, onOpenChange, onSuccess }) => {
   const { addExpense, submitting } = useExpenses();
+  const { toast } = useToast();
   const [formData, setFormData] = useState<ExpenseInput>({
     amount: 0,
     category: '',
@@ -39,6 +42,12 @@ export const AddExpenseDialog: React.FC<AddExpenseDialogProps> = ({ open, onOpen
 
     const success = await addExpense(formData);
     if (success) {
+      // Show success message
+      toast({
+        title: "Expense Added! 📊",
+        description: `Successfully added ${formData.amount.toLocaleString()} RWF expense for ${formData.category}`,
+      });
+      
       setFormData({
         amount: 0,
         category: '',
@@ -46,6 +55,9 @@ export const AddExpenseDialog: React.FC<AddExpenseDialogProps> = ({ open, onOpen
         date: new Date().toISOString().split('T')[0]
       });
       onOpenChange(false);
+      
+      // Call success callback to navigate to expenses tab
+      onSuccess?.();
     }
   };
 

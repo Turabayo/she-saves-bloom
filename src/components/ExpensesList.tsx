@@ -11,7 +11,11 @@ import { format } from 'date-fns';
 
 const EXPENSE_CATEGORIES = ['All', 'Food', 'Transport', 'Rent', 'Health', 'School', 'Other'];
 
-export const ExpensesList: React.FC = () => {
+interface ExpensesListProps {
+  onExpenseAdded?: () => void;
+}
+
+export const ExpensesList: React.FC<ExpensesListProps> = ({ onExpenseAdded }) => {
   const { expenses, loading, deleteExpense } = useExpenses();
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [dateFilter, setDateFilter] = useState('');
@@ -142,7 +146,8 @@ export const ExpensesList: React.FC = () => {
 
       <AddExpenseDialog 
         open={showAddDialog} 
-        onOpenChange={setShowAddDialog} 
+        onOpenChange={setShowAddDialog}
+        onSuccess={onExpenseAdded}
       />
     </Card>
   );
