@@ -56,21 +56,32 @@ export const useExpenses = () => {
 
     try {
       setSubmitting(true);
-      const { error } = await supabase
+      
+      // Insert and get the new record with optimistic update
+      const { data, error } = await supabase
         .from('expenses')
         .insert({
           ...expenseData,
           user_id: user.id
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
 
+      // Optimistically add to state immediately
+      const newExpense = data as Expense;
+      setExpenses(prev => [newExpense, ...prev]);
+
+      // Wait for confirmation by refetching
+      await fetchExpenses();
+
+      // Only show toast after data is confirmed
       toast({
         title: "Expense added successfully",
         description: "Your expense has been recorded."
       });
 
-      await fetchExpenses();
       return true;
     } catch (error: any) {
       toast({

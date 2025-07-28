@@ -56,7 +56,13 @@ export const useIncome = () => {
 
       if (error) throw error;
 
+      // Optimistically update state immediately
       setIncome(prev => [data, ...prev]);
+      
+      // Wait for full data sync by refetching
+      await fetchIncome();
+      
+      // Only show toast after data is confirmed
       toast({
         title: "Success",
         description: "Income added successfully",
