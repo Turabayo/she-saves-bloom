@@ -14,9 +14,11 @@ const Landing = () => {
     },
     {
       icon: Shield,
-      title: "Secure Mobile Payments",
-      description: "Safe and reliable mobile money transactions with real-time SMS notifications."
+      title: "AI Savings Assistant",
+      description: "Get smart, personalized savings tips powered by AI—designed to guide your financial journey."
     },
+              
+            
     {
       icon: TrendingUp,
       title: "Financial Insights",
@@ -24,8 +26,9 @@ const Landing = () => {
     },
     {
       icon: Users,
-      title: "Built for Women",
-      description: "Designed specifically to empower women's financial independence and growth."
+      title: "Income & Expense Tracker",
+      description: "SheSaves is designed to help you manage and visualize your income and expenses in one place.",
+          
     }
   ];
 
@@ -62,13 +65,14 @@ const Landing = () => {
         <div className="flex flex-col text-center p-4 max-w-screen-xl mx-auto gap-y-6">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
-              Financial Empowerment for 
+              Financial Empowerment for <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary"> Women</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-              Save smart, invest wisely, and build your financial future with SheSaves. 
-              Track savings goals, make secure mobile payments, and get instant SMS notifications 
-              for all your transactions. Start your journey to financial independence today.
+            Save smart, invest with purpose, and start preparing your future with SheSaves.
+            Track your savings goals, receive instant updates, and take control of your 
+            journey to financial independence today.
+
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center gap-y-6">
               <Button 
@@ -125,7 +129,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Benefits Section */}
+     {/*{ Benefits Section }
       <section className="py-12 md:py-20 px-4 md:px-12">
         <div className="flex flex-col md:flex-row p-4 max-w-screen-xl mx-auto gap-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-center">
@@ -154,7 +158,7 @@ const Landing = () => {
                     <Phone className="w-10 h-10 text-primary-foreground" />
                   </div>
                   <h3 className="text-2xl font-bold text-foreground mb-4">
-                    SMS Notifications
+                     Notifications
                   </h3>
                   <p className="text-muted-foreground mb-6">
                     Get instant notifications when you reach your savings goals or complete transactions
@@ -170,7 +174,7 @@ const Landing = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section>*/}
 
       {/* Mobile Money Section */}
       <section className="py-12 md:py-20 px-4 md:px-12 bg-muted/30">
@@ -179,7 +183,7 @@ const Landing = () => {
             Mobile Money Made Simple
           </h2>
           <p className="text-xl text-muted-foreground mb-12 max-w-3xl mx-auto">
-            Seamlessly integrate with your mobile money provider for easy top-ups and withdrawals. 
+            Seamlessly integrate with your mobile money provider for easy top-ups. 
             Track all your transactions with detailed analytics and insights.
           </p>
           
@@ -192,13 +196,6 @@ const Landing = () => {
               </p>
             </Card>
             
-            <Card className="p-6 text-center">
-              <Phone className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-3">Instant Notifications</h3>
-              <p className="text-muted-foreground">
-                Receive SMS alerts for all transactions and goal achievements
-              </p>
-            </Card>
             
             <Card className="p-6 text-center">
               <TrendingUp className="w-12 h-12 text-primary mx-auto mb-4" />
