@@ -4,11 +4,12 @@ import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, BarChart, Bar, PieC
 import { useTransactionInsights } from "@/hooks/useTransactionInsights";
 import { useChartData } from "@/hooks/useChartData";
 import { useSavingsGoals } from "@/hooks/useSavingsGoals";
-import { formatCurrency } from "@/utils/dateFormatter";
+import { formatCurrency, formatCurrencyCompact } from "@/utils/dateFormatter";
+import { useRealSavingsInsights } from "@/hooks/useRealSavingsInsights";
 import { TrendingUp, DollarSign, Target, Activity } from "lucide-react";
 
 const Insights = () => {
-  const { insights, loading } = useTransactionInsights();
+  const { insights: realInsights, loading } = useRealSavingsInsights();
   const { goals, loading: goalsLoading } = useSavingsGoals();
   const { 
     dailyVolumeData, 
@@ -33,17 +34,15 @@ const Insights = () => {
     );
   }
 
-  // Always show charts with default data if no insights available
-  const defaultInsights = {
-    transactionCount: 0,
-    savingsGrowth: 0,
+  // Use real savings insights
+  const currentInsights = realInsights || {
+    totalSavings: 0,
     monthlyAverage: 0,
     totalDeposits: 0,
     totalWithdrawals: 0,
-    topCategories: []
+    savingsGrowth: 0,
+    transactionCount: 0
   };
-
-  const currentInsights = insights || defaultInsights;
 
   // Prepare savings by category data from goals
   const savingsByCategoryData = goals.length > 0 
@@ -97,11 +96,11 @@ const Insights = () => {
             <div className="bg-card rounded-xl p-6 shadow-sm">
               <div className="flex items-center gap-3 mb-2">
                 <DollarSign size={24} className="text-green-600" />
-                <span className="text-sm font-medium text-muted-foreground">Total Savings Growth</span>
-              </div>
-               <h3 className="text-2xl font-bold text-card-foreground">
-                 {formatCurrency(currentInsights.savingsGrowth)}
-               </h3>
+                  <span className="text-sm font-medium text-muted-foreground">Total Savings Growth</span>
+                </div>
+               <h3 className="text-xl md:text-2xl font-bold text-card-foreground">
+                  {formatCurrencyCompact(currentInsights.totalSavings)}
+                </h3>
              </div>
 
              <div className="bg-card rounded-xl p-6 shadow-sm">
@@ -109,9 +108,9 @@ const Insights = () => {
                  <TrendingUp size={24} className="text-blue-600" />
                  <span className="text-sm font-medium text-muted-foreground">Monthly Average</span>
                </div>
-               <h3 className="text-2xl font-bold text-card-foreground">
-                 {formatCurrency(currentInsights.monthlyAverage)}
-               </h3>
+                <h3 className="text-xl md:text-2xl font-bold text-card-foreground">
+                  {formatCurrencyCompact(currentInsights.monthlyAverage)}
+                </h3>
              </div>
 
              <div className="bg-card rounded-xl p-6 shadow-sm">
@@ -119,9 +118,9 @@ const Insights = () => {
                  <Target size={24} className="text-purple-600" />
                  <span className="text-sm font-medium text-muted-foreground">Total Deposits</span>
                </div>
-               <h3 className="text-2xl font-bold text-card-foreground">
-                 {formatCurrency(currentInsights.totalDeposits)}
-               </h3>
+                <h3 className="text-xl md:text-2xl font-bold text-card-foreground">
+                  {formatCurrencyCompact(currentInsights.totalDeposits)}
+                </h3>
              </div>
 
              <div className="bg-card rounded-xl p-6 shadow-sm">

@@ -22,14 +22,7 @@ import {
   ArrowUpCircle,
   ArrowDownCircle
 } from "lucide-react";
-
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('en-RW', {
-    style: 'currency',
-    currency: 'RWF',
-    minimumFractionDigits: 0,
-  }).format(amount);
-};
+import { formatCurrency, formatCurrencyCompact } from "@/utils/dateFormatter";
 
 const SavingsDashboard = () => {
   const navigate = useNavigate();
@@ -108,8 +101,8 @@ const SavingsDashboard = () => {
               <PiggyBank className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-primary">
-                {formatCurrency(totalSavings)}
+              <div className="text-lg md:text-2xl font-bold text-primary">
+                {formatCurrencyCompact(totalSavings)}
               </div>
               <p className="text-xs text-muted-foreground">
                 Across all goals
@@ -153,8 +146,8 @@ const SavingsDashboard = () => {
               <ChartLine className="h-4 w-4 text-accent" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-foreground">
-                {formatCurrency(totalGoalValue)}
+              <div className="text-lg md:text-2xl font-bold text-foreground">
+                {formatCurrencyCompact(totalGoalValue)}
               </div>
               <p className="text-xs text-muted-foreground">
                 Total target

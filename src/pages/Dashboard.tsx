@@ -9,7 +9,7 @@ import { useSavings } from "@/hooks/useSavings";
 import { useTopUps } from "@/hooks/useTopUps";
 import { useWithdrawals } from "@/hooks/useWithdrawals";
 import { useTransactionInsights } from "@/hooks/useTransactionInsights";
-import { formatCurrency, formatDate } from "@/utils/dateFormatter";
+import { formatCurrency, formatCurrencyCompact, formatDate } from "@/utils/dateFormatter";
 import FloatingAIButton from "@/components/FloatingAIButton";
 import TransactionHistory from "@/components/TransactionHistory";
 import { TransactionCharts } from "@/components/TransactionCharts";
@@ -55,9 +55,25 @@ const Dashboard = () => {
 
   if (!user) return null;
 
-  // Use insights data for more accurate calculations
-  const totalSavings = insights?.savingsGrowth || 0;
-  const monthlyAverage = insights?.monthlyAverage || 0;
+  // Use real savings data instead of transaction insights
+  const totalSavings = savings.reduce((sum, saving) => sum + saving.amount, 0);
+  
+  // Calculate monthly average from actual savings data
+  const now = new Date();
+  const monthsData = new Map<string, number>();
+  
+  savings.forEach(saving => {
+    const date = new Date(saving.created_at);
+    const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
+    
+    if (!monthsData.has(monthKey)) {
+      monthsData.set(monthKey, 0);
+    }
+    monthsData.set(monthKey, monthsData.get(monthKey)! + saving.amount);
+  });
+
+  const totalMonths = Math.max(monthsData.size, 1);
+  const monthlyAverage = totalSavings / totalMonths;
 
   return (
     <div className="min-h-screen bg-background">
@@ -83,8 +99,8 @@ const Dashboard = () => {
                   <Target size={20} className="text-primary" />
                   <span className="text-sm font-medium text-muted-foreground">Total Savings</span>
                 </div>
-                <div className="text-xl font-bold text-card-foreground">
-                  {formatCurrency(totalSavings)}
+                <div className="text-lg font-bold text-card-foreground">
+                  {formatCurrencyCompact(totalSavings)}
                 </div>
               </Card>
               
@@ -93,8 +109,8 @@ const Dashboard = () => {
                   <TrendingUp size={20} className="text-primary" />
                   <span className="text-sm font-medium text-muted-foreground">Monthly Avg</span>
                 </div>
-                <div className="text-xl font-bold text-card-foreground">
-                  {formatCurrency(monthlyAverage)}
+                <div className="text-lg font-bold text-card-foreground">
+                  {formatCurrencyCompact(monthlyAverage)}
                 </div>
               </Card>
             </div>
@@ -155,7 +171,7 @@ const Dashboard = () => {
                   {topUps.slice(0, 3).map((topUp) => (
                     <div key={topUp.id} className="flex justify-between items-center">
                       <div>
-                        <p className="font-medium text-card-foreground">{formatCurrency(topUp.amount)}</p>
+                        <p className="font-medium text-card-foreground">{formatCurrencyCompact(topUp.amount)}</p>
                         <p className="text-sm text-muted-foreground">{formatDate(topUp.created_at)}</p>
                       </div>
                       <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded">
@@ -197,7 +213,7 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-primary">
-                  {formatCurrency(totalSavings)}
+                  {formatCurrencyCompact(totalSavings)}
                 </div>
               </CardContent>
             </Card>
@@ -211,7 +227,7 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-primary">
-                  {formatCurrency(monthlyAverage)}
+                  {formatCurrencyCompact(monthlyAverage)}
                 </div>
               </CardContent>
             </Card>

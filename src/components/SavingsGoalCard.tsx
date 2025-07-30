@@ -12,13 +12,7 @@ interface SavingsGoalCardProps {
   className?: string;
 }
 
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('en-RW', {
-    style: 'currency',
-    currency: 'RWF',
-    minimumFractionDigits: 0,
-  }).format(amount);
-};
+import { formatCurrency, formatCurrencyCompact } from "@/utils/dateFormatter";
 
 const getCategoryIcon = (category: string) => {
   const icons: Record<string, string> = {
@@ -72,11 +66,11 @@ export const SavingsGoalCard = ({ goal, onTopUp, onWithdraw, className = "" }: S
             className="h-3 progress-fill"
           />
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">
-              {formatCurrency(currentAmount)}
+            <span className="text-muted-foreground text-xs sm:text-sm">
+              {formatCurrencyCompact(currentAmount)}
             </span>
-            <span className="font-medium">
-              {formatCurrency(goal.goal_amount)}
+            <span className="font-medium text-xs sm:text-sm">
+              {formatCurrencyCompact(goal.goal_amount)}
             </span>
           </div>
         </div>
@@ -86,15 +80,15 @@ export const SavingsGoalCard = ({ goal, onTopUp, onWithdraw, className = "" }: S
           <div className="flex items-center gap-2 text-sm">
             <TrendingUp className="h-4 w-4 text-success" />
             <span className="text-muted-foreground">Saved</span>
-            <span className="font-medium text-success">
-              {formatCurrency(currentAmount)}
+            <span className="font-medium text-success text-xs">
+              {formatCurrencyCompact(currentAmount)}
             </span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Target className="h-4 w-4 text-primary" />
             <span className="text-muted-foreground">Remaining</span>
-            <span className="font-medium">
-              {formatCurrency(Math.max(0, goal.goal_amount - currentAmount))}
+            <span className="font-medium text-xs">
+              {formatCurrencyCompact(Math.max(0, goal.goal_amount - currentAmount))}
             </span>
           </div>
         </div>

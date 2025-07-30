@@ -116,10 +116,13 @@ export const useChartData = () => {
       dateMap.set(dateKey, existing);
     });
     
-    // Sort by actual date and return only the last 30 days for better visualization
+    // Get current date and filter data from the last 30 days
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
     return Array.from(dateMap.values())
+      .filter(entry => entry.sortDate >= thirtyDaysAgo)
       .sort((a, b) => a.sortDate.getTime() - b.sortDate.getTime())
-      .slice(-30) // Show last 30 days
       .map(({ sortDate, ...rest }) => rest); // Remove sortDate from final result
   };
 
