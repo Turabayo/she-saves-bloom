@@ -43,23 +43,23 @@ export const useRealSavingsInsights = () => {
 
       console.log('Total savings calculated:', totalSavings);
 
-      // Calculate total deposits from ALL topups (not just successful ones since we need the real total)
-      // But filter for successful ones to match the actual money deposited
+      // Calculate total deposits from topups - include all statuses for chart display
+      const allTopUps = topUps || [];
+      
+      // For actual money calculations, only count successful ones
       const successfulTopUps = topUps.filter(topup => 
         topup.status === 'SUCCESSFUL' || topup.status === 'success' || topup.status === 'completed'
       );
       
-      const totalDeposits = successfulTopUps.reduce((sum, topup) => sum + topup.amount, 0);
+      // For insights, show total deposit attempts (including failed ones for transparency)
+      const totalDeposits = allTopUps.reduce((sum, topup) => sum + topup.amount, 0);
 
       console.log('Successful topups:', successfulTopUps);
       console.log('Total deposits calculated:', totalDeposits);
 
-      // Calculate total withdrawals (completed/successful only)
-      const successfulWithdrawals = withdrawals.filter(withdrawal => 
-        withdrawal.status === 'completed' || withdrawal.status === 'success'
-      );
-      
-      const totalWithdrawals = successfulWithdrawals.reduce((sum, withdrawal) => sum + withdrawal.amount, 0);
+      // Calculate total withdrawals - include all attempts for transparency
+      const allWithdrawals = withdrawals || [];
+      const totalWithdrawals = allWithdrawals.reduce((sum, withdrawal) => sum + withdrawal.amount, 0);
 
       console.log('Total withdrawals calculated:', totalWithdrawals);
 

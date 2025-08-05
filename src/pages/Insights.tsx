@@ -93,15 +93,15 @@ const Insights = () => {
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-card rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-2">
-                <DollarSign size={24} className="text-green-600" />
-                  <span className="text-sm font-medium text-muted-foreground">Total Savings Growth</span>
-                </div>
-               <h3 className="text-xl md:text-2xl font-bold text-card-foreground">
-                  {formatCurrencyCompact(currentInsights.totalSavings)}
-                </h3>
-             </div>
+             <div className="bg-card rounded-xl p-6 shadow-sm">
+               <div className="flex items-center gap-3 mb-2">
+                 <DollarSign size={24} className="text-green-600" />
+                   <span className="text-sm font-medium text-muted-foreground">Total Savings Growth</span>
+                 </div>
+                <h3 className="text-xl md:text-2xl font-bold text-card-foreground">
+                   {formatCurrencyCompact(currentInsights.savingsGrowth)}
+                 </h3>
+              </div>
 
              <div className="bg-card rounded-xl p-6 shadow-sm">
                <div className="flex items-center gap-3 mb-2">
