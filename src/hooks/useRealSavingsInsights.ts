@@ -67,28 +67,57 @@ export const useRealSavingsInsights = () => {
       let monthlyAverage = 0;
       
       if (totalSavings > 0) {
-        // Get all unique months that have savings data
-        const monthsWithSavings = new Set<string>();
+        // Get all unique months that have any activity (savings, topups, or withdrawals)
+        const monthsWithActivity = new Set<string>();
         
+        // Add months from successful savings
         savings
           .filter(saving => saving.status === 'success')
           .forEach(saving => {
             const date = new Date(saving.created_at);
             const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
-            monthsWithSavings.add(monthKey);
+            monthsWithActivity.add(monthKey);
           });
 
-        // Also consider months with topups
-        successfulTopUps.forEach(topup => {
+        // Add months from all topups (to track activity regardless of success)
+        allTopUps.forEach(topup => {
           const date = new Date(topup.created_at);
           const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
-          monthsWithSavings.add(monthKey);
+          monthsWithActivity.add(monthKey);
         });
 
-        const totalMonthsWithActivity = Math.max(monthsWithSavings.size, 1);
+        // Add months from all withdrawals (to track activity)
+        allWithdrawals.forEach(withdrawal => {
+          const date = new Date(withdrawal.created_at);
+          const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
+          monthsWithActivity.add(monthKey);
+        });
+
+        // If no months found, calculate based on time since first transaction
+        let totalMonthsWithActivity = monthsWithActivity.size;
+        
+        if (totalMonthsWithActivity === 0) {
+          // Find the earliest transaction date across all data
+          const allDates = [
+            ...savings.map(s => new Date(s.created_at)),
+            ...allTopUps.map(t => new Date(t.created_at)),
+            ...allWithdrawals.map(w => new Date(w.created_at))
+          ].sort((a, b) => a.getTime() - b.getTime());
+          
+          if (allDates.length > 0) {
+            const firstDate = allDates[0];
+            const now = new Date();
+            const monthsDiff = (now.getFullYear() - firstDate.getFullYear()) * 12 + (now.getMonth() - firstDate.getMonth()) + 1;
+            totalMonthsWithActivity = Math.max(monthsDiff, 1);
+          } else {
+            totalMonthsWithActivity = 1;
+          }
+        }
+
         monthlyAverage = totalSavings / totalMonthsWithActivity;
 
-        console.log('Months with activity:', monthsWithSavings.size);
+        console.log('Months with activity:', monthsWithActivity.size);
+        console.log('Total months for calculation:', totalMonthsWithActivity);
         console.log('Monthly average calculated:', monthlyAverage);
       }
 
