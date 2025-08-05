@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -29,14 +30,16 @@ export const useTopUps = () => {
     if (!user) return;
 
     try {
+      // Fetch ALL topups for proper insights calculation, not just successful ones
       const { data, error } = await supabase
         .from('topups')
         .select('*')
         .eq('user_id', user.id)
-        .eq('status', 'SUCCESSFUL')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+      
+      console.log('Fetched topups:', data);
       setTopUps(data || []);
     } catch (error: any) {
       console.error('Error fetching top-ups:', error);
@@ -51,16 +54,22 @@ export const useTopUps = () => {
   };
 
   const getTotalSavings = () => {
-    return topUps.reduce((total, topUp) => total + topUp.amount, 0);
+    // Only count successful topups for total savings
+    return topUps
+      .filter(topUp => topUp.status === 'SUCCESSFUL' || topUp.status === 'success')
+      .reduce((total, topUp) => total + topUp.amount, 0);
   };
 
   const getMonthlyAverage = () => {
-    if (topUps.length === 0) return 0;
+    const successfulTopUps = topUps.filter(topUp => 
+      topUp.status === 'SUCCESSFUL' || topUp.status === 'success'
+    );
     
-    const now = new Date();
+    if (successfulTopUps.length === 0) return 0;
+    
     const monthsData = new Map();
     
-    topUps.forEach(topUp => {
+    successfulTopUps.forEach(topUp => {
       const date = new Date(topUp.created_at);
       const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
       

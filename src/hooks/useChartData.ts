@@ -32,7 +32,6 @@ export const useChartData = () => {
         .from("topups")
         .select("*")
         .eq("user_id", user.id)
-        // Remove status filter to show all topups including failed ones
         .order("created_at", { ascending: true });
       
       if (error) throw error;
@@ -50,7 +49,6 @@ export const useChartData = () => {
         .from("withdrawals")
         .select("*")
         .eq("user_id", user.id)
-        // Remove status filter to show all withdrawals including failed ones
         .order("created_at", { ascending: true });
       
       if (error) throw error;
@@ -76,52 +74,61 @@ export const useChartData = () => {
     enabled: !!user?.id,
   });
 
-  // Process data for charts - combine topups and withdrawals by date with real data
+  // Process data for charts - combine topups and withdrawals by date with proper date handling
   const dailyVolumeData = () => {
     const dateMap = new Map();
+    
+    // Get current date and calculate 30 days ago properly
+    const currentDate = new Date();
+    const thirtyDaysAgo = new Date(currentDate);
+    thirtyDaysAgo.setDate(currentDate.getDate() - 30);
+    
+    console.log('Current date:', currentDate.toISOString());
+    console.log('Filtering from:', thirtyDaysAgo.toISOString());
     
     // Process topups - use actual amounts from database
     topupData.forEach(topup => {
       const date = new Date(topup.created_at);
-      const dateKey = date.toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric',
-        year: 'numeric'
-      });
-      const existing = dateMap.get(dateKey) || { 
-        date: dateKey, 
-        topups: 0, 
-        withdrawals: 0,
-        sortDate: date
-      };
-      existing.topups += Number(topup.amount) || 0;
-      dateMap.set(dateKey, existing);
+      
+      // Only include data from the last 30 days
+      if (date >= thirtyDaysAgo && date <= currentDate) {
+        const dateKey = date.toLocaleDateString('en-US', { 
+          month: 'short', 
+          day: 'numeric'
+        });
+        const existing = dateMap.get(dateKey) || { 
+          date: dateKey, 
+          topups: 0, 
+          withdrawals: 0,
+          sortDate: date
+        };
+        existing.topups += Number(topup.amount) || 0;
+        dateMap.set(dateKey, existing);
+      }
     });
     
     // Process withdrawals - use actual amounts from database
     withdrawalData.forEach(withdrawal => {
       const date = new Date(withdrawal.created_at);
-      const dateKey = date.toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric',
-        year: 'numeric'
-      });
-      const existing = dateMap.get(dateKey) || { 
-        date: dateKey, 
-        topups: 0, 
-        withdrawals: 0,
-        sortDate: date
-      };
-      existing.withdrawals += Number(withdrawal.amount) || 0;
-      dateMap.set(dateKey, existing);
+      
+      // Only include data from the last 30 days
+      if (date >= thirtyDaysAgo && date <= currentDate) {
+        const dateKey = date.toLocaleDateString('en-US', { 
+          month: 'short', 
+          day: 'numeric'
+        });
+        const existing = dateMap.get(dateKey) || { 
+          date: dateKey, 
+          topups: 0, 
+          withdrawals: 0,
+          sortDate: date
+        };
+        existing.withdrawals += Number(withdrawal.amount) || 0;
+        dateMap.set(dateKey, existing);
+      }
     });
     
-    // Get current date and filter data from the last 30 days
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
     return Array.from(dateMap.values())
-      .filter(entry => entry.sortDate >= thirtyDaysAgo)
       .sort((a, b) => a.sortDate.getTime() - b.sortDate.getTime())
       .map(({ sortDate, ...rest }) => rest); // Remove sortDate from final result
   };
@@ -139,7 +146,7 @@ export const useChartData = () => {
     return acc;
   }, []);
 
-  // Only count successful transactions in the pie chart - remove transfers
+  // Only count successful transactions in the pie chart
   const transactionTypeData = [
     { 
       name: "Top-ups", 
@@ -157,20 +164,6 @@ export const useChartData = () => {
       color: "hsl(var(--chart-3))" 
     }
   ].filter(item => item.value > 0); // Only show categories with data
-
-  // Agent performance data (using user data as proxy) - only successful transactions
-  const agentPerformanceData = [
-    { 
-      name: "Current User", 
-      withdrawals: withdrawalData.length, // Only successful withdrawals
-      deposits: topupData.length // Only successful deposits
-    },
-    { 
-      name: "Other Users", 
-      withdrawals: Math.floor(withdrawalData.length * 0.8), 
-      deposits: Math.floor(topupData.length * 1.2) 
-    }
-  ];
 
   return {
     dailyVolumeData: dailyVolumeData(),

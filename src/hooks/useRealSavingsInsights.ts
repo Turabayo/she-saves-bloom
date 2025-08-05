@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSavings } from '@/hooks/useSavings';
@@ -30,34 +31,66 @@ export const useRealSavingsInsights = () => {
     try {
       setLoading(true);
 
-      // Calculate total savings from savings table
+      console.log('=== CALCULATING INSIGHTS ===');
+      console.log('Savings data:', savings);
+      console.log('TopUps data:', topUps);
+      console.log('Withdrawals data:', withdrawals);
+
+      // Calculate total savings from savings table (successful only)
       const totalSavings = savings
         .filter(saving => saving.status === 'success')
         .reduce((sum, saving) => sum + saving.amount, 0);
 
-      // Calculate total deposits from topups
-      const totalDeposits = topUps.reduce((sum, topup) => sum + topup.amount, 0);
+      console.log('Total savings calculated:', totalSavings);
 
-      // Calculate total withdrawals
-      const totalWithdrawals = withdrawals
-        .filter(withdrawal => withdrawal.status === 'completed' || withdrawal.status === 'success')
-        .reduce((sum, withdrawal) => sum + withdrawal.amount, 0);
-
-      // Calculate monthly average from savings data
-      const monthsData = new Map<string, number>();
+      // Calculate total deposits from ALL topups (not just successful ones since we need the real total)
+      // But filter for successful ones to match the actual money deposited
+      const successfulTopUps = topUps.filter(topup => 
+        topup.status === 'SUCCESSFUL' || topup.status === 'success' || topup.status === 'completed'
+      );
       
-      savings.forEach(saving => {
-        const date = new Date(saving.created_at);
-        const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
-        
-        if (!monthsData.has(monthKey)) {
-          monthsData.set(monthKey, 0);
-        }
-        monthsData.set(monthKey, monthsData.get(monthKey)! + saving.amount);
-      });
+      const totalDeposits = successfulTopUps.reduce((sum, topup) => sum + topup.amount, 0);
 
-      const totalMonths = Math.max(monthsData.size, 1);
-      const monthlyAverage = totalSavings / totalMonths;
+      console.log('Successful topups:', successfulTopUps);
+      console.log('Total deposits calculated:', totalDeposits);
+
+      // Calculate total withdrawals (completed/successful only)
+      const successfulWithdrawals = withdrawals.filter(withdrawal => 
+        withdrawal.status === 'completed' || withdrawal.status === 'success'
+      );
+      
+      const totalWithdrawals = successfulWithdrawals.reduce((sum, withdrawal) => sum + withdrawal.amount, 0);
+
+      console.log('Total withdrawals calculated:', totalWithdrawals);
+
+      // Calculate proper monthly average based on actual calendar months with data
+      let monthlyAverage = 0;
+      
+      if (totalSavings > 0) {
+        // Get all unique months that have savings data
+        const monthsWithSavings = new Set<string>();
+        
+        savings
+          .filter(saving => saving.status === 'success')
+          .forEach(saving => {
+            const date = new Date(saving.created_at);
+            const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
+            monthsWithSavings.add(monthKey);
+          });
+
+        // Also consider months with topups
+        successfulTopUps.forEach(topup => {
+          const date = new Date(topup.created_at);
+          const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
+          monthsWithSavings.add(monthKey);
+        });
+
+        const totalMonthsWithActivity = Math.max(monthsWithSavings.size, 1);
+        monthlyAverage = totalSavings / totalMonthsWithActivity;
+
+        console.log('Months with activity:', monthsWithSavings.size);
+        console.log('Monthly average calculated:', monthlyAverage);
+      }
 
       // Savings growth is total deposits minus withdrawals
       const savingsGrowth = totalDeposits - totalWithdrawals;
@@ -65,14 +98,18 @@ export const useRealSavingsInsights = () => {
       // Transaction count
       const transactionCount = topUps.length + withdrawals.length + savings.length;
 
-      setInsights({
+      const calculatedInsights = {
         totalSavings,
         monthlyAverage,
         totalDeposits,
         totalWithdrawals,
         savingsGrowth,
         transactionCount
-      });
+      };
+
+      console.log('Final calculated insights:', calculatedInsights);
+
+      setInsights(calculatedInsights);
 
     } catch (error) {
       console.error('Error calculating real savings insights:', error);
