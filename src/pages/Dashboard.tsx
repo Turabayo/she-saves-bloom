@@ -8,7 +8,7 @@ import Navigation from "@/components/Navigation";
 import { useSavings } from "@/hooks/useSavings";
 import { useTopUps } from "@/hooks/useTopUps";
 import { useWithdrawals } from "@/hooks/useWithdrawals";
-import { useTransactionInsights } from "@/hooks/useTransactionInsights";
+import { useRealSavingsInsights } from "@/hooks/useRealSavingsInsights";
 import { formatCurrency, formatCurrencyCompact, formatDate } from "@/utils/dateFormatter";
 import FloatingAIButton from "@/components/FloatingAIButton";
 import TransactionHistory from "@/components/TransactionHistory";
@@ -21,11 +21,9 @@ import { useToast } from "@/hooks/use-toast";
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { savings } = useSavings();
-  
   const { topUps, loading: topUpsLoading } = useTopUps();
   const { loading: withdrawalsLoading } = useWithdrawals();
-  const { insights, loading: insightsLoading } = useTransactionInsights();
+  const { insights, loading: insightsLoading } = useRealSavingsInsights();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -55,25 +53,9 @@ const Dashboard = () => {
 
   if (!user) return null;
 
-  // Use real savings data instead of transaction insights
-  const totalSavings = savings.reduce((sum, saving) => sum + saving.amount, 0);
-  
-  // Calculate monthly average from actual savings data
-  const now = new Date();
-  const monthsData = new Map<string, number>();
-  
-  savings.forEach(saving => {
-    const date = new Date(saving.created_at);
-    const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
-    
-    if (!monthsData.has(monthKey)) {
-      monthsData.set(monthKey, 0);
-    }
-    monthsData.set(monthKey, monthsData.get(monthKey)! + saving.amount);
-  });
-
-  const totalMonths = Math.max(monthsData.size, 1);
-  const monthlyAverage = totalSavings / totalMonths;
+  // Use synchronized insights data
+  const totalSavings = insights?.totalSavings || 0;
+  const monthlyAverage = insights?.monthlyAverage || 0;
 
   return (
     <div className="min-h-screen bg-background">
