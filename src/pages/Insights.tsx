@@ -55,13 +55,23 @@ const Insights = () => {
         { name: 'No savings goals', amount: 0, goal_amount: 0 }
       ];
 
-  // Prepare category distribution data from goals
+  // Prepare category distribution data from goals - group by category
   const categoryData = goals.length > 0 
-    ? goals.map((goal, index) => ({
-        name: goal.category,
-        value: goal.current_amount || 0,
-        color: `hsl(${(index * 60) % 360}, 70%, 50%)`
-      }))
+    ? (() => {
+        const categoryMap = new Map();
+        goals.forEach((goal) => {
+          const existing = categoryMap.get(goal.category) || 0;
+          categoryMap.set(goal.category, existing + (goal.current_amount || 0));
+        });
+        
+        return Array.from(categoryMap.entries())
+          .filter(([_, value]) => value > 0) // Only show categories with savings
+          .map(([category, amount], index) => ({
+            name: category,
+            value: amount,
+            color: `hsl(var(--chart-${(index % 5) + 1}))`
+          }));
+      })()
     : [
         { name: 'No data', value: 1, color: 'hsl(var(--chart-1))' }
       ];
