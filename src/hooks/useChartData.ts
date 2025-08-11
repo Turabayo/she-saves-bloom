@@ -74,79 +74,89 @@ export const useChartData = () => {
     enabled: !!user?.id,
   });
 
-  // Process data for charts - combine topups and withdrawals by date with proper date handling
+  // Process data for charts - show all data regardless of date range for better visualization
   const dailyVolumeData = () => {
     const dateMap = new Map();
     
-    // Get current date and calculate 30 days ago properly
-    const currentDate = new Date();
-    const thirtyDaysAgo = new Date(currentDate);
-    thirtyDaysAgo.setDate(currentDate.getDate() - 30);
+    console.log('Processing chart data...');
+    console.log('Topup data length:', topupData.length);
+    console.log('Withdrawal data length:', withdrawalData.length);
     
-    console.log('Current date:', currentDate.toISOString());
-    console.log('Filtering from:', thirtyDaysAgo.toISOString());
-    
-    // Process topups - use actual amounts from database
+    // Process ALL topups (not just last 30 days) - show all data for better insights
     topupData.forEach(topup => {
       const date = new Date(topup.created_at);
-      
-      // Only include data from the last 30 days
-      if (date >= thirtyDaysAgo && date <= currentDate) {
-        const dateKey = date.toLocaleDateString('en-US', { 
-          month: 'short', 
-          day: 'numeric'
-        });
-        const existing = dateMap.get(dateKey) || { 
-          date: dateKey, 
-          topups: 0, 
-          withdrawals: 0,
-          sortDate: date
-        };
-        existing.topups += Number(topup.amount) || 0;
-        dateMap.set(dateKey, existing);
-      }
+      const dateKey = date.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        year: '2-digit'
+      });
+      const existing = dateMap.get(dateKey) || { 
+        date: dateKey, 
+        topups: 0, 
+        withdrawals: 0,
+        sortDate: date
+      };
+      existing.topups += Number(topup.amount) || 0;
+      dateMap.set(dateKey, existing);
     });
     
-    // Process withdrawals - use actual amounts from database
+    // Process ALL withdrawals
     withdrawalData.forEach(withdrawal => {
       const date = new Date(withdrawal.created_at);
-      
-      // Only include data from the last 30 days
-      if (date >= thirtyDaysAgo && date <= currentDate) {
-        const dateKey = date.toLocaleDateString('en-US', { 
-          month: 'short', 
-          day: 'numeric'
-        });
-        const existing = dateMap.get(dateKey) || { 
-          date: dateKey, 
-          topups: 0, 
-          withdrawals: 0,
-          sortDate: date
-        };
-        existing.withdrawals += Number(withdrawal.amount) || 0;
-        dateMap.set(dateKey, existing);
-      }
+      const dateKey = date.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        year: '2-digit'
+      });
+      const existing = dateMap.get(dateKey) || { 
+        date: dateKey, 
+        topups: 0, 
+        withdrawals: 0,
+        sortDate: date
+      };
+      existing.withdrawals += Number(withdrawal.amount) || 0;
+      dateMap.set(dateKey, existing);
     });
     
-    return Array.from(dateMap.values())
+    const result = Array.from(dateMap.values())
       .sort((a, b) => a.sortDate.getTime() - b.sortDate.getTime())
-      .map(({ sortDate, ...rest }) => rest); // Remove sortDate from final result
+      .map(({ sortDate, ...rest }) => rest);
+    
+    console.log('Daily volume data result:', result);
+    return result;
   };
 
-  const transactionAmountData = [...transactionData, ...topupData, ...withdrawalData].reduce((acc: any[], item) => {
-    const month = new Date(item.created_at).toLocaleDateString('en-US', { month: 'short' });
-    const existingEntry = acc.find(entry => entry.month === month);
-    const amount = Number(item.amount) || 0;
-    
-    if (existingEntry) {
-      existingEntry.amount += amount;
-    } else {
-      acc.push({ month, amount });
-    }
-    return acc;
-  }, []);
+  // Combine all transaction data for monthly amounts
+  const transactionAmountData = () => {
+    const allTransactions = [
+      ...transactionData.map(t => ({ ...t, type: 'transaction' })),
+      ...topupData.map(t => ({ ...t, type: 'topup' })),
+      ...withdrawalData.map(w => ({ ...w, type: 'withdrawal' }))
+    ];
 
-  // Only count successful transactions in the pie chart
+    return allTransactions.reduce((acc: any[], item) => {
+      const month = new Date(item.created_at).toLocaleDateString('en-US', { 
+        month: 'short',
+        year: '2-digit'
+      });
+      const existingEntry = acc.find(entry => entry.month === month);
+      const amount = Number(item.amount) || 0;
+      
+      if (existingEntry) {
+        existingEntry.amount += amount;
+      } else {
+        acc.push({ month, amount });
+      }
+      return acc;
+    }, []).sort((a, b) => {
+      // Sort by date
+      const dateA = new Date(a.month + ' 01');
+      const dateB = new Date(b.month + ' 01');
+      return dateA.getTime() - dateB.getTime();
+    });
+  };
+
+  // Count all transactions by type (including failed ones for transparency)
   const transactionTypeData = [
     { 
       name: "Top-ups", 
@@ -163,11 +173,11 @@ export const useChartData = () => {
       value: savingsData.length, 
       color: "hsl(var(--chart-3))" 
     }
-  ].filter(item => item.value > 0); // Only show categories with data
+  ].filter(item => item.value > 0);
 
   return {
     dailyVolumeData: dailyVolumeData(),
-    transactionAmountData,
+    transactionAmountData: transactionAmountData(),
     transactionTypeData,
     isLoading: transactionsLoading || topupsLoading || withdrawalsLoading || savingsLoading
   };
