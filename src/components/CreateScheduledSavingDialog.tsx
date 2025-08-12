@@ -11,9 +11,10 @@ import { useLanguage } from "@/contexts/LanguageContext";
 interface CreateScheduledSavingDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
 }
 
-export const CreateScheduledSavingDialog = ({ open, onOpenChange }: CreateScheduledSavingDialogProps) => {
+export const CreateScheduledSavingDialog = ({ open, onOpenChange, onSuccess }: CreateScheduledSavingDialogProps) => {
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
   const [frequency, setFrequency] = useState<"weekly" | "monthly" | "one-time">("monthly");
@@ -48,6 +49,7 @@ export const CreateScheduledSavingDialog = ({ open, onOpenChange }: CreateSchedu
       setFrequency("monthly");
       setGoalId("");
       setNextExecutionDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
+      onSuccess?.();
       onOpenChange(false);
     } catch (error) {
       // Error is handled in the hook

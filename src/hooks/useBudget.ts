@@ -26,13 +26,13 @@ export const useBudget = () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('budgets')
+        .from('budgets' as any)
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setBudgets((data || []) as Budget[]);
+      setBudgets((data || []) as any);
     } catch (error) {
       console.error('Error fetching budgets:', error);
       toast({
@@ -50,14 +50,14 @@ export const useBudget = () => {
 
     try {
       const { data, error } = await supabase
-        .from('budgets')
+        .from('budgets' as any)
         .insert([{ ...budgetData, user_id: user.id }])
         .select()
         .single();
 
       if (error) throw error;
 
-      setBudgets(prev => [data as Budget, ...prev]);
+      setBudgets(prev => [data as any, ...prev]);
       toast({
         title: "Success",
         description: "Budget created successfully",
@@ -79,7 +79,7 @@ export const useBudget = () => {
 
     try {
       const { data, error } = await supabase
-        .from('budgets')
+        .from('budgets' as any)
         .update(updates)
         .eq('id', id)
         .eq('user_id', user.id)
@@ -88,7 +88,7 @@ export const useBudget = () => {
 
       if (error) throw error;
 
-      setBudgets(prev => prev.map(item => item.id === id ? data as Budget : item));
+      setBudgets(prev => prev.map(item => item.id === id ? data as any : item));
       toast({
         title: "Success",
         description: "Budget updated successfully",
@@ -110,7 +110,7 @@ export const useBudget = () => {
 
     try {
       const { error } = await supabase
-        .from('budgets')
+        .from('budgets' as any)
         .delete()
         .eq('id', id)
         .eq('user_id', user.id);
