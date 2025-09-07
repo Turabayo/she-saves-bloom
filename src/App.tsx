@@ -17,7 +17,7 @@ import Insights from "./pages/Insights";
 import Expenses from "./pages/Expenses";
 import Budget from "./pages/Budget";
 import AutomatedSavings from "./pages/AutomatedSavings";
-import Community from "./pages/Community";
+
 import Assistant from "./pages/Assistant";
 import Settings from "./pages/Settings";
 import TopUp from "./pages/TopUp";
@@ -43,7 +43,7 @@ const AppContent = () => {
           <Route path="/automated-savings" element={<AutomatedSavings />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/analytics" element={<Insights />} />
-          <Route path="/community" element={<Community />} />
+          
           <Route path="/assistant" element={<Assistant />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/top-up" element={<TopUp />} />

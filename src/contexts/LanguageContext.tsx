@@ -47,8 +47,8 @@ const translations = {
     // Export & Help
     exportSuccess: 'Export completed successfully',
     exportError: 'Error generating export',
-    helpTitle: 'How to Use SheSaves',
-    helpContent: 'SheSaves helps you manage your savings and investments. Navigate through different sections using the menu, add investments, track your progress, and get AI-powered insights.',
+    helpTitle: 'How to Use ISave',
+    helpContent: 'ISave helps you manage your personal finances. Track income, expenses, and savings goals while getting AI-powered insights for your financial journey.',
     
     // Toasts
     passwordUpdated: 'Password updated successfully',
@@ -145,8 +145,8 @@ const translations = {
     // Export & Help
     exportSuccess: 'Export terminé avec succès',
     exportError: 'Erreur lors de la génération de l\'export',
-    helpTitle: 'Comment utiliser SheSaves',
-    helpContent: 'SheSaves vous aide à gérer vos économies et investissements. Naviguez dans les différentes sections en utilisant le menu, ajoutez des investissements, suivez vos progrès et obtenez des analyses alimentées par l\'IA.',
+    helpTitle: 'Comment utiliser ISave',
+    helpContent: 'ISave vous aide à gérer vos finances personnelles. Suivez vos revenus, dépenses et objectifs d\'épargne tout en obtenant des informations alimentées par l\'IA.',
     
     // Toasts
     passwordUpdated: 'Mot de passe mis à jour avec succès',
@@ -243,8 +243,8 @@ const translations = {
     // Export & Help
     exportSuccess: 'Ukohereza rwagenze neza',
     exportError: 'Ikosa mu gukora ukohereza',
-    helpTitle: 'Uko ukoresha SheSaves',
-    helpContent: 'SheSaves ikugufasha gucunga amafaranga yawe n\'ishoramari. Koresha menu ugereranije kandi wongere ishoramari, ukurikirane aho ugeze, kandi ubone ubunye bwa AI.',
+    helpTitle: 'Uko ukoresha ISave',
+    helpContent: 'ISave ikugufasha gucunga amafaranga yawe yihariye. Kurikirane amafaranga yinjira, ayasohoka n\'intego zo kuzigama ubona n\'ubushakashatsi bwa AI.',
     
     // Toasts
     passwordUpdated: 'Ijambobanga ryavuguruwe neza',

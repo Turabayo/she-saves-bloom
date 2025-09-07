@@ -105,7 +105,7 @@ const AddInvestment = () => {
           <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
             <span className="text-white font-bold text-sm">S</span>
           </div>
-          <span className="text-xl font-bold text-gray-900">SheSaves</span>
+          <span className="text-xl font-bold text-gray-900">ISave</span>
         </div>
       </header>
 

@@ -45,9 +45,9 @@ const Navigation = () => {
             onClick={handleLogoClick}
           >
             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">S</span>
+              <span className="text-primary-foreground font-bold text-sm">I</span>
             </div>
-            <span className="text-xl font-bold text-foreground">SheSaves</span>
+            <span className="text-xl font-bold text-foreground">ISave</span>
           </div>
           
           <div className="flex items-center">

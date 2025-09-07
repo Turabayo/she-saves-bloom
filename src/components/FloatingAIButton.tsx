@@ -58,7 +58,7 @@ const FloatingAIButton = () => {
               <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
                 <MessageCircle size={14} />
               </div>
-              <span className="font-medium text-sm">SheSaves AI</span>
+              <span className="font-medium text-sm">ISave AI</span>
             </div>
             <button
               onClick={() => setIsOpen(false)}

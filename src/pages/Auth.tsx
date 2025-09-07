@@ -60,7 +60,7 @@ const Auth = () => {
           <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
             <span className="text-primary-foreground font-bold text-xl">S</span>
           </div>
-          <span className="text-2xl font-bold text-foreground">SheSaves</span>
+          <span className="text-2xl font-bold text-foreground">ISave</span>
         </div>
         
         <div className="space-y-2">

@@ -27,7 +27,7 @@ const Landing = () => {
     {
       icon: Users,
       title: "Income & Expense Tracker",
-      description: "SheSaves is designed to help you manage and visualize your income and expenses in one place.",
+      description: "ISave is designed to help you manage and visualize your personal finances in one secure place.",
           
     }
   ];
@@ -48,9 +48,9 @@ const Landing = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center shadow-lg">
-              <span className="text-primary-foreground font-bold text-2xl">S</span>
+              <span className="text-primary-foreground font-bold text-2xl">I</span>
             </div>
-            <span className="text-3xl font-bold text-foreground">SheSaves</span>
+            <span className="text-3xl font-bold text-foreground">ISave</span>
           </div>
           <div className="flex items-center gap-4">
             <Button onClick={() => navigate('/auth')}>
@@ -69,9 +69,9 @@ const Landing = () => {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary"> Women</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-            Save smart, invest with purpose, and start preparing your future with SheSaves.
-            Track your savings goals, receive instant updates, and take control of your 
-            journey to financial independence today.
+            Your personal wallet for smart financial management with ISave.
+            Track income, expenses, and savings goals with secure mobile money integration 
+            and AI-powered insights for your financial journey.
 
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center gap-y-6">
@@ -88,7 +88,7 @@ const Landing = () => {
                 size="lg"
                 className="text-lg px-8 py-6"
                 onClick={() => {
-                  const whyChooseSection = document.getElementById('why-choose-shesaves');
+                  const whyChooseSection = document.getElementById('why-choose-isave');
                   whyChooseSection?.scrollIntoView({ behavior: 'smooth' });
                 }}
               >
@@ -100,14 +100,14 @@ const Landing = () => {
       </section>
 
       {/* Features Section */}
-      <section id="why-choose-shesaves" className="py-12 md:py-20 px-4 md:px-12 bg-muted/30">
+      <section id="why-choose-isave" className="py-12 md:py-20 px-4 md:px-12 bg-muted/30">
         <div className="flex flex-col p-4 max-w-screen-xl mx-auto gap-y-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-foreground mb-4">
-              Why Choose SheSaves?
+              Why Choose ISave?
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Built specifically for women who want to take control of their financial future
+              Your simple, secure personal wallet for complete financial control
             </p>
           </div>
           
@@ -135,11 +135,11 @@ const Landing = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-center">
             <div>
               <h2 className="text-4xl font-bold text-foreground mb-6">
-                Everything You Need to Save Successfully
+                Everything You Need for Financial Control
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                SheSaves provides all the tools you need to reach your financial goals, 
-                from tracking savings for your dream car to planning for your children's education.
+                ISave provides all the tools you need to manage your personal finances, 
+                from tracking daily expenses to achieving your savings goals with secure mobile money integration.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 gap-y-6">
                 {benefits.map((benefit, index) => (
@@ -215,7 +215,7 @@ const Landing = () => {
             Ready to Take Control of Your Financial Future?
           </h2>
           <p className="text-xl text-muted-foreground mb-8">
-            Join thousands of women who are building their financial independence with SheSaves
+            Join users who are taking control of their personal finances with ISave
           </p>
           <div className="flex justify-center">
             <Button 
@@ -223,7 +223,7 @@ const Landing = () => {
               className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all"
               onClick={() => navigate('/auth')}
             >
-              Try SheSaves Now
+              Try ISave Now
             </Button>
           </div>
         </div>
@@ -234,15 +234,15 @@ const Landing = () => {
         <div className="flex flex-col text-center p-4 max-w-screen-xl mx-auto gap-y-6">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
-              <span className="text-primary-foreground font-bold">S</span>
+              <span className="text-primary-foreground font-bold">I</span>
             </div>
-            <span className="text-xl font-bold text-foreground">SheSaves</span>
+            <span className="text-xl font-bold text-foreground">ISave</span>
           </div>
           <p className="text-muted-foreground">
-            Empowering women through financial independence
+            Your personal wallet for financial control
           </p>
           <p className="text-sm text-muted-foreground mt-4">
-            © 2025 SheSaves. All rights reserved.
+            © 2025 ISave. All rights reserved.
           </p>
         </div>
       </footer>

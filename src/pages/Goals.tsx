@@ -63,7 +63,7 @@ const Goals = () => {
           <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
             <span className="text-white font-bold text-xl">S</span>
           </div>
-          <span className="text-2xl font-bold text-gray-900">SheSaves</span>
+          <span className="text-2xl font-bold text-gray-900">ISave</span>
         </div>
       </header>
 

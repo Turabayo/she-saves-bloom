@@ -16,7 +16,7 @@ export const useAIAssistant = () => {
     {
       id: '1',
       type: 'assistant',
-      content: 'Hello! I\'m your SheSaves AI assistant. I\'m here to help you build your savings and achieve your financial goals. How can I assist you today?',
+      content: 'Hello! I\'m your ISave AI assistant. I\'m here to help you manage your personal finances and achieve your goals. How can I assist you today?',
       timestamp: new Date()
     }
   ]);
@@ -113,7 +113,7 @@ export const useAIAssistant = () => {
       {
         id: '1',
         type: 'assistant',
-        content: 'Hello! I\'m your SheSaves AI assistant. I\'m here to help you build your savings and achieve your financial goals. How can I assist you today?',
+        content: 'Hello! I\'m your ISave AI assistant. I\'m here to help you manage your personal finances and achieve your goals. How can I assist you today?',
         timestamp: new Date()
       }
     ]);

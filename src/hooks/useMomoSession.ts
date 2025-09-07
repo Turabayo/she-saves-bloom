@@ -96,7 +96,7 @@ export const useMomoSession = () => {
       try {
         console.log('📱 Sending payment initiation SMS...');
         
-        const smsMessage = `🔔 SheSaves payment request: Please check your phone for a MoMo prompt to pay ${amount} RWF. Complete the payment to add funds to your savings.`;
+        const smsMessage = `🔔 ISave payment request: Please check your phone for a MoMo prompt to pay ${amount} RWF. Complete the payment to add funds to your wallet.`;
         
         const smsResponse = await supabase.functions.invoke('send-sms', {
           body: {

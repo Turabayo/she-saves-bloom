@@ -86,8 +86,8 @@ export const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
           <div className="text-center pt-4 border-t">
             <p className="text-sm text-gray-500">
               Need more help? Contact us at{" "}
-              <a href="mailto:support@shesaves.app" className="text-blue-600 hover:underline">
-                support@shesaves.app
+              <a href="mailto:support@isave.app" className="text-blue-600 hover:underline">
+                support@isave.app
               </a>
             </p>
           </div>

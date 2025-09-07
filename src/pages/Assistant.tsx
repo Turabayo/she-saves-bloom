@@ -54,7 +54,7 @@ const Assistant = () => {
             <Sparkles className="text-white" size={20} />
           </div>
           <div>
-            <div className="text-lg font-bold text-gray-900">SheSaves AI Assistant</div>
+            <div className="text-lg font-bold text-gray-900">ISave AI Assistant</div>
             <div className="text-sm text-gray-600">Your Personal Financial Advisor</div>
           </div>
         </div>
