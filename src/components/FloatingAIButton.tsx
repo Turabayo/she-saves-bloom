@@ -39,7 +39,7 @@ const FloatingAIButton = () => {
         <div className={`fixed ${isNative ? 'bottom-24' : 'bottom-20'} right-4 z-50`}>
           <Button
             onClick={() => setIsOpen(true)}
-            className="w-14 h-14 rounded-full bg-orange-500 hover:bg-orange-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center"
+            className="w-14 h-14 rounded-full bg-gradient-to-r from-primary to-secondary text-white shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center hover:opacity-90"
           >
             <MessageCircle size={24} />
           </Button>
@@ -53,7 +53,7 @@ const FloatingAIButton = () => {
       {isOpen && (
         <div className={`fixed ${isNative ? 'bottom-24' : 'bottom-20'} right-4 w-80 h-96 bg-white rounded-lg shadow-2xl z-50 flex flex-col border max-w-[calc(100vw-2rem)]`}>
           {/* Header */}
-          <div className="flex items-center justify-between p-3 border-b bg-orange-500 text-white rounded-t-lg">
+          <div className="flex items-center justify-between p-3 border-b bg-gradient-to-r from-primary to-secondary text-white rounded-t-lg">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
                 <MessageCircle size={14} />
@@ -78,7 +78,7 @@ const FloatingAIButton = () => {
                 <div
                   className={`max-w-[80%] p-2 rounded-lg text-sm ${
                     msg.type === 'user' 
-                      ? 'bg-orange-500 text-white' 
+                      ? 'bg-gradient-to-r from-primary to-secondary text-white' 
                       : 'bg-gray-100 text-gray-900'
                   }`}
                 >
@@ -92,9 +92,9 @@ const FloatingAIButton = () => {
                 <div className="bg-gray-100 text-gray-900 max-w-[80%] p-2 rounded-lg text-sm">
                   <div className="flex items-center gap-2">
                     <div className="flex gap-1">
-                      <div className="w-1 h-1 bg-orange-500 rounded-full animate-bounce"></div>
-                      <div className="w-1 h-1 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-1 h-1 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                       <div className="w-1 h-1 bg-secondary rounded-full animate-bounce"></div>
+                       <div className="w-1 h-1 bg-secondary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                       <div className="w-1 h-1 bg-secondary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                     </div>
                     <span className="text-xs text-gray-600">Thinking...</span>
                   </div>
@@ -117,7 +117,7 @@ const FloatingAIButton = () => {
               <Button 
                 onClick={handleSend}
                 disabled={loading || !inputMessage.trim()}
-                className="bg-orange-500 hover:bg-orange-600 p-2 min-w-[40px]"
+                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 p-2 min-w-[40px]"
                 size="sm"
               >
                 <Send size={16} />

@@ -135,7 +135,7 @@ const Insights = () => {
 
              <div className="bg-card rounded-xl p-6 shadow-sm">
                <div className="flex items-center gap-3 mb-2">
-                 <Activity size={24} className="text-orange-600" />
+                 <Activity size={24} className="text-secondary" />
                  <span className="text-sm font-medium text-muted-foreground">Transactions</span>
                </div>
                <h3 className="text-2xl font-bold text-card-foreground">

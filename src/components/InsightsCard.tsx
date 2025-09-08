@@ -11,7 +11,7 @@ const InsightsCard = () => {
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="text-orange-500" size={20} />
+            <TrendingUp className="text-secondary" size={20} />
             Financial Insights
           </CardTitle>
         </CardHeader>
@@ -34,7 +34,7 @@ const InsightsCard = () => {
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="text-orange-500" size={20} />
+            <TrendingUp className="text-secondary" size={20} />
             Financial Insights
           </CardTitle>
         </CardHeader>
@@ -58,7 +58,7 @@ const InsightsCard = () => {
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="text-orange-500" size={20} />
+          <TrendingUp className="text-secondary" size={20} />
           Financial Insights
         </CardTitle>
       </CardHeader>
@@ -86,12 +86,12 @@ const InsightsCard = () => {
         </div>
 
         {/* Total Deposits */}
-        <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
+        <div className="flex justify-between items-center p-3 bg-secondary/10 rounded-lg">
           <div className="flex items-center gap-2">
-            <TrendingUp className="text-orange-600" size={16} />
-            <span className="text-sm font-medium text-orange-800">Total Deposits</span>
+            <TrendingUp className="text-secondary" size={16} />
+            <span className="text-sm font-medium text-secondary">Total Deposits</span>
           </div>
-          <span className="text-orange-700 font-bold">
+          <span className="text-secondary font-bold">
             {formatCurrency(insights.totalDeposits)}
           </span>
         </div>

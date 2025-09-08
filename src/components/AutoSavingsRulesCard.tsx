@@ -88,7 +88,7 @@ export const AutoSavingsRulesCard = () => {
       case 'round_up': return <DollarSign size={20} className="text-blue-500" />;
       case 'percentage': return <Percent size={20} className="text-green-500" />;
       case 'fixed_amount': return <TrendingUp size={20} className="text-purple-500" />;
-      case 'spare_change': return <Brain size={20} className="text-orange-500" />;
+      case 'spare_change': return <Brain size={20} className="text-secondary" />;
       default: return <Brain size={20} className="text-primary" />;
     }
   };

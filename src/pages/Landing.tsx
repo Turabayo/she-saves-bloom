@@ -13,6 +13,11 @@ import { Wallet2, LineChart, Bell, Repeat, ShieldCheck, Globe2, Download, Chevro
 export default function Landing() {
   const navigate = useNavigate();
 
+  const fmt = (n: number, currency = "RWF") =>
+    new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 })
+      .format(n)
+      .replace(/\s+/g, " ");
+
   const features = [
     {
       icon: Wallet2,
@@ -78,9 +83,9 @@ export default function Landing() {
           <div className="absolute left-[10%] top-[40%] h-[320px] w-[320px] rounded-full bg-indigo-500/20 blur-[100px]" />
         </div>
 
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-16 md:grid-cols-2 md:py-24">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:grid-cols-2 md:py-16">
           <div className="flex flex-col justify-center">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 backdrop-blur px-3 py-1 text-xs text-slate-200">
               <Sparkles className="h-3.5 w-3.5" />
               Fresh design. Personal wallet energy.
             </div>
@@ -92,11 +97,16 @@ export default function Landing() {
               ISave keeps income, expenses, budgets, and goals in one calm place. No feeds. No noise. Just your wallet, upgraded.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button className="h-12 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-base font-semibold shadow-lg hover:opacity-90" onClick={() => navigate("/auth")}>Start now</Button>
-              <Button variant="outline" className="h-12 rounded-xl border-white/20 text-base text-white hover:bg-white/10" onClick={() => {
-                const el = document.getElementById("how-it-works");
-                el?.scrollIntoView({ behavior: "smooth" });
-              }}>
+              <Button className="h-12 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-base font-semibold shadow-lg hover:opacity-90 focus-visible:ring-2 focus-visible:ring-fuchsia-500/40" onClick={() => navigate("/auth")}>Start now</Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="h-12 rounded-xl border-white/20 bg-transparent text-base text-white hover:bg-white/10"
+                onClick={() => {
+                  const el = document.getElementById("how-it-works");
+                  el?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
                 See how it works
                 <ChevronRight className="ml-1 h-4 w-4" />
               </Button>
@@ -114,7 +124,7 @@ export default function Landing() {
           {/* Glass phone preview */}
           <div className="relative mx-auto w-full max-w-md">
             <div className="absolute inset-0 -z-10 rounded-3xl bg-gradient-to-br from-white/10 to-white/0 blur-xl" />
-            <Card className="overflow-hidden rounded-3xl border-white/10 bg-white/10 backdrop-blur">
+            <Card className="overflow-hidden rounded-3xl border-white/10 bg-white/10 backdrop-blur will-change-transform transition-transform duration-300 hover:-translate-y-0.5">
               <CardContent className="p-0">
                 <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-6">
                   <div className="mb-6 flex items-center justify-between">
@@ -130,11 +140,11 @@ export default function Landing() {
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                       <p className="text-xs text-slate-400">Balance</p>
-                      <p className="mt-1 text-2xl font-bold">RWF 245,000</p>
+                      <p className="mt-1 text-2xl font-bold">{fmt(245000)}</p>
                     </div>
                     <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                       <p className="text-xs text-slate-400">This month</p>
-                      <p className="mt-1 text-2xl font-bold text-emerald-300">+ RWF 58,200</p>
+                      <p className="mt-1 text-2xl font-bold text-emerald-300">+ {fmt(58200)}</p>
                     </div>
                     <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                       <p className="text-xs text-slate-400">Budget used</p>
@@ -151,13 +161,13 @@ export default function Landing() {
                       <div className="flex items-center gap-2 text-sm text-slate-200">
                         <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" /> Incoming
                       </div>
-                      <span className="text-sm font-semibold text-emerald-300">RWF 120,000</span>
+                      <span className="text-sm font-semibold text-emerald-300">{fmt(120000)}</span>
                     </div>
                     <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2.5">
                       <div className="flex items-center gap-2 text-sm text-slate-200">
                         <span className="inline-block h-2 w-2 rounded-full bg-rose-400" /> Spending
                       </div>
-                      <span className="text-sm font-semibold text-rose-300">RWF 61,800</span>
+                      <span className="text-sm font-semibold text-rose-300">{fmt(61800)}</span>
                     </div>
                   </div>
                 </div>
@@ -178,12 +188,12 @@ export default function Landing() {
           </p>
           <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((f, i) => (
-              <Card key={i} className="group rounded-2xl border-white/10 bg-white/5 p-6 backdrop-blur transition hover:bg-white/[0.07]">
+              <Card key={i} className="group h-full rounded-2xl border-white/10 bg-white/5 p-6 backdrop-blur transition hover:bg-white/[0.07] hover:-translate-y-[2px]">
                 <div className="mb-4 inline-flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-fuchsia-500/80 p-3 text-white shadow-md">
                   <f.icon className="h-5 w-5" />
                 </div>
                 <h3 className="text-lg font-semibold">{f.title}</h3>
-                <p className="mt-2 text-sm text-slate-300">{f.desc}</p>
+                <p className="mt-2 text-sm text-slate-200">{f.desc}</p>
               </Card>
             ))}
           </div>

@@ -46,7 +46,7 @@ const Goals = () => {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
@@ -60,7 +60,7 @@ const Goals = () => {
       {/* Header */}
       <header className="p-4">
         <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center">
             <span className="text-white font-bold text-xl">S</span>
           </div>
           <span className="text-2xl font-bold text-gray-900">ISave</span>
@@ -82,7 +82,7 @@ const Goals = () => {
                 onClick={() => toggleGoal(goal.id)}
                 className={`w-full p-4 rounded-lg border-2 transition-colors flex items-center gap-4 ${
                   selectedGoals.includes(goal.id)
-                    ? 'border-orange-500 bg-orange-50'
+                    ? 'border-secondary bg-secondary/10'
                     : 'border-gray-200 bg-white'
                 }`}
               >
@@ -95,7 +95,7 @@ const Goals = () => {
           <Button 
             onClick={handleContinue}
             disabled={selectedGoals.length === 0}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 text-lg rounded-lg disabled:bg-gray-300"
+            className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white py-4 text-lg rounded-lg disabled:bg-gray-300"
           >
             Continue
           </Button>

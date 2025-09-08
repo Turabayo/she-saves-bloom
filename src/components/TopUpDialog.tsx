@@ -95,7 +95,7 @@ export const TopUpDialog = ({
             </div>
             <div className="flex justify-between text-sm">
               <span>Remaining:</span>
-              <span className="font-medium text-orange-600">{formatCurrency(remainingAmount)}</span>
+              <span className="font-medium text-secondary">{formatCurrency(remainingAmount)}</span>
             </div>
           </div>
 

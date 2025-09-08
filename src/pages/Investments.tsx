@@ -30,7 +30,7 @@ const Goals = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
@@ -53,7 +53,7 @@ const Goals = () => {
           <div className="mb-6">
             <Button 
               onClick={() => navigate('/add-goal')}
-              className="bg-orange-500 hover:bg-orange-600 text-white rounded-lg"
+              className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white rounded-lg"
             >
               + Add Goal
             </Button>
@@ -93,7 +93,7 @@ const Goals = () => {
               <p className="text-gray-600 mb-4">Start building your financial future today</p>
               <Button 
                 onClick={() => navigate('/add-goal')}
-                className="bg-orange-500 hover:bg-orange-600 text-white"
+                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white"
               >
                 Add Your First Goal
               </Button>

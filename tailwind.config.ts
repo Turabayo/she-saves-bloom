@@ -56,6 +56,14 @@ export default {
 					DEFAULT: 'hsl(var(--success))',
 					foreground: 'hsl(var(--success-foreground))'
 				},
+				brand: {
+					indigo: '#6366F1',
+					violet: '#8B5CF6',
+					fuchsia: '#A855F7',
+					magenta: '#D946EF',
+					surface: '#0B0F1A',
+					panel: '#0F1625'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',

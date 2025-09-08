@@ -91,7 +91,7 @@ export const IncomeInsights = () => {
     ];
   }, [income, expenses]);
 
-  const pieChartColors = ['#8b5cf6', '#06b6d4', '#f59e0b', '#ef4444', '#10b981', '#6366f1'];
+  const pieChartColors = ['#8b5cf6', '#a855f7', '#6366f1', '#d946ef', '#9333ea', '#7c3aed'];
 
   return (
     <div className="grid gap-6">

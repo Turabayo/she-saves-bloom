@@ -102,7 +102,7 @@ const AddInvestment = () => {
           <ArrowLeft size={24} className="text-gray-600" />
         </button>
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+          <div className="w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center">
             <span className="text-white font-bold text-sm">S</span>
           </div>
           <span className="text-xl font-bold text-gray-900">ISave</span>
@@ -116,7 +116,7 @@ const AddInvestment = () => {
             <h1 className="text-2xl font-bold text-gray-900">Add Goal</h1>
             <Button
               onClick={() => navigate('/top-up')}
-              className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-2"
+              className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white flex items-center gap-2"
             >
               <CreditCard size={16} />
               Top Up
@@ -186,7 +186,7 @@ const AddInvestment = () => {
             <Button 
               type="submit"
               disabled={loading}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 text-lg rounded-lg disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white py-4 text-lg rounded-lg disabled:opacity-50"
             >
               {loading ? (
                 <div className="flex items-center gap-2">

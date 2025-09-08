@@ -123,7 +123,7 @@ const Dashboard = () => {
                 className="bg-card rounded-xl p-4 text-left shadow-sm border hover:shadow-md transition-all"
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-secondary/10 rounded-full flex items-center justify-center">
                     <Target className="text-primary" size={20} />
                   </div>
                 </div>
@@ -136,7 +136,7 @@ const Dashboard = () => {
                 className="bg-card rounded-xl p-4 text-left shadow-sm border hover:shadow-md transition-all"
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-secondary/10 rounded-full flex items-center justify-center">
                     <TrendingUp className="text-primary" size={20} />
                   </div>
                 </div>

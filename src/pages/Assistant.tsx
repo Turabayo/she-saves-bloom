@@ -31,10 +31,10 @@ const Assistant = () => {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center p-8">
-          <Sparkles size={48} className="text-orange-500 mx-auto mb-4" />
+          <Sparkles size={48} className="text-secondary mx-auto mb-4" />
           <h2 className="text-xl font-bold text-gray-900 mb-2">Sign In Required</h2>
           <p className="text-gray-600 mb-4">Please sign in to access your AI financial assistant.</p>
-          <Button onClick={() => navigate('/auth')} className="bg-orange-500 hover:bg-orange-600">
+          <Button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-primary to-secondary hover:opacity-90">
             Sign In
           </Button>
         </div>
@@ -50,7 +50,7 @@ const Assistant = () => {
           <ArrowLeft size={24} className="text-gray-600" />
         </button>
         <div className="flex items-center gap-3 flex-1">
-          <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center">
             <Sparkles className="text-white" size={20} />
           </div>
           <div>
@@ -78,7 +78,7 @@ const Assistant = () => {
               <div
                 className={`max-w-xs md:max-w-md p-3 rounded-lg ${
                   msg.type === 'user' 
-                    ? 'bg-orange-500 text-white' 
+                    ? 'bg-gradient-to-r from-primary to-secondary text-white' 
                     : 'bg-white text-gray-900 shadow-sm border'
                 }`}
               >
@@ -86,7 +86,7 @@ const Assistant = () => {
                   {msg.content}
                 </div>
                 <div className={`text-xs mt-2 ${
-                  msg.type === 'user' ? 'text-orange-200' : 'text-gray-500'
+                  msg.type === 'user' ? 'text-slate-200' : 'text-gray-500'
                 }`}>
                   {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </div>
@@ -99,9 +99,9 @@ const Assistant = () => {
               <div className="bg-white text-gray-900 shadow-sm border max-w-xs p-3 rounded-lg">
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 bg-secondary rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-secondary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 bg-secondary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   </div>
                   <span className="text-sm text-gray-600">Thinking...</span>
                 </div>
@@ -126,7 +126,7 @@ const Assistant = () => {
             <Button 
               onClick={handleSend}
               disabled={loading || !inputMessage.trim()}
-              className="bg-orange-500 hover:bg-orange-600 rounded-full p-3 min-w-[48px]"
+              className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 rounded-full p-3 min-w-[48px]"
             >
               <Send size={20} />
             </Button>

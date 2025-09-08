@@ -27,7 +27,7 @@ export const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
       description: "Get personalized financial advice and insights powered by AI."
     },
     {
-      icon: <Smartphone className="w-6 h-6 text-orange-600" />,
+      icon: <Smartphone className="w-6 h-6 text-secondary" />,
       title: "Mobile Money Integration",
       description: "Top up your savings using MTN Mobile Money seamlessly."
     },
