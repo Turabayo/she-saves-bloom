@@ -1,15 +1,14 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, User, Mail, Lock, Facebook, Twitter } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Auth = () => {
   const navigate = useNavigate();
   const { signIn, signUp } = useAuth();
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -53,109 +52,142 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      {/* Header */}
-      <header className="p-4 text-center">
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-xl">S</span>
+    <div className="min-h-screen bg-[url('/images/auth-bg.jpg')] bg-cover bg-center relative">
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/60" />
+      
+      {/* Content */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          {/* Card */}
+          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur shadow-2xl overflow-hidden lg:rounded-3xl">
+            {/* Gradient Header */}
+            <div className="bg-gradient-to-r from-[#6366F1] to-[#D946EF] px-6 py-5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">I</span>
+                  </div>
+                  <h1 className="text-white text-lg font-semibold">
+                    {isLogin ? 'Sign in' : 'Create your account'}
+                  </h1>
+                </div>
+                
+                {/* Social icons */}
+                <div className="flex items-center gap-2">
+                  <button className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white hover:bg-white/30 transition-colors">
+                    <Facebook className="w-4 h-4" />
+                  </button>
+                  <button className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white hover:bg-white/30 transition-colors">
+                    <Twitter className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Form Body */}
+            <div className="p-6">
+              <p className="text-slate-400 text-sm mb-6">
+                {isLogin 
+                  ? 'Enter your email and password to continue.' 
+                  : 'Track income, expenses, and goals with ISave.'
+                }
+              </p>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {!isLogin && (
+                  <div className="relative">
+                    <Input
+                      type="text"
+                      placeholder="First Name.."
+                      value={formData.fullName}
+                      onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+                      className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 pl-12 text-white placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A855F7]/40"
+                      required
+                    />
+                    <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  </div>
+                )}
+
+                <div className="relative">
+                  <Input
+                    type="email"
+                    placeholder="Email.."
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 pl-12 text-white placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A855F7]/40"
+                    required
+                  />
+                  <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+                </div>
+
+                {!isLogin && (
+                  <Input
+                    type="tel"
+                    placeholder="Phone number (optional)"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A855F7]/40"
+                  />
+                )}
+
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({...formData, password: e.target.value})}
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 pl-12 pr-12 text-white placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A855F7]/40"
+                    required
+                  />
+                  <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+
+                {isLogin && (
+                  <div className="text-right">
+                    <button type="button" className="text-[#A855F7] text-sm hover:text-white transition-colors">
+                      Forgot password?
+                    </button>
+                  </div>
+                )}
+
+                <Button 
+                  type="submit"
+                  disabled={loading}
+                  className="w-full h-11 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#D946EF] text-white font-semibold shadow-lg hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[#A855F7]/40 disabled:opacity-50 mt-6"
+                >
+                  {loading ? 'Loading...' : (isLogin ? 'LET\'S GO' : 'CREATE ACCOUNT')}
+                </Button>
+              </form>
+
+              <div className="text-center mt-6">
+                <span className="text-slate-400 text-sm">
+                  {isLogin ? "Don't have an account? " : "Already have an account? "}
+                </span>
+                <button 
+                  type="button"
+                  className="text-[#A855F7] font-medium hover:text-white transition-colors"
+                  onClick={toggleMode}
+                >
+                  {isLogin ? 'Sign up' : 'Sign in'}
+                </button>
+              </div>
+            </div>
           </div>
-          <span className="text-2xl font-bold text-foreground">ISave</span>
-        </div>
-        
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-foreground">
-            {isLogin ? 'Welcome back' : 'Create Account'}
-          </h1>
-          <p className="text-muted-foreground">
-            {isLogin ? 'Sign in to your account' : 'Join thousands of women building their future'}
+
+          {/* Footer */}
+          <p className="text-center text-sm text-slate-400 mt-6">
+            Secure personal wallet for tracking your financial goals
           </p>
         </div>
-      </header>
-
-      {/* Form */}
-      <main className="flex-1 px-6 pt-8">
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-6">
-          <div className="space-y-4">
-            {!isLogin && (
-              <Input
-                type="text"
-                placeholder="Full name"
-                value={formData.fullName}
-                onChange={(e) => setFormData({...formData, fullName: e.target.value})}
-                className="w-full p-4 text-lg border-input rounded-lg"
-                required
-              />
-            )}
-
-            <Input
-              type="email"
-              placeholder="Email address"
-              value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
-              className="w-full p-4 text-lg border-input rounded-lg"
-              required
-            />
-
-            {!isLogin && (
-              <Input
-                type="tel"
-                placeholder="Phone number (optional)"
-                value={formData.phone}
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                className="w-full p-4 text-lg border-input rounded-lg"
-              />
-            )}
-
-            <div className="relative">
-              <Input
-                type={showPassword ? "text" : "password"}
-                placeholder={isLogin ? "Password" : "Create password"}
-                value={formData.password}
-                onChange={(e) => setFormData({...formData, password: e.target.value})}
-                className="w-full p-4 text-lg border-input rounded-lg pr-12"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
-          </div>
-
-          {isLogin && (
-            <div className="text-left">
-              <button type="button" className="text-muted-foreground text-sm hover:text-foreground">
-                Forgot password?
-              </button>
-            </div>
-          )}
-
-          <Button 
-            type="submit"
-            disabled={loading}
-            className="w-full py-4 text-lg rounded-lg disabled:opacity-50"
-          >
-            {loading ? 'Loading...' : (isLogin ? 'Sign in' : 'Create Account')}
-          </Button>
-
-          <div className="text-center pt-4">
-            <span className="text-muted-foreground">
-              {isLogin ? "Don't have an account? " : "Already have an account? "}
-            </span>
-            <button 
-              type="button"
-              className="text-primary font-medium hover:underline"
-              onClick={toggleMode}
-            >
-              {isLogin ? 'Sign up' : 'Sign in'}
-            </button>
-          </div>
-        </form>
-      </main>
+      </div>
     </div>
   );
 };
