@@ -90,7 +90,7 @@ export default function Landing() {
               <span className="bg-gradient-to-r from-indigo-400 to-fuchsia-400 bg-clip-text text-transparent"> simply</span>.
             </h1>
             <p className="mt-4 max-w-xl text-lg text-slate-300">
-              ISave keeps income, expenses, budgets, and goals in one calm place. No feeds. No noise. Just your wallet, upgraded.
+              Smart savings. Simple control.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button className="h-12 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-base font-semibold shadow-lg hover:opacity-90 focus-visible:ring-2 focus-visible:ring-fuchsia-500/40" onClick={() => navigate("/auth")}>Start now</Button>

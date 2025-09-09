@@ -38,14 +38,14 @@ const Navigation = () => {
   return (
     <>
       {/* Top Header */}
-      <header className={`bg-white border-b border-gray-200 p-4 ${isNative && isIOS ? 'pt-12' : ''}`}>
+      <header className={`bg-card border-b border-white/10 p-4 ${isNative && isIOS ? 'pt-12' : ''}`}>
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div 
             className="flex items-center gap-3 cursor-pointer"
             onClick={handleLogoClick}
           >
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">I</span>
+            <div className="w-8 h-8 bg-gradient-to-br from-[#6366F1] to-[#D946EF] rounded-full flex items-center justify-center">
+              <span className="text-white font-bold text-sm">I</span>
             </div>
             <span className="text-xl font-bold text-foreground">ISave</span>
           </div>
@@ -60,7 +60,7 @@ const Navigation = () => {
                     key={item.path}
                     onClick={() => navigate(item.path)}
                     className={`flex items-center gap-2 text-sm font-medium transition-colors ${
-                      item.active ? 'text-primary' : 'text-gray-600 hover:text-gray-900'
+                      item.active ? 'text-[#A855F7]' : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     <IconComponent size={16} />
@@ -71,7 +71,7 @@ const Navigation = () => {
               
               <button 
                 onClick={handleSignOut}
-                className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                className="flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-white transition-colors"
               >
                 <LogOut size={16} />
                 {t('signOut')}
@@ -80,17 +80,17 @@ const Navigation = () => {
             
             <button 
               onClick={() => navigate('/settings')}
-              className="ml-6 w-8 h-8 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors"
+              className="ml-6 w-8 h-8 bg-gradient-to-br from-[#6366F1] to-[#D946EF] rounded-full flex items-center justify-center hover:opacity-90 transition-colors"
               title="Settings"
             >
-              <Settings size={16} className="text-primary-foreground" />
+              <Settings size={16} className="text-white" />
             </button>
           </div>
         </div>
       </header>
 
       {/* Bottom Navigation - Mobile with icons */}
-      <div className={`fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden ${isNative ? 'pb-safe' : ''}`}>
+      <div className={`fixed bottom-0 left-0 right-0 bg-card border-t border-white/10 md:hidden ${isNative ? 'pb-safe' : ''}`}>
         <div className="max-w-md mx-auto flex">
           {navItems.map((item) => {
             const IconComponent = item.icon;
@@ -99,7 +99,7 @@ const Navigation = () => {
                 key={item.path}
                 onClick={() => navigate(item.path)}
                 className={`flex-1 py-3 px-2 text-center text-xs font-medium flex flex-col items-center gap-1 ${
-                  item.active ? 'text-primary' : 'text-muted-foreground'
+                  item.active ? 'text-[#A855F7]' : 'text-slate-400'
                 }`}
               >
                 <IconComponent size={18} />

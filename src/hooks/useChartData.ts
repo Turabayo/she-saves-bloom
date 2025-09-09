@@ -161,17 +161,17 @@ export const useChartData = () => {
     { 
       name: "Top-ups", 
       value: topupData.length, 
-      color: "hsl(var(--chart-1))" 
+      color: "#8B5CF6" 
     },
     { 
       name: "Withdrawals", 
       value: withdrawalData.length,
-      color: "hsl(var(--chart-2))" 
+      color: "#A855F7" 
     },
     { 
       name: "Savings", 
       value: savingsData.length, 
-      color: "hsl(var(--chart-3))" 
+      color: "#6366F1" 
     }
   ].filter(item => item.value > 0);
 

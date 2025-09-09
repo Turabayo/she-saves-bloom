@@ -45,14 +45,14 @@ export const TransactionCharts = () => {
               <Line 
                 type="monotone" 
                 dataKey="topups" 
-                stroke="hsl(var(--chart-1))" 
+                stroke="#8B5CF6" 
                 strokeWidth={2} 
                 name="Top-ups"
               />
               <Line 
                 type="monotone" 
                 dataKey="withdrawals" 
-                stroke="hsl(var(--chart-2))" 
+                stroke="#A855F7" 
                 strokeWidth={2} 
                 name="Withdrawals"
               />
@@ -81,7 +81,7 @@ export const TransactionCharts = () => {
                 }} 
                 formatter={(value) => [`RWF ${Number(value).toLocaleString()}`, 'Amount']}
               />
-              <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="amount" fill="#6366F1" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
