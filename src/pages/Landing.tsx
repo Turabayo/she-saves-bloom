@@ -85,10 +85,6 @@ export default function Landing() {
 
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:grid-cols-2 md:py-16">
           <div className="flex flex-col justify-center">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 backdrop-blur px-3 py-1 text-xs text-slate-200">
-              <Sparkles className="h-3.5 w-3.5" />
-              Fresh design. Personal wallet energy.
-            </div>
             <h1 className="text-balance text-5xl font-extrabold tracking-tight md:text-6xl">
               Take control of your money—
               <span className="bg-gradient-to-r from-indigo-400 to-fuchsia-400 bg-clip-text text-transparent"> simply</span>.
@@ -165,9 +161,9 @@ export default function Landing() {
                     </div>
                     <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2.5">
                       <div className="flex items-center gap-2 text-sm text-slate-200">
-                        <span className="inline-block h-2 w-2 rounded-full bg-rose-400" /> Spending
+                        <span className="inline-block h-2 w-2 rounded-full bg-slate-400" /> Spending
                       </div>
-                      <span className="text-sm font-semibold text-rose-300">{fmt(61800)}</span>
+                      <span className="text-sm font-semibold text-slate-300">{fmt(61800)}</span>
                     </div>
                   </div>
                 </div>

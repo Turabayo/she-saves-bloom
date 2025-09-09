@@ -63,25 +63,13 @@ const Auth = () => {
           <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur shadow-2xl overflow-hidden lg:rounded-3xl">
             {/* Gradient Header */}
             <div className="bg-gradient-to-r from-[#6366F1] to-[#D946EF] px-6 py-5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">I</span>
-                  </div>
-                  <h1 className="text-white text-lg font-semibold">
-                    {isLogin ? 'Sign in' : 'Create your account'}
-                  </h1>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">I</span>
                 </div>
-                
-                {/* Social icons */}
-                <div className="flex items-center gap-2">
-                  <button className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white hover:bg-white/30 transition-colors">
-                    <Facebook className="w-4 h-4" />
-                  </button>
-                  <button className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white hover:bg-white/30 transition-colors">
-                    <Twitter className="w-4 h-4" />
-                  </button>
-                </div>
+                <h1 className="text-white text-lg font-semibold">
+                  {isLogin ? 'Sign in' : 'Create your account'}
+                </h1>
               </div>
             </div>
 

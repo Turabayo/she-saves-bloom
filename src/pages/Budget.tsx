@@ -42,9 +42,9 @@ const Budget = () => {
     const spent = currentSpending.get(budget.category) || 0;
     const percentage = (spent / budget.amount) * 100;
     
-    if (percentage >= 100) return { status: 'exceeded', color: 'text-red-600', bgColor: 'bg-red-100' };
-    if (percentage >= 80) return { status: 'warning', color: 'text-yellow-600', bgColor: 'bg-yellow-100' };
-    return { status: 'good', color: 'text-green-600', bgColor: 'bg-green-100' };
+    if (percentage >= 100) return { status: 'exceeded', color: 'text-red-400', bgColor: 'bg-red-500/10' };
+    if (percentage >= 80) return { status: 'warning', color: 'text-amber-400', bgColor: 'bg-amber-500/10' };
+    return { status: 'good', color: 'text-emerald-400', bgColor: 'bg-emerald-500/10' };
   };
 
   const totalBudget = budgets.reduce((sum, budget) => sum + budget.amount, 0);
@@ -155,8 +155,8 @@ const Budget = () => {
                       </div>
                       <Progress 
                         value={percentage} 
-                        className={`h-2 ${status.status === 'exceeded' ? '[&>div]:bg-red-500' : 
-                          status.status === 'warning' ? '[&>div]:bg-yellow-500' : '[&>div]:bg-green-500'}`}
+                        className={`h-2 ${status.status === 'exceeded' ? '[&>div]:bg-red-400' : 
+                          status.status === 'warning' ? '[&>div]:bg-amber-400' : '[&>div]:bg-emerald-400'}`}
                       />
                       <div className="flex justify-between text-xs text-muted-foreground">
                         <span>{percentage.toFixed(1)}% used</span>
@@ -165,9 +165,9 @@ const Budget = () => {
                     </div>
 
                     {percentage >= 80 && (
-                      <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center gap-2">
-                        <AlertTriangle size={16} className="text-yellow-600" />
-                        <span className="text-sm text-yellow-800">
+                      <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-center gap-2">
+                        <AlertTriangle size={16} className="text-amber-400" />
+                        <span className="text-sm text-amber-300">
                           {percentage >= 100 ? "Budget exceeded!" : "Approaching budget limit"}
                         </span>
                       </div>

@@ -77,46 +77,46 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       <main className="px-4 pb-20">
         <div className="max-w-md mx-auto">
           <div className="py-6">
-            <h1 className="text-2xl font-bold text-gray-900">{t('settings')}</h1>
+            <h1 className="text-2xl font-bold text-foreground">{t('settings')}</h1>
           </div>
 
           <div className="space-y-6">
             {/* Profile */}
-            <div className="bg-white rounded-xl p-4 shadow-sm">
+            <div className="bg-card rounded-xl p-4 shadow-sm border border-white/10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#6366F1] to-[#D946EF] rounded-full flex items-center justify-center">
                     <SettingsIcon className="text-white" size={20} />
                   </div>
-                  <span className="text-lg font-medium text-gray-900">{t('profile')}</span>
+                  <span className="text-lg font-medium text-card-foreground">{t('profile')}</span>
                 </div>
-                <ChevronRight size={20} className="text-gray-400" />
+                <ChevronRight size={20} className="text-muted-foreground" />
               </div>
             </div>
 
             {/* Settings Options */}
-            <div className="bg-white rounded-xl shadow-sm divide-y divide-gray-100">
+            <div className="bg-card rounded-xl shadow-sm border border-white/10 divide-y divide-white/10">
               <button 
-                className="flex items-center justify-between p-4 w-full text-left hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between p-4 w-full text-left hover:bg-white/5 transition-colors"
                 onClick={() => setPasswordDialogOpen(true)}
               >
-                <span className="text-gray-900">{t('password')}</span>
+                <span className="text-card-foreground">{t('password')}</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-500">{t('changePassword')}</span>
-                  <ChevronRight size={16} className="text-gray-400" />
+                  <span className="text-muted-foreground">{t('changePassword')}</span>
+                  <ChevronRight size={16} className="text-muted-foreground" />
                 </div>
               </button>
 
               <div className="flex items-center justify-between p-4">
                 <div className="flex-1">
-                  <span className="text-gray-900">{t('aiAssistant')}</span>
-                  <p className="text-sm text-gray-500">{t('aiAssistantDesc')}</p>
+                  <span className="text-card-foreground">{t('aiAssistant')}</span>
+                  <p className="text-sm text-muted-foreground">{t('aiAssistantDesc')}</p>
                 </div>
                 <Switch 
                   checked={aiEnabled}
@@ -125,15 +125,15 @@ const Settings = () => {
               </div>
 
               <button 
-                className="flex items-center justify-between p-4 w-full text-left hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between p-4 w-full text-left hover:bg-white/5 transition-colors"
                 onClick={() => setLanguageDialogOpen(true)}
               >
-                <span className="text-gray-900">{t('language')}</span>
+                <span className="text-card-foreground">{t('language')}</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-500">
+                  <span className="text-muted-foreground">
                     {language === 'en' ? t('english') : t('french')}
                   </span>
-                  <ChevronRight size={16} className="text-gray-400" />
+                  <ChevronRight size={16} className="text-muted-foreground" />
                 </div>
               </button>
             </div>

@@ -87,11 +87,11 @@ export const IncomeInsights = () => {
 
     return [
       { name: 'Income', amount: currentMonthIncome, color: '#10b981' },
-      { name: 'Expenses', amount: currentMonthExpenses, color: '#ef4444' }
+      { name: 'Expenses', amount: currentMonthExpenses, color: '#A855F7' }
     ];
   }, [income, expenses]);
 
-  const pieChartColors = ['#8b5cf6', '#a855f7', '#6366f1', '#d946ef', '#9333ea', '#7c3aed'];
+  const pieChartColors = ['#8B5CF6', '#A855F7', '#6366F1', '#D946EF', '#9333EA', '#7C3AED'];
 
   return (
     <div className="grid gap-6">

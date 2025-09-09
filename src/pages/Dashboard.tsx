@@ -156,7 +156,7 @@ const Dashboard = () => {
                         <p className="font-medium text-card-foreground">{formatCurrencyCompact(topUp.amount)}</p>
                         <p className="text-sm text-muted-foreground">{formatDate(topUp.created_at)}</p>
                       </div>
-                      <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded">
+                      <span className="text-sm bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded">
                         {topUp.status}
                       </span>
                     </div>
