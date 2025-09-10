@@ -42,8 +42,8 @@ const Budget = () => {
     const spent = currentSpending.get(budget.category) || 0;
     const percentage = (spent / budget.amount) * 100;
     
-    if (percentage >= 100) return { status: 'exceeded', color: 'text-red-400', bgColor: 'bg-red-500/10' };
-    if (percentage >= 80) return { status: 'warning', color: 'text-amber-400', bgColor: 'bg-amber-500/10' };
+    if (percentage >= 100) return { status: 'exceeded', color: 'text-slate-300', bgColor: 'bg-slate-500/10' };
+    if (percentage >= 80) return { status: 'warning', color: 'text-indigo-400', bgColor: 'bg-indigo-500/10' };
     return { status: 'good', color: 'text-emerald-400', bgColor: 'bg-emerald-500/10' };
   };
 
@@ -89,12 +89,12 @@ const Budget = () => {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <TrendingDown size={16} className="text-red-500" />
+                <TrendingDown size={16} className="text-slate-400" />
                 Total Spent
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-red-600">
+              <div className="text-2xl font-bold text-slate-300">
                 {formatCurrency(totalSpent)}
               </div>
             </CardContent>
@@ -103,12 +103,12 @@ const Budget = () => {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <TrendingUp size={16} className={remainingBudget >= 0 ? "text-green-500" : "text-red-500"} />
+                <TrendingUp size={16} className={remainingBudget >= 0 ? "text-emerald-400" : "text-slate-400"} />
                 Remaining
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className={`text-2xl font-bold ${remainingBudget >= 0 ? "text-green-600" : "text-red-600"}`}>
+              <div className={`text-2xl font-bold ${remainingBudget >= 0 ? "text-emerald-400" : "text-slate-300"}`}>
                 {formatCurrency(remainingBudget)}
               </div>
             </CardContent>
@@ -155,8 +155,8 @@ const Budget = () => {
                       </div>
                       <Progress 
                         value={percentage} 
-                        className={`h-2 ${status.status === 'exceeded' ? '[&>div]:bg-red-400' : 
-                          status.status === 'warning' ? '[&>div]:bg-amber-400' : '[&>div]:bg-emerald-400'}`}
+                        className={`h-2 ${status.status === 'exceeded' ? '[&>div]:bg-slate-400' : 
+                          status.status === 'warning' ? '[&>div]:bg-indigo-400' : '[&>div]:bg-emerald-400'}`}
                       />
                       <div className="flex justify-between text-xs text-muted-foreground">
                         <span>{percentage.toFixed(1)}% used</span>
@@ -165,9 +165,9 @@ const Budget = () => {
                     </div>
 
                     {percentage >= 80 && (
-                      <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-center gap-2">
-                        <AlertTriangle size={16} className="text-amber-400" />
-                        <span className="text-sm text-amber-300">
+                      <div className="mt-4 p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-lg flex items-center gap-2">
+                        <AlertTriangle size={16} className="text-indigo-400" />
+                        <span className="text-sm text-indigo-300">
                           {percentage >= 100 ? "Budget exceeded!" : "Approaching budget limit"}
                         </span>
                       </div>

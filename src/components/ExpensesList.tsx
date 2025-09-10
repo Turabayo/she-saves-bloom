@@ -33,7 +33,7 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({ onExpenseAdded }) =>
       'Transport': 'bg-blue-100 text-blue-800',
       'Rent': 'bg-purple-100 text-purple-800',
       'Health': 'bg-emerald-500/10 text-emerald-400',
-      'School': 'bg-amber-500/10 text-amber-400',
+      'School': 'bg-indigo-500/10 text-indigo-400',
       'Other': 'bg-slate-500/10 text-slate-400',
     };
     return colors[category] || colors['Other'];

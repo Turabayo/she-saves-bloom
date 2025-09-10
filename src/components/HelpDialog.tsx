@@ -32,7 +32,7 @@ export const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
       description: "Top up your savings using MTN Mobile Money seamlessly."
     },
     {
-      icon: <Target className="w-6 h-6 text-red-600" />,
+      icon: <Target className="w-6 h-6 text-fuchsia-500" />,
       title: "Goal Setting",
       description: "Set financial goals and track your progress towards achieving them."
     },

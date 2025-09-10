@@ -136,7 +136,7 @@ export default function Landing() {
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                       <p className="text-xs text-slate-400">Balance</p>
-                      <p className="mt-1 text-2xl font-bold">{fmt(245000)}</p>
+                      <p className="mt-1 text-2xl font-bold text-white">{fmt(245000)}</p>
                     </div>
                     <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                       <p className="text-xs text-slate-400">This month</p>
@@ -144,11 +144,11 @@ export default function Landing() {
                     </div>
                     <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                       <p className="text-xs text-slate-400">Budget used</p>
-                      <p className="mt-1 text-2xl font-bold">62%</p>
+                      <p className="mt-1 text-2xl font-bold text-white">62%</p>
                     </div>
                     <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                       <p className="text-xs text-slate-400">Goals</p>
-                      <p className="mt-1 text-2xl font-bold">2 nearly done</p>
+                      <p className="mt-1 text-2xl font-bold text-white">2 nearly done</p>
                     </div>
                   </div>
 
@@ -188,8 +188,8 @@ export default function Landing() {
                 <div className="mb-4 inline-flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-fuchsia-500/80 p-3 text-white shadow-md">
                   <f.icon className="h-5 w-5" />
                 </div>
-                <h3 className="text-lg font-semibold">{f.title}</h3>
-                <p className="mt-2 text-sm text-slate-200">{f.desc}</p>
+                <h3 className="text-lg font-semibold text-white">{f.title}</h3>
+                <p className="mt-2 text-sm text-slate-300">{f.desc}</p>
               </Card>
             ))}
           </div>
@@ -207,7 +207,7 @@ export default function Landing() {
             {steps.map((s, i) => (
               <li key={i} className="rounded-2xl border border-white/10 bg-white/5 p-5">
                 <div className="mb-2 text-sm text-slate-400">Step {i + 1}</div>
-                <div className="text-lg font-semibold">{s.title}</div>
+                <div className="text-lg font-semibold text-white">{s.title}</div>
                 <p className="mt-1 text-sm text-slate-300">{s.text}</p>
               </li>
             ))}

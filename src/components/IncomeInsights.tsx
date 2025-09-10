@@ -205,7 +205,7 @@ export const IncomeInsights = () => {
           <div className="mt-4 pt-4 border-t">
             <div className="flex justify-between items-center">
               <span className="text-sm font-medium">Net Income:</span>
-              <span className={`font-bold ${incomeVsExpenses[0].amount - incomeVsExpenses[1].amount >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              <span className={`font-bold ${incomeVsExpenses[0].amount - incomeVsExpenses[1].amount >= 0 ? 'text-emerald-400' : 'text-slate-400'}`}>
                 {formatCurrency(incomeVsExpenses[0].amount - incomeVsExpenses[1].amount)}
               </span>
             </div>
