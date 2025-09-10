@@ -20,13 +20,13 @@ const Insights = () => {
 
   if (loading || chartLoading || goalsLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navigation />
         <main className="px-4 pb-20">
           <div className="max-w-4xl mx-auto">
             <div className="py-6 text-center">
               <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Loading insights...</p>
+              <p className="text-slate-400">Loading insights...</p>
             </div>
           </div>
         </main>
@@ -91,64 +91,64 @@ const Insights = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       <main className="px-4 pb-20">
         <div className="max-w-4xl mx-auto">
           <div className="py-6">
-            <h1 className="text-2xl font-bold text-foreground mb-2">Insights</h1>
-            <p className="text-muted-foreground">Review your savings performance and trends</p>
+            <h1 className="text-2xl font-bold text-white mb-2">Insights</h1>
+            <p className="text-slate-400">Review your savings performance and trends</p>
           </div>
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
              <div className="bg-card rounded-xl p-6 shadow-sm">
-               <div className="flex items-center gap-3 mb-2">
-                 <DollarSign size={24} className="text-green-600" />
-                   <span className="text-sm font-medium text-muted-foreground">Total Savings Growth</span>
-                 </div>
-                <h3 className="text-xl md:text-2xl font-bold text-card-foreground">
-                   {formatCurrencyCompact(currentInsights.savingsGrowth)}
-                 </h3>
+                <div className="flex items-center gap-3 mb-2">
+                  <DollarSign size={24} className="text-primary" />
+                    <span className="text-sm font-medium text-slate-400">Total Savings Growth</span>
+                  </div>
+                 <h3 className="text-xl md:text-2xl font-bold text-white">
+                    {formatCurrencyCompact(currentInsights.savingsGrowth)}
+                  </h3>
               </div>
 
              <div className="bg-card rounded-xl p-6 shadow-sm">
-               <div className="flex items-center gap-3 mb-2">
-                 <TrendingUp size={24} className="text-blue-600" />
-                 <span className="text-sm font-medium text-muted-foreground">Monthly Average</span>
-               </div>
-                <h3 className="text-xl md:text-2xl font-bold text-card-foreground">
-                  {formatCurrencyCompact(currentInsights.monthlyAverage)}
-                </h3>
+                <div className="flex items-center gap-3 mb-2">
+                  <TrendingUp size={24} className="text-secondary" />
+                  <span className="text-sm font-medium text-slate-400">Monthly Average</span>
+                </div>
+                 <h3 className="text-xl md:text-2xl font-bold text-white">
+                   {formatCurrencyCompact(currentInsights.monthlyAverage)}
+                 </h3>
              </div>
 
              <div className="bg-card rounded-xl p-6 shadow-sm">
-               <div className="flex items-center gap-3 mb-2">
-                 <Target size={24} className="text-purple-600" />
-                 <span className="text-sm font-medium text-muted-foreground">Total Deposits</span>
-               </div>
-                <h3 className="text-xl md:text-2xl font-bold text-card-foreground">
-                  {formatCurrencyCompact(currentInsights.totalDeposits)}
-                </h3>
+                <div className="flex items-center gap-3 mb-2">
+                  <Target size={24} className="text-accent" />
+                  <span className="text-sm font-medium text-slate-400">Total Deposits</span>
+                </div>
+                 <h3 className="text-xl md:text-2xl font-bold text-white">
+                   {formatCurrencyCompact(currentInsights.totalDeposits)}
+                 </h3>
              </div>
 
              <div className="bg-card rounded-xl p-6 shadow-sm">
-               <div className="flex items-center gap-3 mb-2">
-                 <Activity size={24} className="text-secondary" />
-                 <span className="text-sm font-medium text-muted-foreground">Transactions</span>
-               </div>
-               <h3 className="text-2xl font-bold text-card-foreground">
-                 {currentInsights.transactionCount}
-               </h3>
+                <div className="flex items-center gap-3 mb-2">
+                  <Activity size={24} className="text-secondary" />
+                  <span className="text-sm font-medium text-slate-400">Transactions</span>
+                </div>
+                <h3 className="text-2xl font-bold text-white">
+                  {currentInsights.transactionCount}
+                </h3>
             </div>
           </div>
 
           {/* Charts */}
           <div className="space-y-6">
             {/* Daily Transaction Volume */}
-            <div className="bg-card rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-card-foreground mb-4">Daily Transaction Volume</h3>
+            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold text-white mb-4">Daily Transaction Volume</h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={dailyVolumeData || []}>
@@ -180,8 +180,8 @@ const Insights = () => {
             </div>
 
             {/* Daily Transaction Amount */}
-            <div className="bg-card rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-card-foreground mb-4">Daily Transaction Amount</h3>
+            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold text-white mb-4">Daily Transaction Amount</h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={transactionAmountData || []}>
@@ -213,8 +213,8 @@ const Insights = () => {
             </div>
 
             {/* Transaction Types */}
-            <div className="bg-card rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-card-foreground mb-4">Transaction Types</h3>
+            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold text-white mb-4">Transaction Types</h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -246,8 +246,8 @@ const Insights = () => {
             </div>
 
             {/* Savings by Category */}
-            <div className="bg-card rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-card-foreground mb-4">Savings by Category</h3>
+            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold text-white mb-4">Savings by Category</h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={savingsByCategoryData}>
@@ -280,8 +280,8 @@ const Insights = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Category Distribution */}
-              <div className="bg-card rounded-xl p-6 shadow-sm">
-                <h3 className="text-lg font-semibold text-card-foreground mb-4">Savings Distribution</h3>
+              <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
+                <h3 className="text-lg font-semibold text-white mb-4">Savings Distribution</h3>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -313,8 +313,8 @@ const Insights = () => {
               </div>
 
               {/* Deposits vs Withdrawals */}
-              <div className="bg-card rounded-xl p-6 shadow-sm">
-                <h3 className="text-lg font-semibold text-card-foreground mb-4">Deposits vs Withdrawals</h3>
+              <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
+                <h3 className="text-lg font-semibold text-white mb-4">Deposits vs Withdrawals</h3>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={performanceData} layout="horizontal">

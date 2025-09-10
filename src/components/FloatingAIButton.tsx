@@ -43,7 +43,7 @@ const FloatingAIButton = () => {
           >
             <MessageCircle size={24} />
           </Button>
-          <div className="absolute -top-8 -left-12 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+          <div className="absolute -top-8 -left-12 bg-card text-white text-xs px-2 py-1 rounded whitespace-nowrap border border-white/10">
             💬 Ask AI
           </div>
         </div>
@@ -51,7 +51,7 @@ const FloatingAIButton = () => {
 
       {/* Chat Panel */}
       {isOpen && (
-        <div className={`fixed ${isNative ? 'bottom-24' : 'bottom-20'} right-4 w-80 h-96 bg-white rounded-lg shadow-2xl z-50 flex flex-col border max-w-[calc(100vw-2rem)]`}>
+        <div className={`fixed ${isNative ? 'bottom-24' : 'bottom-20'} right-4 w-80 h-96 bg-card backdrop-blur rounded-lg shadow-2xl z-50 flex flex-col border border-white/10 max-w-[calc(100vw-2rem)]`}>
           {/* Header */}
           <div className="flex items-center justify-between p-3 border-b bg-gradient-to-r from-primary to-secondary text-white rounded-t-lg">
             <div className="flex items-center gap-2">
@@ -79,7 +79,7 @@ const FloatingAIButton = () => {
                   className={`max-w-[80%] p-2 rounded-lg text-sm ${
                     msg.type === 'user' 
                       ? 'bg-gradient-to-r from-primary to-secondary text-white' 
-                      : 'bg-gray-100 text-gray-900'
+                      : 'bg-white/10 text-white'
                   }`}
                 >
                   {msg.content}
@@ -89,14 +89,14 @@ const FloatingAIButton = () => {
             
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 text-gray-900 max-w-[80%] p-2 rounded-lg text-sm">
+                <div className="bg-white/10 text-white max-w-[80%] p-2 rounded-lg text-sm">
                   <div className="flex items-center gap-2">
                     <div className="flex gap-1">
                        <div className="w-1 h-1 bg-secondary rounded-full animate-bounce"></div>
                        <div className="w-1 h-1 bg-secondary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
                        <div className="w-1 h-1 bg-secondary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                     </div>
-                    <span className="text-xs text-gray-600">Thinking...</span>
+                    <span className="text-xs text-slate-400">Thinking...</span>
                   </div>
                 </div>
               </div>

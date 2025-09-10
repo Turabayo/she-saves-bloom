@@ -10,7 +10,7 @@ export const WithdrawalHistory = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
-        return <Badge variant="default" className="bg-green-100 text-green-800">Completed</Badge>;
+        return <Badge variant="default" className="bg-primary/20 text-primary border-primary/20">Completed</Badge>;
       case 'pending':
         return <Badge variant="secondary">Pending</Badge>;
       case 'cancelled':

@@ -85,8 +85,8 @@ export const AutoSavingsRulesCard = () => {
 
   const getRuleIcon = (type: string) => {
     switch (type) {
-      case 'round_up': return <DollarSign size={20} className="text-blue-500" />;
-      case 'percentage': return <Percent size={20} className="text-green-500" />;
+      case 'round_up': return <DollarSign size={20} className="text-primary" />;
+      case 'percentage': return <Percent size={20} className="text-secondary" />;
       case 'fixed_amount': return <TrendingUp size={20} className="text-purple-500" />;
       case 'spare_change': return <Brain size={20} className="text-secondary" />;
       default: return <Brain size={20} className="text-primary" />;
@@ -156,12 +156,12 @@ export const AutoSavingsRulesCard = () => {
           </div>
         ))}
         
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="mt-6 p-4 bg-white/5 backdrop-blur border border-white/10 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
-            <Brain size={16} className="text-blue-600" />
-            <span className="text-sm font-medium text-blue-800">Smart Savings Tip</span>
+            <Brain size={16} className="text-primary" />
+            <span className="text-sm font-medium text-white">Smart Savings Tip</span>
           </div>
-          <p className="text-sm text-blue-700">
+          <p className="text-sm text-slate-400">
             Combine multiple rules for maximum savings potential. Start with small amounts and gradually increase as you build the habit.
           </p>
         </div>

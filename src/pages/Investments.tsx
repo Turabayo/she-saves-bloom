@@ -28,10 +28,10 @@ const Goals = () => {
 
   if (authLoading || investmentsLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-slate-400">Loading...</p>
         </div>
       </div>
     );
@@ -40,46 +40,46 @@ const Goals = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       <main className="px-4 pb-20">
         <div className="max-w-md mx-auto">
           <div className="py-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Goals</h1>
-            <p className="text-gray-600">Manage and track your savings goals</p>
+            <h1 className="text-2xl font-bold text-white mb-2">Goals</h1>
+            <p className="text-slate-400">Manage and track your savings goals</p>
           </div>
 
           <div className="mb-6">
             <Button 
               onClick={() => navigate('/add-goal')}
-              className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white rounded-lg"
+              className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white rounded-xl"
             >
               + Add Goal
             </Button>
           </div>
 
           {investments.length > 0 ? (
-            <div className="bg-white rounded-xl shadow-sm">
+            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl shadow-sm">
               {investments.map((investment, index) => (
                 <div 
                   key={investment.id} 
                   className={`flex items-center justify-between p-4 ${
-                    index < investments.length - 1 ? 'border-b border-gray-100' : ''
+                    index < investments.length - 1 ? 'border-b border-white/10' : ''
                   }`}
                 >
                   <div className="flex flex-col">
-                    <span className="text-gray-900 font-medium">{investment.name}</span>
+                    <span className="text-white font-medium">{investment.name}</span>
                     {investment.category && (
-                      <span className="text-sm text-gray-500">{investment.category}</span>
+                      <span className="text-sm text-slate-400">{investment.category}</span>
                     )}
                   </div>
                   <div className="text-right">
-                    <span className="text-gray-900 font-semibold">
+                    <span className="text-white font-semibold">
                       {investment.amount.toLocaleString()} RWF
                     </span>
                     {investment.target_amount && (
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-slate-400">
                         Goal: {investment.target_amount.toLocaleString()} RWF
                       </div>
                     )}
@@ -88,9 +88,9 @@ const Goals = () => {
               ))}
             </div>
           ) : (
-            <div className="bg-white rounded-xl shadow-sm p-8 text-center">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No goals yet</h3>
-              <p className="text-gray-600 mb-4">Start building your financial future today</p>
+            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl shadow-sm p-8 text-center">
+              <h3 className="text-lg font-semibold text-white mb-2">No goals yet</h3>
+              <p className="text-slate-400 mb-4">Start building your financial future today</p>
               <Button 
                 onClick={() => navigate('/add-goal')}
                 className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white"

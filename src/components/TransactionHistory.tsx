@@ -48,7 +48,7 @@ const TransactionHistory = () => {
   const getStatusBadge = (status: string) => {
     switch (status?.toLowerCase()) {
       case 'success':
-        return <Badge variant="default" className="bg-green-100 text-green-800">Success</Badge>;
+        return <Badge variant="default" className="bg-primary/20 text-primary border-primary/20">Success</Badge>;
       case 'pending':
         return <Badge variant="secondary">Pending</Badge>;
       case 'failed':
@@ -84,7 +84,7 @@ const TransactionHistory = () => {
           <CardTitle>Transaction History</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-500 text-center py-8">No transactions yet. Start saving by making your first top-up!</p>
+          <p className="text-slate-400 text-center py-8">No transactions yet. Start saving by making your first top-up!</p>
         </CardContent>
       </Card>
     );
@@ -100,7 +100,7 @@ const TransactionHistory = () => {
           {transactions.slice(0, 10).map((transaction) => (
             <div
               key={transaction.id}
-              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+              className="flex items-center justify-between p-3 bg-white/5 backdrop-blur border border-white/10 rounded-lg"
             >
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
@@ -110,7 +110,7 @@ const TransactionHistory = () => {
                   </span>
                   {getStatusBadge(transaction.status)}
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-slate-400">
                   {format(new Date(transaction.created_at), 'MMM dd, yyyy HH:mm')}
                 </div>
               </div>
@@ -118,7 +118,7 @@ const TransactionHistory = () => {
                 <div className="text-sm font-medium capitalize">
                   {transaction.type}
                 </div>
-                <div className="text-xs text-gray-500 capitalize">
+                <div className="text-xs text-slate-400 capitalize">
                   {transaction.method}
                 </div>
               </div>
