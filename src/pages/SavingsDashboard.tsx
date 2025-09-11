@@ -95,61 +95,61 @@ const SavingsDashboard = () => {
 
         {/* Overview Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="shadow-soft hover-lift">
+          <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Savings</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-400">Total Savings</CardTitle>
               <PiggyBank className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-lg md:text-2xl font-bold text-primary">
+              <div className="text-lg md:text-2xl font-bold text-white">
                 {formatCurrencyCompact(totalSavings)}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-slate-400">
                 Across all goals
               </p>
             </CardContent>
           </Card>
 
-          <Card className="shadow-soft hover-lift">
+          <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-foreground">Active Goals</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-400">Active Goals</CardTitle>
               <Target className="h-4 w-4 text-secondary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-foreground">
+              <div className="text-2xl font-bold text-white">
                 {activeGoals.length}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-slate-400">
                 In progress
               </p>
             </CardContent>
           </Card>
 
-          <Card className="shadow-soft hover-lift">
+          <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Completed</CardTitle>
-              <TrendingUp className="h-4 w-4 text-success" />
+              <CardTitle className="text-sm font-medium text-slate-400">Completed</CardTitle>
+              <TrendingUp className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-success">
+              <div className="text-2xl font-bold text-white">
                 {completedGoals.length}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-slate-400">
                 Goals reached
               </p>
             </CardContent>
           </Card>
 
-          <Card className="shadow-soft hover-lift">
+          <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-foreground">Goal Value</CardTitle>
-              <ChartLine className="h-4 w-4 text-accent" />
+              <CardTitle className="text-sm font-medium text-slate-400">Goal Value</CardTitle>
+              <ChartLine className="h-4 w-4 text-secondary" />
             </CardHeader>
             <CardContent>
-              <div className="text-lg md:text-2xl font-bold text-foreground">
+              <div className="text-lg md:text-2xl font-bold text-white">
                 {formatCurrencyCompact(totalGoalValue)}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-slate-400">
                 Total target
               </p>
             </CardContent>
@@ -160,7 +160,7 @@ const SavingsDashboard = () => {
         <div className="flex flex-col sm:flex-row gap-3">
           <CreateGoalDialog 
             trigger={
-              <Button className="gradient-primary hover:opacity-90 flex-1">
+              <Button className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 hover:from-indigo-600 hover:to-fuchsia-600 text-white flex-1">
                 <Plus className="h-4 w-4 mr-2" />
                 Create New Goal
               </Button>
@@ -170,7 +170,7 @@ const SavingsDashboard = () => {
           <Button 
             onClick={() => navigate('/analytics')}
             variant="outline" 
-            className="hover-lift flex-1"
+            className="border-white/20 text-white hover:bg-white/10 flex-1"
           >
             <ChartLine className="h-4 w-4 mr-2" />
             View Analytics
@@ -178,7 +178,7 @@ const SavingsDashboard = () => {
           <Button 
             onClick={() => navigate('/top-up')}
             variant="outline" 
-            className="hover-lift flex-1"
+            className="border-white/20 text-white hover:bg-white/10 flex-1"
           >
             <ArrowUpCircle className="h-4 w-4 mr-2" />
             Top Up

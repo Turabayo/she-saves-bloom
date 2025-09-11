@@ -34,20 +34,20 @@ export const SavingsGoalCard = ({ goal, onTopUp, onWithdraw, className = "" }: S
   const currentAmount = goal.current_amount || 0;
 
   return (
-    <Card className={`transition-all duration-300 hover-lift ${isCompleted ? 'ring-2 ring-success animate-bounce-subtle' : ''} ${className}`}>
+    <Card className={`bg-white/5 backdrop-blur border border-white/10 rounded-xl transition-all duration-300 hover:bg-white/10 ${isCompleted ? 'ring-2 ring-primary animate-bounce-subtle' : ''} ${className}`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="text-2xl">{getCategoryIcon(goal.category)}</div>
             <div>
-              <CardTitle className="text-lg font-semibold">{goal.name}</CardTitle>
-              <Badge variant="secondary" className="text-xs">
+              <CardTitle className="text-lg font-semibold text-white">{goal.name}</CardTitle>
+              <Badge variant="secondary" className="text-xs bg-secondary/20 text-secondary border border-secondary/20">
                 {goal.category}
               </Badge>
             </div>
           </div>
           {isCompleted && (
-            <Badge className="gradient-success text-white">
+            <Badge className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white">
               🎯 Goal Reached!
             </Badge>
           )}
@@ -58,18 +58,18 @@ export const SavingsGoalCard = ({ goal, onTopUp, onWithdraw, className = "" }: S
         {/* Progress Section */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Progress</span>
-            <span className="font-medium">{goal.progress}%</span>
+            <span className="text-slate-400">Progress</span>
+            <span className="font-medium text-white">{goal.progress}%</span>
           </div>
           <Progress 
             value={goal.progress} 
-            className="h-3 progress-fill"
+            className="h-3"
           />
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground text-xs sm:text-sm">
+            <span className="text-slate-400 text-xs sm:text-sm">
               {formatCurrencyCompact(currentAmount)}
             </span>
-            <span className="font-medium text-xs sm:text-sm">
+            <span className="font-medium text-white text-xs sm:text-sm">
               {formatCurrencyCompact(goal.goal_amount)}
             </span>
           </div>
@@ -78,16 +78,16 @@ export const SavingsGoalCard = ({ goal, onTopUp, onWithdraw, className = "" }: S
         {/* Stats Row */}
         <div className="grid grid-cols-2 gap-3 pt-2">
           <div className="flex items-center gap-2 text-sm">
-            <TrendingUp className="h-4 w-4 text-success" />
-            <span className="text-muted-foreground">Saved</span>
-            <span className="font-medium text-success text-xs">
+            <TrendingUp className="h-4 w-4 text-primary" />
+            <span className="text-slate-400">Saved</span>
+            <span className="font-medium text-primary text-xs">
               {formatCurrencyCompact(currentAmount)}
             </span>
           </div>
           <div className="flex items-center gap-2 text-sm">
-            <Target className="h-4 w-4 text-primary" />
-            <span className="text-muted-foreground">Remaining</span>
-            <span className="font-medium text-xs">
+            <Target className="h-4 w-4 text-secondary" />
+            <span className="text-slate-400">Remaining</span>
+            <span className="font-medium text-white text-xs">
               {formatCurrencyCompact(Math.max(0, goal.goal_amount - currentAmount))}
             </span>
           </div>
@@ -97,7 +97,7 @@ export const SavingsGoalCard = ({ goal, onTopUp, onWithdraw, className = "" }: S
         <div className="flex gap-2 pt-2">
           <Button 
             onClick={() => onTopUp(goal.id)}
-            className="flex-1 gradient-primary hover:opacity-90"
+            className="flex-1 bg-gradient-to-r from-indigo-500 to-fuchsia-500 hover:from-indigo-600 hover:to-fuchsia-600 text-white"
             size="sm"
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -109,7 +109,7 @@ export const SavingsGoalCard = ({ goal, onTopUp, onWithdraw, className = "" }: S
               onClick={() => onWithdraw(goal.id)}
               variant="outline"
               size="sm"
-              className="hover-lift"
+              className="border-white/20 text-white hover:bg-white/10"
             >
               <Wallet className="h-4 w-4 mr-2" />
               Withdraw
@@ -118,7 +118,7 @@ export const SavingsGoalCard = ({ goal, onTopUp, onWithdraw, className = "" }: S
         </div>
 
         {isCompleted && (
-          <div className="mt-3 p-3 gradient-success rounded-lg text-white text-center text-sm font-medium">
+          <div className="mt-3 p-3 bg-gradient-to-r from-indigo-500 to-fuchsia-500 rounded-lg text-white text-center text-sm font-medium">
             🎉 Congratulations! You can now buy your {goal.name}!
           </div>
         )}
