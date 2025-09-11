@@ -105,7 +105,7 @@ const TransactionHistory = () => {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-lg">{getTypeIcon(transaction.type)}</span>
-                  <span className="font-medium">
+                  <span className="font-medium text-white">
                     {transaction.amount.toLocaleString()} RWF
                   </span>
                   {getStatusBadge(transaction.status)}
@@ -115,7 +115,7 @@ const TransactionHistory = () => {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-sm font-medium capitalize">
+                <div className="text-sm font-medium capitalize text-white">
                   {transaction.type}
                 </div>
                 <div className="text-xs text-slate-400 capitalize">

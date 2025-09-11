@@ -173,17 +173,17 @@ const TopUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="flex items-center gap-4 p-4 border-b border-gray-200">
+      <header className="flex items-center gap-4 p-4 border-b border-white/10">
         <button onClick={() => navigate(-1)} className="p-2">
-          <ArrowLeft size={24} className="text-gray-600" />
+          <ArrowLeft size={24} className="text-slate-400" />
         </button>
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-gradient-to-br from-[#6366F1] to-[#D946EF] rounded-full flex items-center justify-center">
             <span className="text-white font-bold text-sm">I</span>
           </div>
-          <span className="text-xl font-bold text-gray-900">ISave</span>
+          <span className="text-xl font-bold text-white">ISave</span>
         </div>
       </header>
 
@@ -191,43 +191,43 @@ const TopUp = () => {
       <main className="px-4 pt-6">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-white/10 backdrop-blur border border-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <DollarSign size={32} className="text-primary" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Top Up with MoMo</h1>
-            <p className="text-gray-600">Add money to your savings using MTN Mobile Money</p>
+            <h1 className="text-2xl font-bold text-white mb-2">Top Up with MoMo</h1>
+            <p className="text-slate-400">Add money to your savings using MTN Mobile Money</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Amount */}
             <div>
-              <label className="block text-gray-900 font-medium mb-2">Amount (RWF)</label>
+              <label className="block text-white font-medium mb-2">Amount (RWF)</label>
               <div className="relative">
-                <DollarSign size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <DollarSign size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
                 <Input
                   type="number"
                   value={formData.amount}
                   onChange={(e) => handleFormChange('amount', e.target.value)}
-                  className="pl-10 py-3 text-lg border border-gray-300 rounded-lg"
+                  className="pl-10 py-3 text-lg bg-white/5 backdrop-blur border border-white/10 text-white placeholder:text-slate-400 rounded-lg"
                   placeholder="10"
                   min="1"
                   step="1"
                   required
                 />
               </div>
-              <p className="text-sm text-gray-500 mt-1">Minimum amount: 1 RWF</p>
+              <p className="text-sm text-slate-400 mt-1">Minimum amount: 1 RWF</p>
             </div>
 
             {/* Phone Number */}
             <div>
-              <label className="block text-gray-900 font-medium mb-2">Phone Number</label>
+              <label className="block text-white font-medium mb-2">Phone Number</label>
               <div className="relative">
-                <Phone size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Phone size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
                 <Input
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => handleFormChange('phone', e.target.value)}
-                  className="pl-10 py-3 text-lg border border-gray-300 rounded-lg"
+                  className="pl-10 py-3 text-lg bg-white/5 backdrop-blur border border-white/10 text-white placeholder:text-slate-400 rounded-lg"
                   placeholder="0780000000"
                   required
                 />
@@ -252,9 +252,9 @@ const TopUp = () => {
           </form>
 
           {/* Info */}
-          <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-            <h3 className="font-medium text-blue-900 mb-2">How it works:</h3>
-            <ul className="text-sm text-blue-800 space-y-1">
+          <div className="mt-8 p-4 bg-white/10 backdrop-blur border border-white/10 rounded-lg">
+            <h3 className="font-medium text-white mb-2">How it works:</h3>
+            <ul className="text-sm text-slate-300 space-y-1">
               <li>• Form values are saved automatically and restored on page reload</li>
               <li>• Enter the amount you want to save (in RWF)</li>
               <li>• Complete the payment to add funds to your savings</li>

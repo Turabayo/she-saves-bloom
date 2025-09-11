@@ -8,9 +8,9 @@ const InsightsCard = () => {
 
   if (loading) {
     return (
-      <Card className="w-full">
+      <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-white">
             <TrendingUp className="text-secondary" size={20} />
             Financial Insights
           </CardTitle>
@@ -19,8 +19,8 @@ const InsightsCard = () => {
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className="flex justify-between items-center">
-                <div className="h-4 bg-gray-200 rounded w-24 animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
+                <div className="h-4 bg-white/10 rounded w-24 animate-pulse"></div>
+                <div className="h-4 bg-white/10 rounded w-16 animate-pulse"></div>
               </div>
             ))}
           </div>
@@ -31,15 +31,15 @@ const InsightsCard = () => {
 
   if (!insights) {
     return (
-      <Card className="w-full">
+      <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-white">
             <TrendingUp className="text-secondary" size={20} />
             Financial Insights
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-600 text-center py-4">
+          <p className="text-slate-400 text-center py-4">
             Start saving to see your financial insights here!
           </p>
         </CardContent>
@@ -55,43 +55,43 @@ const InsightsCard = () => {
   };
 
   return (
-    <Card className="w-full">
+    <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-white">
           <TrendingUp className="text-secondary" size={20} />
           Financial Insights
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Savings Growth */}
-        <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+        <div className="flex justify-between items-center p-3 bg-white/10 backdrop-blur border border-white/10 rounded-lg">
           <div className="flex items-center gap-2">
-            <TrendingUp className="text-green-600" size={16} />
-            <span className="text-sm font-medium text-green-800">Net Savings</span>
+            <TrendingUp className="text-primary" size={16} />
+            <span className="text-sm font-medium text-white">Net Savings</span>
           </div>
-          <span className="text-green-700 font-bold">
+          <span className="text-white font-bold">
             {formatCurrency(insights.savingsGrowth)}
           </span>
         </div>
 
         {/* Monthly Average */}
-        <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+        <div className="flex justify-between items-center p-3 bg-white/10 backdrop-blur border border-white/10 rounded-lg">
           <div className="flex items-center gap-2">
-            <DollarSign className="text-blue-600" size={16} />
-            <span className="text-sm font-medium text-blue-800">Monthly Average</span>
+            <DollarSign className="text-secondary" size={16} />
+            <span className="text-sm font-medium text-white">Monthly Average</span>
           </div>
-          <span className="text-blue-700 font-bold">
+          <span className="text-white font-bold">
             {formatCurrency(insights.monthlyAverage)}
           </span>
         </div>
 
         {/* Total Deposits */}
-        <div className="flex justify-between items-center p-3 bg-secondary/10 rounded-lg">
+        <div className="flex justify-between items-center p-3 bg-gradient-to-r from-primary/20 to-secondary/20 backdrop-blur border border-white/10 rounded-lg">
           <div className="flex items-center gap-2">
             <TrendingUp className="text-secondary" size={16} />
-            <span className="text-sm font-medium text-secondary">Total Deposits</span>
+            <span className="text-sm font-medium text-white">Total Deposits</span>
           </div>
-          <span className="text-secondary font-bold">
+          <span className="text-white font-bold">
             {formatCurrency(insights.totalDeposits)}
           </span>
         </div>
@@ -99,22 +99,22 @@ const InsightsCard = () => {
         {/* Top Categories */}
         {insights.topCategories.length > 0 && (
           <div className="space-y-2">
-            <h4 className="text-sm font-medium text-gray-700 flex items-center gap-2">
-              <Target size={16} />
+            <h4 className="text-sm font-medium text-white flex items-center gap-2">
+              <Target size={16} className="text-primary" />
               Top Investment Categories
             </h4>
             {insights.topCategories.slice(0, 3).map((category, index) => (
               <div key={category.category} className="flex justify-between items-center text-sm">
-                <span className="text-gray-600">{category.category}</span>
-                <span className="font-medium">{formatCurrency(category.amount)}</span>
+                <span className="text-slate-300">{category.category}</span>
+                <span className="font-medium text-white">{formatCurrency(category.amount)}</span>
               </div>
             ))}
           </div>
         )}
 
         {/* Transaction Count */}
-        <div className="text-center pt-2 border-t">
-          <p className="text-xs text-gray-500">
+        <div className="text-center pt-2 border-t border-white/10">
+          <p className="text-xs text-slate-400">
             Based on {insights.transactionCount} transactions in the last 6 months
           </p>
         </div>
