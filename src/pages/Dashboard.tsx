@@ -58,7 +58,7 @@ const Dashboard = () => {
   const monthlyAverage = insights?.monthlyAverage || 0;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-black via-slate-950 to-slate-900">
       <Navigation />
       
       {/* Mobile Layout */}
@@ -67,31 +67,31 @@ const Dashboard = () => {
           <div className="max-w-md mx-auto">
             {/* Header */}
             <div className="py-6">
-              <h1 className="text-2xl font-bold text-foreground mb-2">
+              <h1 className="text-2xl font-bold text-white mb-2">
                 Welcome back, {user?.user_metadata?.full_name || 'there'}!
               </h1>
-              <p className="text-muted-foreground">Here's your financial overview</p>
+              <p className="text-slate-300">Here's your financial overview</p>
             </div>
 
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <Card className="bg-card backdrop-blur border border-border rounded-xl p-4">
+              <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-1">
-                  <Target size={20} className="text-primary" />
-                  <span className="text-sm font-medium text-muted-foreground">Total Savings</span>
+                  <Target size={20} className="text-indigo-400" />
+                  <span className="text-sm font-medium text-slate-400">Total Savings</span>
                 </div>
-                <div className="text-lg font-bold text-foreground">
+                <div className="text-lg font-bold text-white">
                   {formatCurrencyCompact(totalSavings)}
                 </div>
               </Card>
               
-              <Card className="bg-card backdrop-blur border border-border rounded-xl p-4">
+              <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-1">
-                  <TrendingUp size={20} className="text-primary" />
-                  <span className="text-sm font-medium text-muted-foreground">Monthly Avg</span>
+                  <TrendingUp size={20} className="text-indigo-400" />
+                  <span className="text-sm font-medium text-slate-400">Monthly Avg</span>
                 </div>
-                <div className="text-lg font-bold text-foreground">
+                <div className="text-lg font-bold text-white">
                   {formatCurrencyCompact(monthlyAverage)}
                 </div>
               </Card>
@@ -101,7 +101,7 @@ const Dashboard = () => {
             <div className="grid grid-cols-2 gap-4 mb-6">
               <Button 
                 onClick={() => navigate('/top-up')}
-                className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                className="w-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg hover:opacity-90"
                 size="lg"
               >
                 <Plus size={16} className="mr-2" />
@@ -109,7 +109,7 @@ const Dashboard = () => {
               </Button>
               
               <WithdrawDialog>
-                <Button variant="outline" className="w-full border-border text-foreground hover:bg-muted" size="lg">
+                <Button variant="outline" className="w-full border-white/20 bg-transparent text-white hover:bg-white/10" size="lg">
                   <Minus size={16} className="mr-2" />
                   Withdraw
                 </Button>
@@ -120,48 +120,48 @@ const Dashboard = () => {
             <div className="grid grid-cols-2 gap-4 mb-6">
               <button 
                 onClick={() => navigate('/goals')}
-                className="bg-card backdrop-blur border border-border rounded-xl p-4 text-left hover:bg-muted transition-all"
+                className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-4 text-left hover:bg-white/[0.07] transition-all"
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                    <Target className="text-primary" size={20} />
+                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-fuchsia-500/80 rounded-full flex items-center justify-center">
+                    <Target className="text-white" size={20} />
                   </div>
                 </div>
-                <div className="font-medium text-foreground">Savings Goals</div>
-                <div className="text-sm text-muted-foreground">Track progress</div>
+                <div className="font-medium text-white">Savings Goals</div>
+                <div className="text-sm text-slate-300">Track progress</div>
               </button>
 
               <button 
                 onClick={() => navigate('/insights')}
-                className="bg-card backdrop-blur border border-border rounded-xl p-4 text-left hover:bg-muted transition-all"
+                className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-4 text-left hover:bg-white/[0.07] transition-all"
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                    <TrendingUp className="text-primary" size={20} />
+                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-fuchsia-500/80 rounded-full flex items-center justify-center">
+                    <TrendingUp className="text-white" size={20} />
                   </div>
                 </div>
-                <div className="font-medium text-foreground">Insights</div>
-                <div className="text-sm text-muted-foreground">View trends</div>
+                <div className="font-medium text-white">Insights</div>
+                <div className="text-sm text-slate-300">View trends</div>
               </button>
             </div>
 
             {/* Recent Top-ups */}
             {topUps.length > 0 && (
-              <Card className="bg-card backdrop-blur border border-border rounded-xl p-6 mb-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4">Recent Top-ups</h3>
+              <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 mb-6">
+                <h3 className="text-lg font-semibold text-white mb-4">Recent Top-ups</h3>
                 <div className="space-y-3">
                   {topUps.slice(0, 3).map((topUp) => (
-                    <div key={topUp.id} className="flex justify-between items-center p-3 bg-muted backdrop-blur border border-border rounded-lg">
+                    <div key={topUp.id} className="flex justify-between items-center p-3 bg-white/[0.03] backdrop-blur border border-white/5 rounded-lg">
                       <div>
-                        <p className="font-medium text-foreground">{formatCurrencyCompact(topUp.amount)}</p>
-                        <p className="text-sm text-muted-foreground">{formatDate(topUp.created_at)}</p>
+                        <p className="font-medium text-white">{formatCurrencyCompact(topUp.amount)}</p>
+                        <p className="text-sm text-slate-400">{formatDate(topUp.created_at)}</p>
                       </div>
                       <span className={`text-sm px-2 py-1 rounded ${
                         topUp.status.toLowerCase() === 'success' 
-                          ? 'bg-primary/20 text-primary border border-primary/20' 
+                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/20' 
                           : topUp.status.toLowerCase() === 'pending'
-                          ? 'bg-secondary/20 text-secondary border border-secondary/20'
-                          : 'bg-destructive/20 text-destructive border border-destructive/20'
+                          ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/20'
+                          : 'bg-red-500/20 text-red-300 border border-red-500/20'
                       }`}>
                         {topUp.status.toUpperCase()}
                       </span>
@@ -183,48 +183,48 @@ const Dashboard = () => {
         <main className="container mx-auto px-6 py-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-2">
+            <h1 className="text-4xl font-bold text-white mb-2">
               Welcome back, {user?.user_metadata?.full_name || 'there'}!
             </h1>
-            <p className="text-lg text-muted-foreground">Here's your complete financial dashboard</p>
+            <p className="text-lg text-slate-300">Here's your complete financial dashboard</p>
           </div>
 
 
           {/* Stats Cards Row */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card className="bg-card backdrop-blur border border-border rounded-xl">
+            <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Target size={16} className="text-primary" />
+                <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
+                  <Target size={16} className="text-indigo-400" />
                   Total Savings
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">
+                <div className="text-2xl font-bold text-white">
                   {formatCurrencyCompact(totalSavings)}
                 </div>
               </CardContent>
             </Card>
             
-            <Card className="bg-card backdrop-blur border border-border rounded-xl">
+            <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <TrendingUp size={16} className="text-primary" />
+                <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
+                  <TrendingUp size={16} className="text-indigo-400" />
                   Monthly Average
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">
+                <div className="text-2xl font-bold text-white">
                   {formatCurrencyCompact(monthlyAverage)}
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-card backdrop-blur border border-border rounded-xl">
+            <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
               <CardContent className="p-6">
                 <Button 
                   onClick={() => navigate('/top-up')}
-                  className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                  className="w-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg hover:opacity-90"
                   size="lg"
                 >
                   <Plus size={16} className="mr-2" />
@@ -233,10 +233,10 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card backdrop-blur border border-border rounded-xl">
+            <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
               <CardContent className="p-6">
                 <WithdrawDialog>
-                  <Button variant="outline" className="w-full border-border text-foreground hover:bg-muted" size="lg">
+                  <Button variant="outline" className="w-full border-white/20 bg-transparent text-white hover:bg-white/10" size="lg">
                     <Minus size={16} className="mr-2" />
                     Withdraw Money
                   </Button>

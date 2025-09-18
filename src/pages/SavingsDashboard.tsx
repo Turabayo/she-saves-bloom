@@ -79,77 +79,77 @@ const SavingsDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-black via-slate-950 to-slate-900">
       <Navigation />
       
       <div className="mobile-container py-6 space-y-6">
         {/* Welcome Header */}
         <div className="text-center space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground">
+          <h1 className="text-3xl md:text-4xl font-bold text-white">
             Welcome back! 👋
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-slate-300">
             Track your savings goals and build your financial future
           </p>
         </div>
 
         {/* Overview Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-card backdrop-blur border border-border rounded-xl">
+          <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Total Savings</CardTitle>
-              <PiggyBank className="h-4 w-4 text-primary" />
+              <CardTitle className="text-sm font-medium text-slate-400">Total Savings</CardTitle>
+              <PiggyBank className="h-4 w-4 text-indigo-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-lg md:text-2xl font-bold text-foreground">
+              <div className="text-lg md:text-2xl font-bold text-white">
                 {formatCurrencyCompact(totalSavings)}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-slate-400">
                 Across all goals
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-card backdrop-blur border border-border rounded-xl">
+          <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Active Goals</CardTitle>
-              <Target className="h-4 w-4 text-secondary" />
+              <CardTitle className="text-sm font-medium text-slate-400">Active Goals</CardTitle>
+              <Target className="h-4 w-4 text-fuchsia-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-foreground">
+              <div className="text-2xl font-bold text-white">
                 {activeGoals.length}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-slate-400">
                 In progress
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-card backdrop-blur border border-border rounded-xl">
+          <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Completed</CardTitle>
-              <TrendingUp className="h-4 w-4 text-primary" />
+              <CardTitle className="text-sm font-medium text-slate-400">Completed</CardTitle>
+              <TrendingUp className="h-4 w-4 text-indigo-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-foreground">
+              <div className="text-2xl font-bold text-white">
                 {completedGoals.length}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-slate-400">
                 Goals reached
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-card backdrop-blur border border-border rounded-xl">
+          <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Goal Value</CardTitle>
-              <ChartLine className="h-4 w-4 text-secondary" />
+              <CardTitle className="text-sm font-medium text-slate-400">Goal Value</CardTitle>
+              <ChartLine className="h-4 w-4 text-fuchsia-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-lg md:text-2xl font-bold text-foreground">
+              <div className="text-lg md:text-2xl font-bold text-white">
                 {formatCurrencyCompact(totalGoalValue)}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-slate-400">
                 Total target
               </p>
             </CardContent>
@@ -160,7 +160,7 @@ const SavingsDashboard = () => {
         <div className="flex flex-col sm:flex-row gap-3">
           <CreateGoalDialog 
             trigger={
-              <Button className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 flex-1">
+              <Button className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg hover:opacity-90 flex-1">
                 <Plus className="h-4 w-4 mr-2" />
                 Create New Goal
               </Button>
@@ -170,7 +170,7 @@ const SavingsDashboard = () => {
           <Button 
             onClick={() => navigate('/analytics')}
             variant="outline" 
-            className="border-border text-foreground hover:bg-muted flex-1"
+            className="border-white/20 bg-transparent text-white hover:bg-white/10 flex-1"
           >
             <ChartLine className="h-4 w-4 mr-2" />
             View Analytics
@@ -178,7 +178,7 @@ const SavingsDashboard = () => {
           <Button 
             onClick={() => navigate('/top-up')}
             variant="outline" 
-            className="border-border text-foreground hover:bg-muted flex-1"
+            className="border-white/20 bg-transparent text-white hover:bg-white/10 flex-1"
           >
             <ArrowUpCircle className="h-4 w-4 mr-2" />
             Top Up
@@ -187,7 +187,7 @@ const SavingsDashboard = () => {
 
         {/* Completed Goals Celebration */}
         {completedGoals.length > 0 && (
-          <Card className="gradient-success text-white shadow-medium">
+          <Card className="bg-gradient-to-r from-emerald-500/20 to-emerald-400/20 border border-emerald-400/20 text-white shadow-medium">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 🎉 Congratulations!
@@ -209,7 +209,7 @@ const SavingsDashboard = () => {
             {activeGoals.length > 0 && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-foreground">Active Goals</h2>
+                  <h2 className="text-xl font-semibold text-white">Active Goals</h2>
                   <Badge variant="secondary">{activeGoals.length}</Badge>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -229,8 +229,8 @@ const SavingsDashboard = () => {
             {completedGoals.length > 0 && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold">Completed Goals</h2>
-                  <Badge className="gradient-success text-white">
+                  <h2 className="text-xl font-semibold text-white">Completed Goals</h2>
+                  <Badge className="bg-gradient-to-r from-emerald-500 to-emerald-400 text-white">
                     {completedGoals.length}
                   </Badge>
                 </div>
@@ -249,17 +249,17 @@ const SavingsDashboard = () => {
           </div>
         ) : (
           /* Empty State */
-          <Card className="shadow-soft text-center py-12">
+          <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl text-center py-12">
             <CardContent className="space-y-4">
               <div className="text-6xl mb-4">🎯</div>
-              <CardTitle className="text-2xl">Start Your Savings Journey</CardTitle>
-              <p className="text-muted-foreground max-w-md mx-auto">
+              <CardTitle className="text-2xl text-white">Start Your Savings Journey</CardTitle>
+              <p className="text-slate-300 max-w-md mx-auto">
                 Create your first savings goal and start building towards your dreams. 
                 Whether it's a new car, house, or vacation - every goal starts with a single step!
               </p>
               <CreateGoalDialog 
                 trigger={
-                  <Button size="lg" className="gradient-primary hover:opacity-90 mt-4">
+                  <Button size="lg" className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg hover:opacity-90 mt-4">
                     <Plus className="h-5 w-5 mr-2" />
                     Create Your First Goal
                   </Button>
