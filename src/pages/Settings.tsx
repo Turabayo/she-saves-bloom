@@ -83,7 +83,7 @@ const Settings = () => {
       <main className="px-4 pb-20">
         <div className="max-w-md mx-auto">
           <div className="py-6">
-            <h1 className="text-2xl font-bold text-foreground">{t('settings')}</h1>
+            <h1 className="text-2xl font-bold text-white">{t('settings')}</h1>
           </div>
 
           <div className="space-y-6">
@@ -94,7 +94,7 @@ const Settings = () => {
                   <div className="w-12 h-12 bg-gradient-to-br from-[#6366F1] to-[#D946EF] rounded-full flex items-center justify-center">
                     <SettingsIcon className="text-white" size={20} />
                   </div>
-                  <span className="text-lg font-medium text-card-foreground">{t('profile')}</span>
+                  <span className="text-lg font-medium text-white">{t('profile')}</span>
                 </div>
                 <ChevronRight size={20} className="text-muted-foreground" />
               </div>
@@ -106,7 +106,7 @@ const Settings = () => {
                 className="flex items-center justify-between p-4 w-full text-left hover:bg-white/5 transition-colors"
                 onClick={() => setPasswordDialogOpen(true)}
               >
-                <span className="text-card-foreground">{t('password')}</span>
+                <span className="text-white">{t('password')}</span>
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">{t('changePassword')}</span>
                   <ChevronRight size={16} className="text-muted-foreground" />
@@ -115,7 +115,7 @@ const Settings = () => {
 
               <div className="flex items-center justify-between p-4">
                 <div className="flex-1">
-                  <span className="text-card-foreground">{t('aiAssistant')}</span>
+                  <span className="text-white">{t('aiAssistant')}</span>
                   <p className="text-sm text-muted-foreground">{t('aiAssistantDesc')}</p>
                 </div>
                 <Switch 
@@ -128,7 +128,7 @@ const Settings = () => {
                 className="flex items-center justify-between p-4 w-full text-left hover:bg-white/5 transition-colors"
                 onClick={() => setLanguageDialogOpen(true)}
               >
-                <span className="text-card-foreground">{t('language')}</span>
+                <span className="text-white">{t('language')}</span>
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">
                     {language === 'en' ? t('english') : t('french')}

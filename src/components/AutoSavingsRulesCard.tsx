@@ -96,7 +96,7 @@ export const AutoSavingsRulesCard = () => {
   return (
     <Card className="mb-8">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-white">
           <Brain size={20} className="text-primary" />
           Smart Savings Rules
         </CardTitle>
@@ -107,7 +107,7 @@ export const AutoSavingsRulesCard = () => {
             <div className="flex items-center gap-3 flex-1">
               {getRuleIcon(rule.type)}
               <div className="flex-1">
-                <div className="font-medium text-foreground">{rule.name}</div>
+                <div className="font-medium text-white">{rule.name}</div>
                 <div className="text-sm text-muted-foreground">{rule.description}</div>
                 
                 {/* Editable value */}

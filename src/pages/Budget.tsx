@@ -61,7 +61,7 @@ const Budget = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Budget Management</h1>
+            <h1 className="text-3xl font-bold text-white">Budget Management</h1>
             <p className="text-muted-foreground">Track and control your spending</p>
           </div>
           <Button onClick={() => setShowCreateDialog(true)}>
@@ -117,12 +117,12 @@ const Budget = () => {
 
         {/* Budget Categories */}
         <div className="space-y-6">
-          <h2 className="text-xl font-semibold text-foreground">Budget Categories</h2>
+          <h2 className="text-xl font-semibold text-white">Budget Categories</h2>
           
           {budgets.length === 0 ? (
             <Card className="p-8 text-center">
               <DollarSign size={48} className="mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-medium text-foreground mb-2">No budgets yet</h3>
+              <h3 className="text-lg font-medium text-white mb-2">No budgets yet</h3>
               <p className="text-muted-foreground mb-4">Create your first budget to start tracking your spending</p>
               <Button onClick={() => setShowCreateDialog(true)}>
                 <Plus size={16} className="mr-2" />
@@ -140,7 +140,7 @@ const Budget = () => {
                   <Card key={budget.id} className="p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h3 className="text-lg font-semibold text-foreground">{budget.category}</h3>
+                        <h3 className="text-lg font-semibold text-white">{budget.category}</h3>
                         <p className="text-sm text-muted-foreground">{budget.description}</p>
                       </div>
                       <div className={`px-3 py-1 rounded-full text-xs font-medium ${status.bgColor} ${status.color}`}>

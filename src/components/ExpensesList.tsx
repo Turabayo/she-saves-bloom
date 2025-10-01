@@ -62,7 +62,7 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({ onExpenseAdded }) =>
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-white">
           <Filter className="h-5 w-5" />
           Expenses History
         </CardTitle>
@@ -119,7 +119,7 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({ onExpenseAdded }) =>
                     </span>
                   </div>
                   
-                  <div className="font-semibold text-lg">
+                  <div className="font-semibold text-lg text-white">
                     {formatCurrency(expense.amount)}
                   </div>
                   

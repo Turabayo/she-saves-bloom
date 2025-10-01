@@ -69,14 +69,14 @@ export const ExpenseInsights: React.FC = () => {
       {/* Monthly Summary */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-white">
             <Calendar className="h-5 w-5" />
             This Month's Summary
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center mb-4">
-            <div className="text-3xl font-bold text-primary">
+            <div className="text-3xl font-bold text-white">
               {formatCurrency(monthlyData.totalThisMonth)}
             </div>
             <p className="text-sm text-muted-foreground">Total expenses this month</p>
@@ -91,10 +91,10 @@ export const ExpenseInsights: React.FC = () => {
                       className="w-3 h-3 rounded-full" 
                       style={{ backgroundColor: COLORS[index % COLORS.length] }}
                     />
-                    <span className="text-sm">{item.category}</span>
+                    <span className="text-sm text-white">{item.category}</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm font-medium">{formatCurrency(item.amount)}</div>
+                    <div className="text-sm font-medium text-white">{formatCurrency(item.amount)}</div>
                     <div className="text-xs text-muted-foreground">{item.percentage}%</div>
                   </div>
                 </div>
@@ -107,7 +107,7 @@ export const ExpenseInsights: React.FC = () => {
       {/* Category Breakdown Chart */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-white">
             <TrendingUp className="h-5 w-5" />
             Category Breakdown
           </CardTitle>
@@ -144,7 +144,7 @@ export const ExpenseInsights: React.FC = () => {
       {/* 6-Month Trend */}
       <Card className="md:col-span-2">
         <CardHeader>
-          <CardTitle>6-Month Expense Trend</CardTitle>
+          <CardTitle className="text-white">6-Month Expense Trend</CardTitle>
         </CardHeader>
         <CardContent>
           {last6MonthsData.some(d => d.amount > 0) ? (

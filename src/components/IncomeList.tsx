@@ -66,7 +66,7 @@ export const IncomeList = ({ onIncomeAdded }: IncomeListProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-white">
           <Filter className="h-5 w-5" />
           {t('incomeHistory')}
         </CardTitle>
@@ -124,7 +124,7 @@ export const IncomeList = ({ onIncomeAdded }: IncomeListProps) => {
                     </span>
                   </div>
                   
-                  <div className="font-semibold text-lg">
+                  <div className="font-semibold text-lg text-white">
                     {formatCurrency(Number(item.amount))}
                   </div>
                   

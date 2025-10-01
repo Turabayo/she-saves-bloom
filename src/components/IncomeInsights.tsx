@@ -98,10 +98,10 @@ export const IncomeInsights = () => {
       {/* This Month's Income Summary */}
       <Card>
         <CardHeader>
-          <CardTitle>This Month's Income Summary</CardTitle>
+          <CardTitle className="text-white">This Month's Income Summary</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold text-primary mb-4">
+          <div className="text-3xl font-bold text-white mb-4">
             {formatCurrency(monthlyData.totalIncome)}
           </div>
           
@@ -115,10 +115,10 @@ export const IncomeInsights = () => {
                       className="w-3 h-3 rounded-full" 
                       style={{ backgroundColor: pieChartColors[index % pieChartColors.length] }}
                     />
-                    <span className="text-sm">{item.source}</span>
+                    <span className="text-sm text-white">{item.source}</span>
                   </div>
                   <div className="text-right">
-                    <div className="font-medium">{formatCurrency(item.amount)}</div>
+                    <div className="font-medium text-white">{formatCurrency(item.amount)}</div>
                     <div className="text-xs text-muted-foreground">{item.percentage}%</div>
                   </div>
                 </div>
@@ -134,7 +134,7 @@ export const IncomeInsights = () => {
       {monthlyData.sourceBreakdown.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Income by Source</CardTitle>
+            <CardTitle className="text-white">Income by Source</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -166,7 +166,7 @@ export const IncomeInsights = () => {
       {/* 6-Month Income Trend */}
       <Card>
         <CardHeader>
-          <CardTitle>6-Month Income Trend</CardTitle>
+          <CardTitle className="text-white">6-Month Income Trend</CardTitle>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
@@ -184,7 +184,7 @@ export const IncomeInsights = () => {
       {/* Income vs Expenses */}
       <Card>
         <CardHeader>
-          <CardTitle>This Month: Income vs Expenses</CardTitle>
+          <CardTitle className="text-white">This Month: Income vs Expenses</CardTitle>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
