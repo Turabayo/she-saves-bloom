@@ -29,12 +29,12 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({ onExpenseAdded }) =>
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
-      'Food': 'bg-secondary/10 text-secondary',
-      'Transport': 'bg-blue-100 text-blue-800',
-      'Rent': 'bg-purple-100 text-purple-800',
-      'Health': 'bg-emerald-500/10 text-emerald-400',
-      'School': 'bg-indigo-500/10 text-indigo-400',
-      'Other': 'bg-slate-500/10 text-slate-400',
+      'Food': 'bg-primary/10 text-primary',
+      'Transport': 'bg-secondary/10 text-secondary',
+      'Rent': 'bg-primary/10 text-primary',
+      'Health': 'bg-secondary/10 text-secondary',
+      'School': 'bg-primary/10 text-primary',
+      'Other': 'bg-white/10 text-slate-300',
     };
     return colors[category] || colors['Other'];
   };

@@ -86,8 +86,8 @@ export const IncomeInsights = () => {
     }).reduce((sum, item) => sum + Number(item.amount), 0);
 
     return [
-      { name: 'Income', amount: currentMonthIncome, color: '#10b981' },
-      { name: 'Expenses', amount: currentMonthExpenses, color: '#A855F7' }
+      { name: 'Income', amount: currentMonthIncome, color: 'hsl(var(--primary))' },
+      { name: 'Expenses', amount: currentMonthExpenses, color: 'hsl(var(--secondary))' }
     ];
   }, [income, expenses]);
 
@@ -175,7 +175,7 @@ export const IncomeInsights = () => {
               <XAxis dataKey="month" />
               <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}K`} />
               <Tooltip formatter={(value: number) => [formatCurrency(value), 'Income']} />
-              <Bar dataKey="income" fill="#10b981" />
+              <Bar dataKey="income" fill="hsl(var(--primary))" />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
@@ -205,7 +205,7 @@ export const IncomeInsights = () => {
           <div className="mt-4 pt-4 border-t">
             <div className="flex justify-between items-center">
               <span className="text-sm font-medium">Net Income:</span>
-              <span className={`font-bold ${incomeVsExpenses[0].amount - incomeVsExpenses[1].amount >= 0 ? 'text-emerald-400' : 'text-slate-400'}`}>
+              <span className={`font-bold ${incomeVsExpenses[0].amount - incomeVsExpenses[1].amount >= 0 ? 'text-white' : 'text-slate-400'}`}>
                 {formatCurrency(incomeVsExpenses[0].amount - incomeVsExpenses[1].amount)}
               </span>
             </div>
