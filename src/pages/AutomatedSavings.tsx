@@ -61,7 +61,7 @@ const AutomatedSavings = () => {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
-                <Zap size={16} className="text-primary" />
+                <Zap size={16} className="text-white" />
                 Active Rules
               </CardTitle>
             </CardHeader>
@@ -75,7 +75,7 @@ const AutomatedSavings = () => {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
-                <Target size={16} className="text-primary" />
+                <Target size={16} className="text-white" />
                 Monthly Total
               </CardTitle>
             </CardHeader>
@@ -89,7 +89,7 @@ const AutomatedSavings = () => {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
-                <CalendarDays size={16} className="text-secondary" />
+                <CalendarDays size={16} className="text-white" />
                 Upcoming
               </CardTitle>
             </CardHeader>
@@ -110,7 +110,7 @@ const AutomatedSavings = () => {
           
           {scheduledSavings.length === 0 ? (
             <Card className="p-8 text-center">
-              <Zap size={48} className="mx-auto mb-4 text-muted-foreground" />
+              <Zap size={48} className="mx-auto mb-4 text-slate-400" />
               <h3 className="text-lg font-medium text-white mb-2">No automated savings yet</h3>
               <p className="text-slate-400 mb-4">Create your first automated savings rule to start building wealth effortlessly</p>
               <Button onClick={() => setShowCreateDialog(true)}>
@@ -175,7 +175,7 @@ const AutomatedSavings = () => {
         {upcomingSavings.length > 0 && (
           <Card className="p-6">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-              <CalendarDays size={20} className="text-primary" />
+              <CalendarDays size={20} className="text-white" />
               Upcoming Savings (Next 7 Days)
             </h3>
             <div className="space-y-3">

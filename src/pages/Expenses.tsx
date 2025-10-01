@@ -18,7 +18,7 @@ const Expenses: React.FC = () => {
       <main className="px-4 pb-20">
         <div className="max-w-4xl mx-auto">
           <div className="py-6">
-            <h1 className="text-3xl font-bold tracking-tight text-white">{t('incomeExpenseTracker')}</h1>
+            <h1 className="text-3xl font-bold text-white">{t('incomeExpenseTracker')}</h1>
             <p className="text-slate-400">Track and analyze your income and spending habits</p>
           </div>
 

@@ -97,15 +97,15 @@ const Insights = () => {
       <main className="px-4 pb-20">
         <div className="max-w-4xl mx-auto">
           <div className="py-6">
-            <h1 className="text-2xl font-bold text-white mb-2">Insights</h1>
-            <p className="text-slate-400">Review your savings performance and trends</p>
+            <h1 className="text-3xl font-bold text-white">Financial Insights</h1>
+            <p className="text-slate-400">Track your savings performance and patterns</p>
           </div>
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
              <div className="bg-card rounded-xl p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
-                  <DollarSign size={24} className="text-primary" />
+                  <DollarSign size={24} className="text-white" />
                     <span className="text-sm font-medium text-slate-400">Total Savings Growth</span>
                   </div>
                  <h3 className="text-xl md:text-2xl font-bold text-white">
@@ -115,7 +115,7 @@ const Insights = () => {
 
              <div className="bg-card rounded-xl p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
-                  <TrendingUp size={24} className="text-secondary" />
+                  <TrendingUp size={24} className="text-white" />
                   <span className="text-sm font-medium text-slate-400">Monthly Average</span>
                 </div>
                  <h3 className="text-xl md:text-2xl font-bold text-white">
@@ -125,7 +125,7 @@ const Insights = () => {
 
              <div className="bg-card rounded-xl p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
-                  <Target size={24} className="text-accent" />
+                  <Target size={24} className="text-white" />
                   <span className="text-sm font-medium text-slate-400">Total Deposits</span>
                 </div>
                  <h3 className="text-xl md:text-2xl font-bold text-white">
@@ -135,7 +135,7 @@ const Insights = () => {
 
              <div className="bg-card rounded-xl p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
-                  <Activity size={24} className="text-secondary" />
+                  <Activity size={24} className="text-white" />
                   <span className="text-sm font-medium text-slate-400">Transactions</span>
                 </div>
                 <h3 className="text-2xl font-bold text-white">

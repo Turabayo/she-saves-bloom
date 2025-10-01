@@ -42,9 +42,9 @@ const Budget = () => {
     const spent = currentSpending.get(budget.category) || 0;
     const percentage = (spent / budget.amount) * 100;
     
-    if (percentage >= 100) return { status: 'exceeded', color: 'text-slate-300', bgColor: 'bg-slate-500/10' };
-    if (percentage >= 80) return { status: 'warning', color: 'text-indigo-400', bgColor: 'bg-indigo-500/10' };
-    return { status: 'good', color: 'text-emerald-400', bgColor: 'bg-emerald-500/10' };
+    if (percentage >= 100) return { status: 'exceeded', color: 'text-white', bgColor: 'bg-white/10' };
+    if (percentage >= 80) return { status: 'warning', color: 'text-white', bgColor: 'bg-white/10' };
+    return { status: 'good', color: 'text-white', bgColor: 'bg-white/10' };
   };
 
   const totalBudget = budgets.reduce((sum, budget) => sum + budget.amount, 0);
@@ -62,7 +62,7 @@ const Budget = () => {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white">Budget Management</h1>
-            <p className="text-muted-foreground">Track and control your spending</p>
+            <p className="text-slate-400">Track and control your spending</p>
           </div>
           <Button onClick={() => setShowCreateDialog(true)}>
             <Plus size={16} className="mr-2" />
@@ -74,13 +74,13 @@ const Budget = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <DollarSign size={16} className="text-primary" />
+              <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
+                <DollarSign size={16} className="text-white" />
                 Total Budget
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-primary">
+              <div className="text-2xl font-bold text-white">
                 {formatCurrency(totalBudget)}
               </div>
             </CardContent>
@@ -88,13 +88,13 @@ const Budget = () => {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <TrendingDown size={16} className="text-slate-400" />
+              <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
+                <TrendingDown size={16} className="text-white" />
                 Total Spent
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-300">
+              <div className="text-2xl font-bold text-white">
                 {formatCurrency(totalSpent)}
               </div>
             </CardContent>
@@ -102,13 +102,13 @@ const Budget = () => {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <TrendingUp size={16} className={remainingBudget >= 0 ? "text-emerald-400" : "text-slate-400"} />
+              <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
+                <TrendingUp size={16} className="text-white" />
                 Remaining
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className={`text-2xl font-bold ${remainingBudget >= 0 ? "text-emerald-400" : "text-slate-300"}`}>
+              <div className="text-2xl font-bold text-white">
                 {formatCurrency(remainingBudget)}
               </div>
             </CardContent>
@@ -121,9 +121,9 @@ const Budget = () => {
           
           {budgets.length === 0 ? (
             <Card className="p-8 text-center">
-              <DollarSign size={48} className="mx-auto mb-4 text-muted-foreground" />
+              <DollarSign size={48} className="mx-auto mb-4 text-slate-400" />
               <h3 className="text-lg font-medium text-white mb-2">No budgets yet</h3>
-              <p className="text-muted-foreground mb-4">Create your first budget to start tracking your spending</p>
+              <p className="text-slate-400 mb-4">Create your first budget to start tracking your spending</p>
               <Button onClick={() => setShowCreateDialog(true)}>
                 <Plus size={16} className="mr-2" />
                 Create Your First Budget
@@ -141,7 +141,7 @@ const Budget = () => {
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="text-lg font-semibold text-white">{budget.category}</h3>
-                        <p className="text-sm text-muted-foreground">{budget.description}</p>
+                        <p className="text-sm text-slate-400">{budget.description}</p>
                       </div>
                       <div className={`px-3 py-1 rounded-full text-xs font-medium ${status.bgColor} ${status.color}`}>
                         {status.status}
@@ -150,24 +150,24 @@ const Budget = () => {
                     
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Spent: {formatCurrency(spent)}</span>
-                        <span className="text-muted-foreground">Budget: {formatCurrency(budget.amount)}</span>
+                        <span className="text-slate-400">Spent: {formatCurrency(spent)}</span>
+                        <span className="text-slate-400">Budget: {formatCurrency(budget.amount)}</span>
                       </div>
                       <Progress 
                         value={percentage} 
-                        className={`h-2 ${status.status === 'exceeded' ? '[&>div]:bg-slate-400' : 
-                          status.status === 'warning' ? '[&>div]:bg-indigo-400' : '[&>div]:bg-emerald-400'}`}
+                        className={`h-2 ${status.status === 'exceeded' ? '[&>div]:bg-white' : 
+                          status.status === 'warning' ? '[&>div]:bg-primary' : '[&>div]:bg-white'}`}
                       />
-                      <div className="flex justify-between text-xs text-muted-foreground">
+                      <div className="flex justify-between text-xs text-slate-400">
                         <span>{percentage.toFixed(1)}% used</span>
                         <span>{formatCurrency(budget.amount - spent)} remaining</span>
                       </div>
                     </div>
 
                     {percentage >= 80 && (
-                      <div className="mt-4 p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-lg flex items-center gap-2">
-                        <AlertTriangle size={16} className="text-indigo-400" />
-                        <span className="text-sm text-indigo-300">
+                      <div className="mt-4 p-3 bg-white/10 border border-white/20 rounded-lg flex items-center gap-2">
+                        <AlertTriangle size={16} className="text-white" />
+                        <span className="text-sm text-white">
                           {percentage >= 100 ? "Budget exceeded!" : "Approaching budget limit"}
                         </span>
                       </div>

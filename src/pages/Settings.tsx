@@ -91,12 +91,12 @@ const Settings = () => {
             <div className="bg-card rounded-xl p-4 shadow-sm border border-white/10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#6366F1] to-[#D946EF] rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center">
                     <SettingsIcon className="text-white" size={20} />
                   </div>
                   <span className="text-lg font-medium text-white">{t('profile')}</span>
                 </div>
-                <ChevronRight size={20} className="text-muted-foreground" />
+                <ChevronRight size={20} className="text-slate-400" />
               </div>
             </div>
 
@@ -108,15 +108,15 @@ const Settings = () => {
               >
                 <span className="text-white">{t('password')}</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">{t('changePassword')}</span>
-                  <ChevronRight size={16} className="text-muted-foreground" />
+                  <span className="text-slate-400">{t('changePassword')}</span>
+                  <ChevronRight size={16} className="text-slate-400" />
                 </div>
               </button>
 
               <div className="flex items-center justify-between p-4">
                 <div className="flex-1">
                   <span className="text-white">{t('aiAssistant')}</span>
-                  <p className="text-sm text-muted-foreground">{t('aiAssistantDesc')}</p>
+                  <p className="text-sm text-slate-400">{t('aiAssistantDesc')}</p>
                 </div>
                 <Switch 
                   checked={aiEnabled}
@@ -130,10 +130,10 @@ const Settings = () => {
               >
                 <span className="text-white">{t('language')}</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">
+                  <span className="text-slate-400">
                     {language === 'en' ? t('english') : t('french')}
                   </span>
-                  <ChevronRight size={16} className="text-muted-foreground" />
+                  <ChevronRight size={16} className="text-slate-400" />
                 </div>
               </button>
             </div>
