@@ -22,12 +22,12 @@ export const WithdrawalHistory = () => {
 
   if (loading) {
     return (
-      <Card>
+      <Card className="bg-white/5 backdrop-blur border border-white/10">
         <CardHeader>
-          <CardTitle>Recent Withdrawals</CardTitle>
+          <CardTitle className="text-white">Recent Withdrawals</CardTitle>
         </CardHeader>
         <CardContent className="flex items-center justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin" />
+          <Loader2 className="h-6 w-6 animate-spin text-white" />
         </CardContent>
       </Card>
     );
@@ -35,35 +35,35 @@ export const WithdrawalHistory = () => {
 
   if (withdrawals.length === 0) {
     return (
-      <Card>
+      <Card className="bg-white/5 backdrop-blur border border-white/10">
         <CardHeader>
-          <CardTitle>Recent Withdrawals</CardTitle>
+          <CardTitle className="text-white">Recent Withdrawals</CardTitle>
         </CardHeader>
         <CardContent className="text-center py-8">
-          <p className="text-muted-foreground">No withdrawals yet</p>
+          <p className="text-slate-400">No withdrawals yet</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card>
+    <Card className="bg-white/5 backdrop-blur border border-white/10">
       <CardHeader>
-        <CardTitle>Recent Withdrawals</CardTitle>
+        <CardTitle className="text-white">Recent Withdrawals</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {withdrawals.slice(0, 5).map((withdrawal) => (
-            <div key={withdrawal.id} className="flex items-center justify-between p-4 border rounded-lg">
+            <div key={withdrawal.id} className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-lg">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium">RWF {withdrawal.amount.toLocaleString()}</span>
+                  <span className="font-medium text-white">RWF {withdrawal.amount.toLocaleString()}</span>
                   {getStatusBadge(withdrawal.status)}
                 </div>
                 {withdrawal.note && (
-                  <p className="text-sm text-muted-foreground">{withdrawal.note}</p>
+                  <p className="text-sm text-slate-400">{withdrawal.note}</p>
                 )}
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-slate-400">
                   {formatDate(withdrawal.created_at)}
                 </p>
               </div>

@@ -44,8 +44,8 @@ const Dashboard = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
-          <p className="text-muted-foreground">Loading...</p>
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-white" />
+          <p className="text-slate-400">Loading...</p>
         </div>
       </div>
     );
@@ -58,7 +58,7 @@ const Dashboard = () => {
   const monthlyAverage = insights?.monthlyAverage || 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-slate-950 to-slate-900">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       {/* Mobile Layout */}
@@ -101,7 +101,7 @@ const Dashboard = () => {
             <div className="grid grid-cols-2 gap-4 mb-6">
               <Button 
                 onClick={() => navigate('/top-up')}
-                className="w-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg hover:opacity-90"
+                className="w-full bg-primary text-white shadow-lg hover:opacity-90"
                 size="lg"
               >
                 <Plus size={16} className="mr-2" />
@@ -123,7 +123,7 @@ const Dashboard = () => {
                 className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-4 text-left hover:bg-white/[0.07] transition-all"
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-fuchsia-500/80 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
                     <Target className="text-white" size={20} />
                   </div>
                 </div>
@@ -136,7 +136,7 @@ const Dashboard = () => {
                 className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-4 text-left hover:bg-white/[0.07] transition-all"
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-fuchsia-500/80 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
                     <TrendingUp className="text-white" size={20} />
                   </div>
                 </div>
@@ -158,9 +158,9 @@ const Dashboard = () => {
                       </div>
                       <span className={`text-sm px-2 py-1 rounded ${
                         topUp.status.toLowerCase() === 'success' 
-                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/20' 
+                          ? 'bg-white/10 text-white border border-white/20' 
                           : topUp.status.toLowerCase() === 'pending'
-                          ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/20'
+                          ? 'bg-white/5 text-slate-300 border border-white/10'
                           : 'bg-red-500/20 text-red-300 border border-red-500/20'
                       }`}>
                         {topUp.status.toUpperCase()}
@@ -224,7 +224,7 @@ const Dashboard = () => {
               <CardContent className="p-6">
                 <Button 
                   onClick={() => navigate('/top-up')}
-                  className="w-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg hover:opacity-90"
+                  className="w-full bg-primary text-white shadow-lg hover:opacity-90"
                   size="lg"
                 >
                   <Plus size={16} className="mr-2" />

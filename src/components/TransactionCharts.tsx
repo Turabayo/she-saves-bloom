@@ -52,7 +52,7 @@ export const TransactionCharts = () => {
               <Line 
                 type="monotone" 
                 dataKey="withdrawals" 
-                stroke="#A855F7" 
+                stroke="hsl(var(--primary))" 
                 strokeWidth={2} 
                 name="Withdrawals"
               />

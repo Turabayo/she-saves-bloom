@@ -61,8 +61,8 @@ const Auth = () => {
         <div className="w-full max-w-md">
           {/* Card */}
           <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur shadow-2xl overflow-hidden lg:rounded-3xl">
-            {/* Gradient Header */}
-            <div className="bg-gradient-to-r from-[#6366F1] to-[#D946EF] px-6 py-5">
+            {/* Dark Header */}
+            <div className="bg-primary px-6 py-5">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
                   <span className="text-white font-bold text-sm">I</span>
@@ -90,7 +90,7 @@ const Auth = () => {
                       placeholder="First Name.."
                       value={formData.fullName}
                       onChange={(e) => setFormData({...formData, fullName: e.target.value})}
-                      className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 pl-12 text-white placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A855F7]/40"
+                      className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 pl-12 text-white placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                       required
                     />
                     <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -103,7 +103,7 @@ const Auth = () => {
                     placeholder="Email.."
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 pl-12 text-white placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A855F7]/40"
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 pl-12 text-white placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                     required
                   />
                   <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -115,7 +115,7 @@ const Auth = () => {
                     placeholder="Phone number (optional)"
                     value={formData.phone}
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A855F7]/40"
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                   />
                 )}
 
@@ -125,7 +125,7 @@ const Auth = () => {
                     placeholder="Password"
                     value={formData.password}
                     onChange={(e) => setFormData({...formData, password: e.target.value})}
-                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 pl-12 pr-12 text-white placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A855F7]/40"
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 pl-12 pr-12 text-white placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                     required
                   />
                   <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -140,7 +140,7 @@ const Auth = () => {
 
                 {isLogin && (
                   <div className="text-right">
-                    <button type="button" className="text-[#A855F7] text-sm hover:text-white transition-colors">
+                    <button type="button" className="text-white text-sm hover:text-slate-300 transition-colors">
                       Forgot password?
                     </button>
                   </div>
@@ -149,7 +149,7 @@ const Auth = () => {
                 <Button 
                   type="submit"
                   disabled={loading}
-                  className="w-full h-11 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#D946EF] text-white font-semibold shadow-lg hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[#A855F7]/40 disabled:opacity-50 mt-6"
+                  className="w-full h-11 rounded-xl bg-primary text-white font-semibold shadow-lg hover:opacity-90 focus-visible:ring-2 focus-visible:ring-white/40 disabled:opacity-50 mt-6"
                 >
                   {loading ? 'Loading...' : (isLogin ? 'LET\'S GO' : 'CREATE ACCOUNT')}
                 </Button>
@@ -161,7 +161,7 @@ const Auth = () => {
                 </span>
                 <button 
                   type="button"
-                  className="text-[#A855F7] font-medium hover:text-white transition-colors"
+                  className="text-white font-medium hover:text-slate-300 transition-colors"
                   onClick={toggleMode}
                 >
                   {isLogin ? 'Sign up' : 'Sign in'}

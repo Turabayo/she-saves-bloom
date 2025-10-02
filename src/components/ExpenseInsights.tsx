@@ -4,7 +4,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, 
 import { useExpenses } from '@/hooks/useExpenses';
 import { TrendingUp, Calendar } from 'lucide-react';
 
-const COLORS = ['#8B5CF6', '#A855F7', '#6366F1', '#D946EF', '#9333EA', '#7C3AED'];
+const COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))'];
 
 export const ExpenseInsights: React.FC = () => {
   const { expenses } = useExpenses();

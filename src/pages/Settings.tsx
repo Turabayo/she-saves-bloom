@@ -91,7 +91,7 @@ const Settings = () => {
             <div className="bg-card rounded-xl p-4 shadow-sm border border-white/10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
                     <SettingsIcon className="text-white" size={20} />
                   </div>
                   <span className="text-lg font-medium text-white">{t('profile')}</span>

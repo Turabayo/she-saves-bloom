@@ -64,13 +64,13 @@ const TransactionHistory = () => {
 
   if (loading) {
     return (
-      <Card>
+      <Card className="bg-white/5 backdrop-blur border border-white/10">
         <CardHeader>
-          <CardTitle>Transaction History</CardTitle>
+          <CardTitle className="text-white">Transaction History</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center py-8">
-            <Loader className="w-6 h-6 animate-spin" />
+            <Loader className="w-6 h-6 animate-spin text-white" />
           </div>
         </CardContent>
       </Card>
@@ -79,9 +79,9 @@ const TransactionHistory = () => {
 
   if (transactions.length === 0) {
     return (
-      <Card>
+      <Card className="bg-white/5 backdrop-blur border border-white/10">
         <CardHeader>
-          <CardTitle>Transaction History</CardTitle>
+          <CardTitle className="text-white">Transaction History</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-slate-400 text-center py-8">No transactions yet. Start saving by making your first top-up!</p>
@@ -91,9 +91,9 @@ const TransactionHistory = () => {
   }
 
   return (
-    <Card>
+    <Card className="bg-white/5 backdrop-blur border border-white/10">
       <CardHeader>
-        <CardTitle>Recent Transactions</CardTitle>
+        <CardTitle className="text-white">Recent Transactions</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">

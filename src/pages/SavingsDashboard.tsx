@@ -113,7 +113,7 @@ const SavingsDashboard = () => {
           <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-400">Active Goals</CardTitle>
-              <Target className="h-4 w-4 text-fuchsia-400" />
+              <Target className="h-4 w-4 text-white" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">
@@ -143,7 +143,7 @@ const SavingsDashboard = () => {
           <Card className="bg-white/5 backdrop-blur border border-white/10 rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-400">Goal Value</CardTitle>
-              <ChartLine className="h-4 w-4 text-fuchsia-400" />
+              <ChartLine className="h-4 w-4 text-white" />
             </CardHeader>
             <CardContent>
               <div className="text-lg md:text-2xl font-bold text-white">
