@@ -107,7 +107,7 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({ onExpenseAdded }) =>
             {filteredExpenses.map((expense) => (
               <div
                 key={expense.id}
-                className="flex items-center justify-between p-4 rounded-lg border bg-card"
+                className="flex items-center justify-between p-4 rounded-lg border border-white/10 bg-white/5 backdrop-blur"
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-1">

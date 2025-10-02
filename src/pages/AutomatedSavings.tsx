@@ -58,7 +58,7 @@ const AutomatedSavings = () => {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
+          <Card className="bg-white/5 backdrop-blur border border-white/10">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
                 <Zap size={16} className="text-white" />
@@ -72,7 +72,7 @@ const AutomatedSavings = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-white/5 backdrop-blur border border-white/10">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
                 <Target size={16} className="text-white" />
@@ -86,7 +86,7 @@ const AutomatedSavings = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-white/5 backdrop-blur border border-white/10">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
                 <CalendarDays size={16} className="text-white" />
@@ -109,7 +109,7 @@ const AutomatedSavings = () => {
           <h2 className="text-xl font-semibold text-white">Your Savings Rules</h2>
           
           {scheduledSavings.length === 0 ? (
-            <Card className="p-8 text-center">
+            <Card className="bg-white/5 backdrop-blur border border-white/10 p-8 text-center">
               <Zap size={48} className="mx-auto mb-4 text-slate-400" />
               <h3 className="text-lg font-medium text-white mb-2">No automated savings yet</h3>
               <p className="text-slate-400 mb-4">Create your first automated savings rule to start building wealth effortlessly</p>
@@ -123,7 +123,7 @@ const AutomatedSavings = () => {
               {scheduledSavings.map((saving) => {
                 const relatedGoal = goals.find(goal => goal.id === saving.goal_id);
                 return (
-                  <Card key={saving.id} className="p-6">
+                  <Card key={saving.id} className="bg-white/5 backdrop-blur border border-white/10 p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">

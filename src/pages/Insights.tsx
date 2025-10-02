@@ -103,7 +103,7 @@ const Insights = () => {
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-             <div className="bg-card rounded-xl p-6 shadow-sm">
+             <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
                   <DollarSign size={24} className="text-white" />
                     <span className="text-sm font-medium text-slate-400">Total Savings Growth</span>
@@ -113,7 +113,7 @@ const Insights = () => {
                   </h3>
               </div>
 
-             <div className="bg-card rounded-xl p-6 shadow-sm">
+             <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
                   <TrendingUp size={24} className="text-white" />
                   <span className="text-sm font-medium text-slate-400">Monthly Average</span>
@@ -123,7 +123,7 @@ const Insights = () => {
                  </h3>
              </div>
 
-             <div className="bg-card rounded-xl p-6 shadow-sm">
+             <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
                   <Target size={24} className="text-white" />
                   <span className="text-sm font-medium text-slate-400">Total Deposits</span>
@@ -133,7 +133,7 @@ const Insights = () => {
                  </h3>
              </div>
 
-             <div className="bg-card rounded-xl p-6 shadow-sm">
+             <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
                   <Activity size={24} className="text-white" />
                   <span className="text-sm font-medium text-slate-400">Transactions</span>

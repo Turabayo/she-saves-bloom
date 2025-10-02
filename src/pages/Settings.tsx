@@ -88,7 +88,7 @@ const Settings = () => {
 
           <div className="space-y-6">
             {/* Profile */}
-            <div className="bg-card rounded-xl p-4 shadow-sm border border-white/10">
+            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
@@ -101,7 +101,7 @@ const Settings = () => {
             </div>
 
             {/* Settings Options */}
-            <div className="bg-card rounded-xl shadow-sm border border-white/10 divide-y divide-white/10">
+            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl shadow-sm divide-y divide-white/10">
               <button 
                 className="flex items-center justify-between p-4 w-full text-left hover:bg-white/5 transition-colors"
                 onClick={() => setPasswordDialogOpen(true)}

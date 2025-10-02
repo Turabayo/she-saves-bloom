@@ -72,7 +72,7 @@ const Budget = () => {
 
         {/* Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
+          <Card className="bg-white/5 backdrop-blur border border-white/10">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
                 <DollarSign size={16} className="text-white" />
@@ -86,7 +86,7 @@ const Budget = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-white/5 backdrop-blur border border-white/10">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
                 <TrendingDown size={16} className="text-white" />
@@ -100,7 +100,7 @@ const Budget = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-white/5 backdrop-blur border border-white/10">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
                 <TrendingUp size={16} className="text-white" />
@@ -120,7 +120,7 @@ const Budget = () => {
           <h2 className="text-xl font-semibold text-white">Budget Categories</h2>
           
           {budgets.length === 0 ? (
-            <Card className="p-8 text-center">
+            <Card className="bg-white/5 backdrop-blur border border-white/10 p-8 text-center">
               <DollarSign size={48} className="mx-auto mb-4 text-slate-400" />
               <h3 className="text-lg font-medium text-white mb-2">No budgets yet</h3>
               <p className="text-slate-400 mb-4">Create your first budget to start tracking your spending</p>
@@ -137,7 +137,7 @@ const Budget = () => {
                 const status = getBudgetStatus(budget);
                 
                 return (
-                  <Card key={budget.id} className="p-6">
+                  <Card key={budget.id} className="bg-white/5 backdrop-blur border border-white/10 p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="text-lg font-semibold text-white">{budget.category}</h3>
