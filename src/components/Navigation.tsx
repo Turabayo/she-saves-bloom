@@ -44,10 +44,10 @@ const Navigation = () => {
             className="flex items-center gap-3 cursor-pointer"
             onClick={handleLogoClick}
           >
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-              <span className="font-bold text-[#0F1625] text-sm">I</span>
+            <div className="w-8 h-8 bg-gradient-to-br from-[#6366F1] to-[#D946EF] rounded-full flex items-center justify-center">
+              <span className="text-white font-bold text-sm">I</span>
             </div>
-            <span className="text-xl font-bold text-white">Save</span>
+            <span className="text-xl font-bold text-white">ISave</span>
           </div>
           
           <div className="flex items-center">
@@ -60,7 +60,7 @@ const Navigation = () => {
                     key={item.path}
                     onClick={() => navigate(item.path)}
                     className={`flex items-center gap-2 text-sm font-medium transition-colors ${
-                      item.active ? 'text-white' : 'text-slate-400 hover:text-white'
+                      item.active ? 'text-[#D946EF]' : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     <IconComponent size={16} />
@@ -80,10 +80,10 @@ const Navigation = () => {
             
             <button 
               onClick={() => navigate('/settings')}
-              className="ml-6 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:opacity-90 transition-colors"
+              className="ml-6 w-8 h-8 bg-gradient-to-br from-[#6366F1] to-[#D946EF] rounded-full flex items-center justify-center hover:opacity-90 transition-colors"
               title="Settings"
             >
-              <Settings size={16} className="text-[#0F1625]" />
+              <Settings size={16} className="text-white" />
             </button>
           </div>
         </div>
@@ -99,7 +99,7 @@ const Navigation = () => {
                 key={item.path}
                 onClick={() => navigate(item.path)}
                 className={`flex-1 py-3 px-2 text-center text-xs font-medium flex flex-col items-center gap-1 ${
-                  item.active ? 'text-white' : 'text-slate-400'
+                  item.active ? 'text-[#D946EF]' : 'text-slate-400'
                 }`}
               >
                 <IconComponent size={18} />

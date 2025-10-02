@@ -166,7 +166,7 @@ export const useChartData = () => {
     { 
       name: "Withdrawals", 
       value: withdrawalData.length,
-      color: "hsl(var(--primary))" 
+      color: "#A855F7" 
     },
     { 
       name: "Savings", 

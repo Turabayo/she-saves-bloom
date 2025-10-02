@@ -112,7 +112,7 @@ export const IncomeList = ({ onIncomeAdded }: IncomeListProps) => {
             {filteredIncome.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center justify-between p-4 rounded-lg border border-white/10 bg-white/5 backdrop-blur"
+                className="flex items-center justify-between p-4 rounded-lg border bg-card"
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-1">

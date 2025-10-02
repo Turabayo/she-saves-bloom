@@ -39,11 +39,11 @@ const FloatingAIButton = () => {
         <div className={`fixed ${isNative ? 'bottom-24' : 'bottom-20'} right-4 z-50`}>
           <Button
             onClick={() => setIsOpen(true)}
-            className="w-14 h-14 rounded-full bg-primary text-white shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center hover:opacity-90"
+            className="w-14 h-14 rounded-full bg-gradient-to-r from-primary to-secondary text-white shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center hover:opacity-90"
           >
             <MessageCircle size={24} />
           </Button>
-          <div className="absolute -top-8 -left-12 bg-white/5 backdrop-blur border border-white/10 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+          <div className="absolute -top-8 -left-12 bg-card text-white text-xs px-2 py-1 rounded whitespace-nowrap border border-white/10">
             💬 Ask AI
           </div>
         </div>
@@ -51,9 +51,9 @@ const FloatingAIButton = () => {
 
       {/* Chat Panel */}
       {isOpen && (
-        <div className={`fixed ${isNative ? 'bottom-24' : 'bottom-20'} right-4 w-80 h-96 bg-white/5 backdrop-blur rounded-lg shadow-2xl z-50 flex flex-col border border-white/10 max-w-[calc(100vw-2rem)]`}>
+        <div className={`fixed ${isNative ? 'bottom-24' : 'bottom-20'} right-4 w-80 h-96 bg-card backdrop-blur rounded-lg shadow-2xl z-50 flex flex-col border border-white/10 max-w-[calc(100vw-2rem)]`}>
           {/* Header */}
-          <div className="flex items-center justify-between p-3 border-b bg-primary text-white rounded-t-lg">
+          <div className="flex items-center justify-between p-3 border-b bg-gradient-to-r from-primary to-secondary text-white rounded-t-lg">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
                 <MessageCircle size={14} />
@@ -78,7 +78,7 @@ const FloatingAIButton = () => {
                 <div
                   className={`max-w-[80%] p-2 rounded-lg text-sm ${
                     msg.type === 'user' 
-                      ? 'bg-primary text-white' 
+                      ? 'bg-gradient-to-r from-primary to-secondary text-white' 
                       : 'bg-white/10 text-white'
                   }`}
                 >
@@ -117,7 +117,7 @@ const FloatingAIButton = () => {
               <Button 
                 onClick={handleSend}
                 disabled={loading || !inputMessage.trim()}
-                className="bg-primary hover:opacity-90 p-2 min-w-[40px]"
+                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 p-2 min-w-[40px]"
                 size="sm"
               >
                 <Send size={16} />

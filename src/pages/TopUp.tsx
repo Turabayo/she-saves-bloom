@@ -180,10 +180,10 @@ const TopUp = () => {
           <ArrowLeft size={24} className="text-slate-400" />
         </button>
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-            <span className="font-bold text-[#0F1625] text-sm">I</span>
+          <div className="w-8 h-8 bg-gradient-to-br from-[#6366F1] to-[#D946EF] rounded-full flex items-center justify-center">
+            <span className="text-white font-bold text-sm">I</span>
           </div>
-          <span className="text-xl font-bold text-white">Save</span>
+          <span className="text-xl font-bold text-white">ISave</span>
         </div>
       </header>
 
@@ -192,7 +192,7 @@ const TopUp = () => {
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-white/10 backdrop-blur border border-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <DollarSign size={32} className="text-white" />
+              <DollarSign size={32} className="text-primary" />
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Top Up with MoMo</h1>
             <p className="text-slate-400">Add money to your savings using MTN Mobile Money</p>
@@ -238,7 +238,7 @@ const TopUp = () => {
             <Button 
               type="submit"
               disabled={loading}
-              className="w-full bg-primary text-white py-4 text-lg rounded-lg disabled:opacity-50 hover:opacity-90"
+              className="w-full bg-gradient-to-r from-[#6366F1] to-[#D946EF] text-white py-4 text-lg rounded-lg disabled:opacity-50 hover:opacity-90"
             >
               {loading ? (
                 <div className="flex items-center gap-2">

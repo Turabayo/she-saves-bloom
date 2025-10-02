@@ -31,10 +31,10 @@ const Assistant = () => {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center p-8">
-          <Sparkles size={48} className="text-white mx-auto mb-4" />
+          <Sparkles size={48} className="text-secondary mx-auto mb-4" />
           <h2 className="text-xl font-bold text-gray-900 mb-2">Sign In Required</h2>
           <p className="text-gray-600 mb-4">Please sign in to access your AI financial assistant.</p>
-          <Button onClick={() => navigate('/auth')} className="bg-primary hover:opacity-90">
+          <Button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-primary to-secondary hover:opacity-90">
             Sign In
           </Button>
         </div>
