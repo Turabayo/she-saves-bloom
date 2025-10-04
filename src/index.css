@@ -6,30 +6,30 @@
 
 @layer base {
   :root {
-    --background: 11 15 26;        /* #0B0F1A - Surface/page background */
-    --foreground: 241 245 249;     /* slate-100 - Headings */
-    --card: 15 22 37;              /* #0F1625 - Panel/card background */
-    --card-foreground: 203 213 225; /* slate-300 - Body text */
-    --popover: 15 22 37;
-    --popover-foreground: 203 213 225;
-    --primary: 99 102 241;         /* #6366F1 - indigo-500 */
+    --background: 255 255 255;        /* #FFFFFF - Light background */
+    --foreground: 15 23 42;           /* slate-900 - Dark text */
+    --card: 248 250 252;              /* slate-50 - Light card background */
+    --card-foreground: 30 41 59;      /* slate-800 - Card text */
+    --popover: 255 255 255;
+    --popover-foreground: 15 23 42;
+    --primary: 99 102 241;            /* #6366F1 - indigo-500 */
     --primary-foreground: 255 255 255;
-    --secondary: 168 85 247;       /* #A855F7 - fuchsia-500 */
+    --secondary: 168 85 247;          /* #A855F7 - fuchsia-500 */
     --secondary-foreground: 255 255 255;
-    --muted: 30 41 59;
-    --muted-foreground: 148 163 184; /* slate-400 - Muted text */
-    --accent: 168 85 247;          /* #A855F7 - Accent */
+    --muted: 241 245 249;             /* slate-100 */
+    --muted-foreground: 100 116 139;  /* slate-500 - Muted text */
+    --accent: 168 85 247;             /* #A855F7 - Accent */
     --accent-foreground: 255 255 255;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 255 255 255 / 0.08;
-    --input: 255 255 255 / 0.08;
-    --ring: 168 85 247;            /* #A855F7 - Focus ring */
-    --chart-1: 139 92 246;         /* #8B5CF6 - violet-500 */
-    --chart-2: 168 85 247;         /* #A855F7 - fuchsia-500 */
-    --chart-3: 99 102 241;         /* #6366F1 - indigo-500 */
-    --chart-4: 217 70 239;         /* #D946EF - fuchsia-600 */
-    --chart-5: 147 51 234;         /* #9333EA - violet-600 */
+    --border: 226 232 240;            /* slate-200 */
+    --input: 226 232 240;             /* slate-200 */
+    --ring: 168 85 247;               /* #A855F7 - Focus ring */
+    --chart-1: 139 92 246;            /* #8B5CF6 - violet-500 */
+    --chart-2: 168 85 247;            /* #A855F7 - fuchsia-500 */
+    --chart-3: 99 102 241;            /* #6366F1 - indigo-500 */
+    --chart-4: 217 70 239;            /* #D946EF - fuchsia-600 */
+    --chart-5: 147 51 234;            /* #9333EA - violet-600 */
     --success: 142 76% 36%;
     --success-foreground: 355 100% 97%;
     --radius: 16px;
