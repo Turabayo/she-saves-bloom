@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { Wallet2, LineChart, Bell, Repeat, ShieldCheck, Globe2, Download, ChevronRight, Sparkles, Layers, Sun, Moon } from "lucide-react";
-import { useTheme } from "@/contexts/ThemeContext";
+import { Wallet2, LineChart, Bell, Repeat, ShieldCheck, Globe2, Download, ChevronRight, Sparkles, Layers } from "lucide-react";
 
 /**
  * ISave — Fresh Landing (Goodbye SheSaves vibes)
@@ -13,7 +12,6 @@ import { useTheme } from "@/contexts/ThemeContext";
 
 export default function Landing() {
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
 
   const fmt = (n: number, currency = "RWF") =>
     new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 })
@@ -61,56 +59,45 @@ export default function Landing() {
   ];
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main className="min-h-screen bg-gradient-to-b from-black via-slate-950 to-slate-900 text-slate-100">
       {/* Top Nav */}
-      <header className="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-black/40 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
           <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary shadow-lg">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-fuchsia-500 shadow-lg">
               <span className="text-lg font-extrabold text-white">I</span>
             </div>
             <span className="text-2xl font-bold tracking-tight">ISave</span>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg hover:bg-muted transition-colors"
-              title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              {theme === "dark" ? (
-                <Sun className="h-5 w-5 text-foreground" />
-              ) : (
-                <Moon className="h-5 w-5 text-foreground" />
-              )}
-            </button>
-            <Button variant="ghost" className="text-muted-foreground hover:text-foreground" onClick={() => navigate("/auth")}>Sign in</Button>
-            <Button className="bg-primary text-white shadow-lg hover:bg-primary/90" onClick={() => navigate("/auth")}>Open the app</Button>
+            <Button variant="ghost" className="text-slate-300 hover:text-white" onClick={() => navigate("/auth")}>Sign in</Button>
+            <Button className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg hover:opacity-90" onClick={() => navigate("/auth")}>Open the app</Button>
           </div>
         </div>
       </header>
 
       {/* Hero */}
-      <section className="relative overflow-hidden bg-background">
+      <section className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute left-1/2 top-[-120px] h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px]" />
-          <div className="absolute left-[10%] top-[40%] h-[320px] w-[320px] rounded-full bg-primary/10 blur-[100px]" />
+          <div className="absolute left-1/2 top-[-120px] h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-fuchsia-500/20 blur-[120px]" />
+          <div className="absolute left-[10%] top-[40%] h-[320px] w-[320px] rounded-full bg-indigo-500/20 blur-[100px]" />
         </div>
 
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:grid-cols-2 md:py-16">
           <div className="flex flex-col justify-center">
-            <h1 className="text-balance text-5xl font-extrabold tracking-tight md:text-6xl text-foreground">
+            <h1 className="text-balance text-5xl font-extrabold tracking-tight md:text-6xl">
               Take control of your money—
-              <span className="text-primary"> simply</span>.
+              <span className="bg-gradient-to-r from-indigo-400 to-fuchsia-400 bg-clip-text text-transparent"> simply</span>.
             </h1>
-            <p className="mt-4 max-w-xl text-lg text-muted-foreground">
+            <p className="mt-4 max-w-xl text-lg text-slate-300">
               Smart savings. Simple control.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button className="h-12 rounded-xl bg-primary text-white text-base font-semibold shadow-lg hover:bg-primary/90" onClick={() => navigate("/auth")}>Start now</Button>
+              <Button className="h-12 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-base font-semibold shadow-lg hover:opacity-90 focus-visible:ring-2 focus-visible:ring-fuchsia-500/40" onClick={() => navigate("/auth")}>Start now</Button>
               <Button
                 variant="outline"
                 size="lg"
-                className="h-12 rounded-xl text-base"
+                className="h-12 rounded-xl border-white/20 bg-transparent text-base text-white hover:bg-white/10"
                 onClick={() => {
                   const el = document.getElementById("how-it-works");
                   el?.scrollIntoView({ behavior: "smooth" });
@@ -122,7 +109,7 @@ export default function Landing() {
             </div>
 
             {/* Hero bullets */}
-            <ul className="mt-6 grid max-w-xl grid-cols-1 gap-3 text-sm text-muted-foreground sm:grid-cols-2">
+            <ul className="mt-6 grid max-w-xl grid-cols-1 gap-3 text-sm text-slate-300 sm:grid-cols-2">
               <li className="flex items-center gap-2"><Layers className="h-4 w-4" /> Budgets, goals & insights</li>
               <li className="flex items-center gap-2"><Download className="h-4 w-4" /> Export clean statements</li>
               <li className="flex items-center gap-2"><Repeat className="h-4 w-4" /> Recurring transactions</li>
@@ -132,51 +119,51 @@ export default function Landing() {
 
           {/* Glass phone preview */}
           <div className="relative mx-auto w-full max-w-md">
-            <div className="absolute inset-0 -z-10 rounded-3xl bg-primary/10 blur-xl" />
-            <Card className="overflow-hidden rounded-3xl border-border bg-card backdrop-blur will-change-transform transition-transform duration-300 hover:-translate-y-0.5">
+            <div className="absolute inset-0 -z-10 rounded-3xl bg-gradient-to-br from-white/10 to-white/0 blur-xl" />
+            <Card className="overflow-hidden rounded-3xl border-white/10 bg-white/10 backdrop-blur will-change-transform transition-transform duration-300 hover:-translate-y-0.5">
               <CardContent className="p-0">
-                <div className="bg-card p-6">
+                <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-6">
                   <div className="mb-6 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary">
+                      <div className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-indigo-500 to-fuchsia-500">
                         <Wallet2 className="h-5 w-5 text-white" />
                       </div>
-                      <p className="text-sm text-muted-foreground">ISave Wallet</p>
+                      <p className="text-sm text-slate-300">ISave Wallet</p>
                     </div>
-                    <p className="text-xs text-muted-foreground">Today, 09:30</p>
+                    <p className="text-xs text-slate-400">Today, 09:30</p>
                   </div>
 
                   <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-2xl border border-border bg-background p-4">
-                      <p className="text-xs text-muted-foreground">Balance</p>
-                      <p className="mt-1 text-2xl font-bold text-foreground">{fmt(245000)}</p>
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                      <p className="text-xs text-slate-400">Balance</p>
+                      <p className="mt-1 text-2xl font-bold text-white">{fmt(245000)}</p>
                     </div>
-                    <div className="rounded-2xl border border-border bg-background p-4">
-                      <p className="text-xs text-muted-foreground">This month</p>
-                      <p className="mt-1 text-2xl font-bold text-emerald-500">+ {fmt(58200)}</p>
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                      <p className="text-xs text-slate-400">This month</p>
+                      <p className="mt-1 text-2xl font-bold text-emerald-300">+ {fmt(58200)}</p>
                     </div>
-                    <div className="rounded-2xl border border-border bg-background p-4">
-                      <p className="text-xs text-muted-foreground">Budget used</p>
-                      <p className="mt-1 text-2xl font-bold text-foreground">62%</p>
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                      <p className="text-xs text-slate-400">Budget used</p>
+                      <p className="mt-1 text-2xl font-bold text-white">62%</p>
                     </div>
-                    <div className="rounded-2xl border border-border bg-background p-4">
-                      <p className="text-xs text-muted-foreground">Goals</p>
-                      <p className="mt-1 text-2xl font-bold text-foreground">2 nearly done</p>
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                      <p className="text-xs text-slate-400">Goals</p>
+                      <p className="mt-1 text-2xl font-bold text-white">2 nearly done</p>
                     </div>
                   </div>
 
                   <div className="mt-5 grid gap-2">
-                    <div className="flex items-center justify-between rounded-xl border border-border bg-background px-3 py-2.5">
-                      <div className="flex items-center gap-2 text-sm text-foreground">
-                        <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" /> Incoming
+                    <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2.5">
+                      <div className="flex items-center gap-2 text-sm text-slate-200">
+                        <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" /> Incoming
                       </div>
-                      <span className="text-sm font-semibold text-emerald-500">{fmt(120000)}</span>
+                      <span className="text-sm font-semibold text-emerald-300">{fmt(120000)}</span>
                     </div>
-                    <div className="flex items-center justify-between rounded-xl border border-border bg-background px-3 py-2.5">
-                      <div className="flex items-center gap-2 text-sm text-foreground">
-                        <span className="inline-block h-2 w-2 rounded-full bg-muted-foreground" /> Spending
+                    <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2.5">
+                      <div className="flex items-center gap-2 text-sm text-slate-200">
+                        <span className="inline-block h-2 w-2 rounded-full bg-slate-400" /> Spending
                       </div>
-                      <span className="text-sm font-semibold text-muted-foreground">{fmt(61800)}</span>
+                      <span className="text-sm font-semibold text-slate-300">{fmt(61800)}</span>
                     </div>
                   </div>
                 </div>
@@ -187,22 +174,22 @@ export default function Landing() {
       </section>
 
       {/* Feature grid */}
-      <section className="border-t border-border bg-background">
+      <section className="border-t border-white/10 bg-black/30">
         <div className="mx-auto max-w-7xl px-4 py-16">
-          <h2 className="text-center text-3xl font-bold tracking-tight md:text-4xl text-foreground">
+          <h2 className="text-center text-3xl font-bold tracking-tight md:text-4xl">
             Everything you need in one wallet
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-center text-muted-foreground">
+          <p className="mx-auto mt-3 max-w-2xl text-center text-slate-300">
             Budgets, recurring transactions, multi‑currency, and crisp statements—without the bloat.
           </p>
           <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((f, i) => (
-              <Card key={i} className="group h-full rounded-2xl border-border bg-card p-6 transition hover:bg-accent/5 hover:-translate-y-[2px]">
-                <div className="mb-4 inline-flex items-center justify-center rounded-xl bg-primary p-3 text-white shadow-md">
+              <Card key={i} className="group h-full rounded-2xl border-white/10 bg-white/5 p-6 backdrop-blur transition hover:bg-white/[0.07] hover:-translate-y-[2px]">
+                <div className="mb-4 inline-flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-fuchsia-500/80 p-3 text-white shadow-md">
                   <f.icon className="h-5 w-5" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground">{f.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{f.desc}</p>
+                <h3 className="text-lg font-semibold text-white">{f.title}</h3>
+                <p className="mt-2 text-sm text-slate-300">{f.desc}</p>
               </Card>
             ))}
           </div>
@@ -210,23 +197,23 @@ export default function Landing() {
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="border-t border-border bg-muted/30">
+      <section id="how-it-works" className="border-t border-white/10 bg-gradient-to-b from-slate-950 to-black">
         <div className="mx-auto max-w-7xl px-4 py-16">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight md:text-4xl text-foreground">How it works</h2>
-            <p className="mt-2 text-muted-foreground">From top‑up to insight in minutes.</p>
+            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">How it works</h2>
+            <p className="mt-2 text-slate-300">From top‑up to insight in minutes.</p>
           </div>
           <ol className="mx-auto mt-10 grid max-w-5xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((s, i) => (
-              <li key={i} className="rounded-2xl border border-border bg-card p-5">
-                <div className="mb-2 text-sm text-muted-foreground">Step {i + 1}</div>
-                <div className="text-lg font-semibold text-foreground">{s.title}</div>
-                <p className="mt-1 text-sm text-muted-foreground">{s.text}</p>
+              <li key={i} className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <div className="mb-2 text-sm text-slate-400">Step {i + 1}</div>
+                <div className="text-lg font-semibold text-white">{s.title}</div>
+                <p className="mt-1 text-sm text-slate-300">{s.text}</p>
               </li>
             ))}
           </ol>
           <div className="mt-8 flex justify-center">
-            <Button className="rounded-xl bg-primary text-white hover:bg-primary/90" onClick={() => navigate("/auth")}>
+            <Button className="rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white" onClick={() => navigate("/auth")}>
               Create your wallet
             </Button>
           </div>
@@ -234,13 +221,13 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card">
+      <footer className="border-t border-white/10 bg-black/60">
         <div className="mx-auto max-w-7xl px-4 py-10">
           <div className="flex flex-col items-center gap-2 text-center">
-            <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary">
+            <div className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-indigo-500 to-fuchsia-500">
               <span className="text-sm font-extrabold text-white">I</span>
             </div>
-            <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} ISave. Personal wallet, zero noise.</p>
+            <p className="text-sm text-slate-400">© {new Date().getFullYear()} ISave. Personal wallet, zero noise.</p>
           </div>
         </div>
       </footer>
