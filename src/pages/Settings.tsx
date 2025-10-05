@@ -83,40 +83,40 @@ const Settings = () => {
       <main className="px-4 pb-20">
         <div className="max-w-md mx-auto">
           <div className="py-6">
-            <h1 className="text-2xl font-bold text-white">{t('settings')}</h1>
+            <h1 className="text-2xl font-bold text-foreground">{t('settings')}</h1>
           </div>
 
           <div className="space-y-6">
             {/* Profile */}
-            <div className="bg-card rounded-xl p-4 shadow-sm border border-white/10">
+            <div className="bg-card rounded-xl p-4 shadow-sm border border-border">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
                     <SettingsIcon className="text-white" size={20} />
                   </div>
-                  <span className="text-lg font-medium text-white">{t('profile')}</span>
+                  <span className="text-lg font-medium text-foreground">{t('profile')}</span>
                 </div>
-                <ChevronRight size={20} className="text-slate-400" />
+                <ChevronRight size={20} className="text-muted-foreground" />
               </div>
             </div>
 
             {/* Settings Options */}
-            <div className="bg-card rounded-xl shadow-sm border border-white/10 divide-y divide-white/10">
+            <div className="bg-card rounded-xl shadow-sm border border-border divide-y divide-border">
               <button 
-                className="flex items-center justify-between p-4 w-full text-left hover:bg-white/5 transition-colors"
+                className="flex items-center justify-between p-4 w-full text-left hover:bg-muted/50 transition-colors"
                 onClick={() => setPasswordDialogOpen(true)}
               >
-                <span className="text-white">{t('password')}</span>
+                <span className="text-foreground">{t('password')}</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-slate-400">{t('changePassword')}</span>
-                  <ChevronRight size={16} className="text-slate-400" />
+                  <span className="text-muted-foreground">{t('changePassword')}</span>
+                  <ChevronRight size={16} className="text-muted-foreground" />
                 </div>
               </button>
 
               <div className="flex items-center justify-between p-4">
                 <div className="flex-1">
-                  <span className="text-white">{t('aiAssistant')}</span>
-                  <p className="text-sm text-slate-400">{t('aiAssistantDesc')}</p>
+                  <span className="text-foreground">{t('aiAssistant')}</span>
+                  <p className="text-sm text-muted-foreground">{t('aiAssistantDesc')}</p>
                 </div>
                 <Switch 
                   checked={aiEnabled}
@@ -125,15 +125,15 @@ const Settings = () => {
               </div>
 
               <button 
-                className="flex items-center justify-between p-4 w-full text-left hover:bg-white/5 transition-colors"
+                className="flex items-center justify-between p-4 w-full text-left hover:bg-muted/50 transition-colors"
                 onClick={() => setLanguageDialogOpen(true)}
               >
-                <span className="text-white">{t('language')}</span>
+                <span className="text-foreground">{t('language')}</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-slate-400">
+                  <span className="text-muted-foreground">
                     {language === 'en' ? t('english') : t('french')}
                   </span>
-                  <ChevronRight size={16} className="text-slate-400" />
+                  <ChevronRight size={16} className="text-muted-foreground" />
                 </div>
               </button>
             </div>

@@ -18,8 +18,8 @@ const Expenses: React.FC = () => {
       <main className="px-4 pb-20">
         <div className="max-w-4xl mx-auto">
           <div className="py-6">
-            <h1 className="text-3xl font-bold text-white">{t('incomeExpenseTracker')}</h1>
-            <p className="text-slate-400">Track and analyze your income and spending habits</p>
+            <h1 className="text-3xl font-bold text-foreground">{t('incomeExpenseTracker')}</h1>
+            <p className="text-muted-foreground">Track and analyze your income and spending habits</p>
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">

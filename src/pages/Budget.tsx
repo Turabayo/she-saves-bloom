@@ -61,8 +61,8 @@ const Budget = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white">Budget Management</h1>
-            <p className="text-slate-400">Track and control your spending</p>
+            <h1 className="text-3xl font-bold text-foreground">Budget Management</h1>
+            <p className="text-muted-foreground">Track and control your spending</p>
           </div>
           <Button onClick={() => setShowCreateDialog(true)}>
             <Plus size={16} className="mr-2" />
@@ -72,58 +72,58 @@ const Budget = () => {
 
         {/* Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
-                <DollarSign size={16} className="text-white" />
-                Total Budget
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">
-                {formatCurrency(totalBudget)}
-              </div>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <DollarSign size={16} className="text-primary" />
+                  Total Budget
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-foreground">
+                  {formatCurrency(totalBudget)}
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
-                <TrendingDown size={16} className="text-white" />
-                Total Spent
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">
-                {formatCurrency(totalSpent)}
-              </div>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <TrendingDown size={16} className="text-primary" />
+                  Total Spent
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-foreground">
+                  {formatCurrency(totalSpent)}
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2">
-                <TrendingUp size={16} className="text-white" />
-                Remaining
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">
-                {formatCurrency(remainingBudget)}
-              </div>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <TrendingUp size={16} className="text-primary" />
+                  Remaining
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-foreground">
+                  {formatCurrency(remainingBudget)}
+                </div>
+              </CardContent>
+            </Card>
         </div>
 
         {/* Budget Categories */}
         <div className="space-y-6">
-          <h2 className="text-xl font-semibold text-white">Budget Categories</h2>
+          <h2 className="text-xl font-semibold text-foreground">Budget Categories</h2>
           
           {budgets.length === 0 ? (
             <Card className="p-8 text-center">
-              <DollarSign size={48} className="mx-auto mb-4 text-slate-400" />
-              <h3 className="text-lg font-medium text-white mb-2">No budgets yet</h3>
-              <p className="text-slate-400 mb-4">Create your first budget to start tracking your spending</p>
+              <DollarSign size={48} className="mx-auto mb-4 text-muted-foreground" />
+              <h3 className="text-lg font-medium text-foreground mb-2">No budgets yet</h3>
+              <p className="text-muted-foreground mb-4">Create your first budget to start tracking your spending</p>
               <Button onClick={() => setShowCreateDialog(true)}>
                 <Plus size={16} className="mr-2" />
                 Create Your First Budget
@@ -140,34 +140,38 @@ const Budget = () => {
                   <Card key={budget.id} className="p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h3 className="text-lg font-semibold text-white">{budget.category}</h3>
-                        <p className="text-sm text-slate-400">{budget.description}</p>
+                        <h3 className="text-lg font-semibold text-foreground">{budget.category}</h3>
+                        <p className="text-sm text-muted-foreground">{budget.description}</p>
                       </div>
-                      <div className={`px-3 py-1 rounded-full text-xs font-medium ${status.bgColor} ${status.color}`}>
+                      <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        status.status === 'exceeded' ? 'bg-destructive/20 text-destructive' :
+                        status.status === 'warning' ? 'bg-yellow-500/20 text-yellow-500' :
+                        'bg-success/20 text-success'
+                      }`}>
                         {status.status}
                       </div>
                     </div>
                     
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-slate-400">Spent: {formatCurrency(spent)}</span>
-                        <span className="text-slate-400">Budget: {formatCurrency(budget.amount)}</span>
+                        <span className="text-muted-foreground">Spent: {formatCurrency(spent)}</span>
+                        <span className="text-muted-foreground">Budget: {formatCurrency(budget.amount)}</span>
                       </div>
                       <Progress 
                         value={percentage} 
-                        className={`h-2 ${status.status === 'exceeded' ? '[&>div]:bg-white' : 
-                          status.status === 'warning' ? '[&>div]:bg-primary' : '[&>div]:bg-white'}`}
+                        className={`h-2 ${status.status === 'exceeded' ? '[&>div]:bg-destructive' : 
+                          status.status === 'warning' ? '[&>div]:bg-yellow-500' : '[&>div]:bg-success'}`}
                       />
-                      <div className="flex justify-between text-xs text-slate-400">
+                      <div className="flex justify-between text-xs text-muted-foreground">
                         <span>{percentage.toFixed(1)}% used</span>
                         <span>{formatCurrency(budget.amount - spent)} remaining</span>
                       </div>
                     </div>
 
                     {percentage >= 80 && (
-                      <div className="mt-4 p-3 bg-white/10 border border-white/20 rounded-lg flex items-center gap-2">
-                        <AlertTriangle size={16} className="text-white" />
-                        <span className="text-sm text-white">
+                      <div className="mt-4 p-3 bg-muted border border-border rounded-lg flex items-center gap-2">
+                        <AlertTriangle size={16} className="text-yellow-500" />
+                        <span className="text-sm text-foreground">
                           {percentage >= 100 ? "Budget exceeded!" : "Approaching budget limit"}
                         </span>
                       </div>

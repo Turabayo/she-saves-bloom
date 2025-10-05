@@ -1,5 +1,6 @@
 
 import Navigation from "@/components/Navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { useTransactionInsights } from "@/hooks/useTransactionInsights";
 import { useChartData } from "@/hooks/useChartData";
@@ -97,196 +98,148 @@ const Insights = () => {
       <main className="px-4 pb-20">
         <div className="max-w-4xl mx-auto">
           <div className="py-6">
-            <h1 className="text-3xl font-bold text-white">Financial Insights</h1>
-            <p className="text-slate-400">Track your savings performance and patterns</p>
+            <h1 className="text-3xl font-bold text-foreground">Financial Insights</h1>
+            <p className="text-muted-foreground">Track your savings performance and patterns</p>
           </div>
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-             <div className="bg-card rounded-xl p-6 shadow-sm">
+             <Card>
+               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-2">
-                  <DollarSign size={24} className="text-white" />
-                    <span className="text-sm font-medium text-slate-400">Total Savings Growth</span>
+                  <DollarSign size={24} className="text-primary" />
+                    <span className="text-sm font-medium text-muted-foreground">Total Savings Growth</span>
                   </div>
-                 <h3 className="text-xl md:text-2xl font-bold text-white">
+                 <h3 className="text-xl md:text-2xl font-bold text-foreground">
                     {formatCurrencyCompact(currentInsights.savingsGrowth)}
                   </h3>
-              </div>
+               </CardContent>
+              </Card>
 
-             <div className="bg-card rounded-xl p-6 shadow-sm">
+             <Card>
+               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-2">
-                  <TrendingUp size={24} className="text-white" />
-                  <span className="text-sm font-medium text-slate-400">Monthly Average</span>
+                  <TrendingUp size={24} className="text-primary" />
+                  <span className="text-sm font-medium text-muted-foreground">Monthly Average</span>
                 </div>
-                 <h3 className="text-xl md:text-2xl font-bold text-white">
+                 <h3 className="text-xl md:text-2xl font-bold text-foreground">
                    {formatCurrencyCompact(currentInsights.monthlyAverage)}
                  </h3>
-             </div>
+               </CardContent>
+             </Card>
 
-             <div className="bg-card rounded-xl p-6 shadow-sm">
+             <Card>
+               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-2">
-                  <Target size={24} className="text-white" />
-                  <span className="text-sm font-medium text-slate-400">Total Deposits</span>
+                  <Target size={24} className="text-primary" />
+                  <span className="text-sm font-medium text-muted-foreground">Total Deposits</span>
                 </div>
-                 <h3 className="text-xl md:text-2xl font-bold text-white">
+                 <h3 className="text-xl md:text-2xl font-bold text-foreground">
                    {formatCurrencyCompact(currentInsights.totalDeposits)}
                  </h3>
-             </div>
+               </CardContent>
+             </Card>
 
-             <div className="bg-card rounded-xl p-6 shadow-sm">
+             <Card>
+               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-2">
-                  <Activity size={24} className="text-white" />
-                  <span className="text-sm font-medium text-slate-400">Transactions</span>
+                  <Activity size={24} className="text-primary" />
+                  <span className="text-sm font-medium text-muted-foreground">Transactions</span>
                 </div>
-                <h3 className="text-2xl font-bold text-white">
+                <h3 className="text-2xl font-bold text-foreground">
                   {currentInsights.transactionCount}
                 </h3>
-            </div>
+               </CardContent>
+            </Card>
           </div>
 
           {/* Charts */}
           <div className="space-y-6">
             {/* Daily Transaction Volume */}
-            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-white mb-4">Daily Transaction Volume</h3>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={dailyVolumeData || []}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                    <XAxis 
-                      dataKey="date" 
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                    />
-                    <YAxis 
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                    />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'hsl(var(--card))', 
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px'
-                      }}
-                    />
-                    <Legend />
-                    <Line type="monotone" dataKey="topups" stroke="hsl(var(--chart-1))" strokeWidth={2} name="Top-ups" />
-                    <Line type="monotone" dataKey="withdrawals" stroke="hsl(var(--chart-2))" strokeWidth={2} name="Withdrawals" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-foreground">Daily Transaction Volume</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={dailyVolumeData || []}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <XAxis 
+                        dataKey="date" 
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                      />
+                      <YAxis 
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                      />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: 'hsl(var(--card))', 
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px'
+                        }}
+                      />
+                      <Legend />
+                      <Line type="monotone" dataKey="topups" stroke="hsl(var(--chart-1))" strokeWidth={2} name="Top-ups" />
+                      <Line type="monotone" dataKey="withdrawals" stroke="hsl(var(--chart-2))" strokeWidth={2} name="Withdrawals" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Daily Transaction Amount */}
-            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-white mb-4">Daily Transaction Amount</h3>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={transactionAmountData || []}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                    <XAxis 
-                      dataKey="month" 
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                    />
-                    <YAxis 
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                      tickFormatter={(value) => `${(value/1000).toFixed(0)}K`}
-                    />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'hsl(var(--card))', 
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px'
-                      }}
-                      formatter={(value) => [`${Number(value).toLocaleString()} RWF`, 'Amount']}
-                    />
-                    <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-foreground">Daily Transaction Amount</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={transactionAmountData || []}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <XAxis 
+                        dataKey="month" 
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                      />
+                      <YAxis 
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                        tickFormatter={(value) => `${(value/1000).toFixed(0)}K`}
+                      />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: 'hsl(var(--card))', 
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px'
+                        }}
+                        formatter={(value) => [`${Number(value).toLocaleString()} RWF`, 'Amount']}
+                      />
+                      <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Transaction Types */}
-            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-white mb-4">Transaction Types</h3>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={transactionTypeData || []}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {(transactionTypeData || []).map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={`hsl(var(--chart-${index % 5 + 1}))`} />
-                      ))}
-                    </Pie>
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'hsl(var(--card))', 
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px'
-                      }}
-                      formatter={(value) => [value, 'Count']}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* Savings by Category */}
-            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-white mb-4">Savings by Category</h3>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={savingsByCategoryData}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                    <XAxis 
-                      dataKey="name" 
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                    />
-                    <YAxis 
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                      tickFormatter={(value) => `${(value/1000).toFixed(0)}K`}
-                    />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'hsl(var(--card))', 
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px'
-                      }}
-                      formatter={(value) => [`${Number(value).toLocaleString()} RWF`, 'Amount']}
-                    />
-                    <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Category Distribution */}
-              <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
-                <h3 className="text-lg font-semibold text-white mb-4">Savings Distribution</h3>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-foreground">Transaction Types</CardTitle>
+              </CardHeader>
+              <CardContent>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={categoryData}
+                        data={transactionTypeData || []}
                         cx="50%"
                         cy="50%"
                         labelLine={false}
@@ -295,8 +248,8 @@ const Insights = () => {
                         fill="#8884d8"
                         dataKey="value"
                       >
-                        {categoryData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        {(transactionTypeData || []).map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={`hsl(var(--chart-${index % 5 + 1}))`} />
                         ))}
                       </Pie>
                       <Tooltip 
@@ -305,22 +258,36 @@ const Insights = () => {
                           border: '1px solid hsl(var(--border))',
                           borderRadius: '8px'
                         }}
-                        formatter={(value) => [`${Number(value).toLocaleString()} RWF`, 'Amount']}
+                        formatter={(value) => [value, 'Count']}
                       />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              {/* Deposits vs Withdrawals */}
-              <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 shadow-sm">
-                <h3 className="text-lg font-semibold text-white mb-4">Deposits vs Withdrawals</h3>
+            {/* Savings by Category */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-foreground">Savings by Category</CardTitle>
+              </CardHeader>
+              <CardContent>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={performanceData} layout="horizontal">
+                    <BarChart data={savingsByCategoryData}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                      <XAxis type="number" className="text-xs" />
-                      <YAxis dataKey="name" type="category" className="text-xs" />
+                      <XAxis 
+                        dataKey="name" 
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                      />
+                      <YAxis 
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                        tickFormatter={(value) => `${(value/1000).toFixed(0)}K`}
+                      />
                       <Tooltip 
                         contentStyle={{ 
                           backgroundColor: 'hsl(var(--card))', 
@@ -329,11 +296,77 @@ const Insights = () => {
                         }}
                         formatter={(value) => [`${Number(value).toLocaleString()} RWF`, 'Amount']}
                       />
-                      <Bar dataKey="value" fill="hsl(var(--primary))" />
+                      <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Category Distribution */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-foreground">Savings Distribution</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={categoryData}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {categoryData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: 'hsl(var(--card))', 
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: '8px'
+                          }}
+                          formatter={(value) => [`${Number(value).toLocaleString()} RWF`, 'Amount']}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Deposits vs Withdrawals */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-foreground">Deposits vs Withdrawals</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={performanceData} layout="horizontal">
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <XAxis type="number" className="text-xs" />
+                        <YAxis dataKey="name" type="category" className="text-xs" />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: 'hsl(var(--card))', 
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: '8px'
+                          }}
+                          formatter={(value) => [`${Number(value).toLocaleString()} RWF`, 'Amount']}
+                        />
+                        <Bar dataKey="value" fill="hsl(var(--primary))" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>

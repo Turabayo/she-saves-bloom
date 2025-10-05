@@ -71,8 +71,8 @@ const Goals = () => {
       <main className="flex-1 px-6">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8 space-y-3">
-            <h1 className="text-3xl font-bold text-white">What are you saving for?</h1>
-            <p className="text-slate-400">Choose a goal to get started</p>
+            <h1 className="text-3xl font-bold text-foreground">What are you saving for?</h1>
+            <p className="text-muted-foreground">Choose a goal to get started</p>
           </div>
 
           <div className="space-y-4 mb-8">
@@ -82,12 +82,12 @@ const Goals = () => {
                 onClick={() => toggleGoal(goal.id)}
                 className={`w-full p-4 rounded-xl border transition-colors flex items-center gap-4 ${
                   selectedGoals.includes(goal.id)
-                    ? 'border-white/20 bg-white/10 backdrop-blur'
-                    : 'border-white/10 bg-white/5 backdrop-blur'
+                    ? 'border-primary bg-primary/10'
+                    : 'border-border bg-card'
                 }`}
               >
                 <span className="text-2xl">{goal.icon}</span>
-                <span className="text-lg font-medium text-white">{goal.label}</span>
+                <span className="text-lg font-medium text-foreground">{goal.label}</span>
               </button>
             ))}
           </div>
@@ -95,7 +95,7 @@ const Goals = () => {
           <Button 
             onClick={handleContinue}
             disabled={selectedGoals.length === 0}
-            className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white py-4 text-lg rounded-xl disabled:opacity-50"
+            className="w-full py-4 text-lg rounded-xl"
           >
             Continue
           </Button>
