@@ -76,7 +76,7 @@ const Dashboard = () => {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <Card className="bg-card border-border">
+              <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-1">
                     <Target size={20} className="text-primary" />
@@ -88,7 +88,7 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
               
-              <Card className="bg-card border-border">
+              <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-1">
                     <TrendingUp size={20} className="text-primary" />
@@ -123,12 +123,12 @@ const Dashboard = () => {
             {/* Quick Actions */}
             <div className="grid grid-cols-2 gap-4 mb-6">
               <Card 
-                className="cursor-pointer hover:bg-muted/50 transition-colors"
+                className="cursor-pointer hover:bg-surface2 transition-colors"
                 onClick={() => navigate('/goals')}
               >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-cta rounded-lg flex items-center justify-center shadow-[0_4px_12px_rgba(43,114,255,0.25)]">
                       <Target className="text-white" size={20} />
                     </div>
                   </div>
@@ -138,12 +138,12 @@ const Dashboard = () => {
               </Card>
 
               <Card 
-                className="cursor-pointer hover:bg-muted/50 transition-colors"
+                className="cursor-pointer hover:bg-surface2 transition-colors"
                 onClick={() => navigate('/insights')}
               >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-cta rounded-lg flex items-center justify-center shadow-[0_4px_12px_rgba(43,114,255,0.25)]">
                       <TrendingUp className="text-white" size={20} />
                     </div>
                   </div>
@@ -161,8 +161,8 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {topUps.slice(0, 3).map((topUp) => (
-                      <div key={topUp.id} className="flex justify-between items-center p-3 bg-muted rounded-lg">
+                     {topUps.slice(0, 3).map((topUp) => (
+                      <div key={topUp.id} className="flex justify-between items-center p-3 bg-surface2 rounded-lg border border-border">
                         <div>
                           <p className="font-medium text-foreground">{formatCurrencyCompact(topUp.amount)}</p>
                           <p className="text-sm text-muted-foreground">{formatDate(topUp.created_at)}</p>
@@ -171,7 +171,7 @@ const Dashboard = () => {
                           topUp.status.toLowerCase() === 'success' 
                             ? 'bg-success/20 text-success' 
                             : topUp.status.toLowerCase() === 'pending'
-                            ? 'bg-yellow-500/20 text-yellow-500'
+                            ? 'bg-warning/20 text-warning'
                             : 'bg-destructive/20 text-destructive'
                         }`}>
                           {topUp.status.toUpperCase()}

@@ -38,13 +38,13 @@ const Navigation = () => {
   return (
     <>
       {/* Top Header */}
-      <header className={`bg-card border-b border-border p-4 ${isNative && isIOS ? 'pt-12' : ''}`}>
+      <header className={`sticky top-0 bg-card/70 backdrop-blur border-b border-border p-4 ${isNative && isIOS ? 'pt-12' : ''}`}>
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div 
             className="flex items-center gap-3 cursor-pointer"
             onClick={handleLogoClick}
           >
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-cta rounded-lg flex items-center justify-center shadow-[0_4px_12px_rgba(43,114,255,0.25)]">
               <span className="text-white font-bold text-sm">I</span>
             </div>
             <span className="text-xl font-bold text-foreground">ISave</span>
@@ -78,13 +78,15 @@ const Navigation = () => {
               </button>
             </nav>
             
-            <button 
+            <Button 
               onClick={() => navigate('/settings')}
-              className="ml-6 w-8 h-8 bg-primary rounded-lg flex items-center justify-center hover:opacity-90 transition-colors"
+              variant="secondary"
+              size="icon"
+              className="ml-6"
               title="Settings"
             >
-              <Settings size={16} className="text-white" />
-            </button>
+              <Settings size={16} />
+            </Button>
           </div>
         </div>
       </header>

@@ -31,30 +31,33 @@ export const TransactionCharts = () => {
         <CardContent>
           <ResponsiveContainer width="100%" height={300} className="md:h-96">
             <LineChart data={dailyVolumeData}>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-              <XAxis dataKey="date" className="text-xs" />
-              <YAxis className="text-xs" />
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--line2))" />
+              <XAxis dataKey="date" className="text-xs" stroke="hsl(var(--muted-foreground))" />
+              <YAxis className="text-xs" stroke="hsl(var(--muted-foreground))" />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: 'hsl(var(--card))', 
+                  backgroundColor: 'hsl(var(--surface2))', 
                   border: '1px solid hsl(var(--border))',
-                  borderRadius: '8px'
+                  borderRadius: '8px',
+                  color: 'hsl(var(--foreground))'
                 }} 
               />
               <Legend />
               <Line 
                 type="monotone" 
                 dataKey="topups" 
-                stroke="#8B5CF6" 
-                strokeWidth={2} 
+                stroke="hsl(var(--cta-from))" 
+                strokeWidth={3} 
                 name="Top-ups"
+                dot={false}
               />
               <Line 
                 type="monotone" 
                 dataKey="withdrawals" 
-                stroke="#A855F7" 
-                strokeWidth={2} 
+                stroke="hsl(var(--cta-to))" 
+                strokeWidth={3} 
                 name="Withdrawals"
+                dot={false}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -70,18 +73,25 @@ export const TransactionCharts = () => {
         <CardContent>
           <ResponsiveContainer width="100%" height={280} className="md:h-80">
             <BarChart data={transactionAmountData}>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-              <XAxis dataKey="month" className="text-xs" />
-              <YAxis className="text-xs" />
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--line2))" />
+              <XAxis dataKey="month" className="text-xs" stroke="hsl(var(--muted-foreground))" />
+              <YAxis className="text-xs" stroke="hsl(var(--muted-foreground))" />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: 'hsl(var(--card))', 
+                  backgroundColor: 'hsl(var(--surface2))', 
                   border: '1px solid hsl(var(--border))',
-                  borderRadius: '8px'
+                  borderRadius: '8px',
+                  color: 'hsl(var(--foreground))'
                 }} 
                 formatter={(value) => [`RWF ${Number(value).toLocaleString()}`, 'Amount']}
               />
-              <Bar dataKey="amount" fill="#6366F1" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="amount" fill="url(#colorGradient)" radius={[4, 4, 0, 0]} />
+              <defs>
+                <linearGradient id="colorGradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="hsl(var(--cta-from))" />
+                  <stop offset="100%" stopColor="hsl(var(--cta-to))" />
+                </linearGradient>
+              </defs>
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
@@ -112,9 +122,10 @@ export const TransactionCharts = () => {
               </Pie>
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: 'hsl(var(--card))', 
+                  backgroundColor: 'hsl(var(--surface2))', 
                   border: '1px solid hsl(var(--border))',
-                  borderRadius: '8px'
+                  borderRadius: '8px',
+                  color: 'hsl(var(--foreground))'
                 }} 
               />
             </PieChart>

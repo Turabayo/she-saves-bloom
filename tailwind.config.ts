@@ -42,7 +42,8 @@ export default {
 				},
 				accent: {
 					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
+					foreground: 'hsl(var(--accent-foreground))',
+					hover: 'hsl(var(--accent-hover))'
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
@@ -56,14 +57,12 @@ export default {
 					DEFAULT: 'hsl(var(--success))',
 					foreground: 'hsl(var(--success-foreground))'
 				},
-				brand: {
-					indigo: '#6366F1',
-					violet: '#8B5CF6',
-					fuchsia: '#A855F7',
-					magenta: '#D946EF',
-					surface: '#0B0F1A',
-					panel: '#0F1625'
+				warning: {
+					DEFAULT: 'hsl(var(--warning))',
+					foreground: 'hsl(var(--warning-foreground))'
 				},
+				surface2: 'hsl(var(--surface2))',
+				line2: 'hsl(var(--line2))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -74,6 +73,9 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				}
+			},
+			backgroundImage: {
+				'gradient-cta': 'linear-gradient(90deg, hsl(var(--cta-from)), hsl(var(--cta-to)))',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
