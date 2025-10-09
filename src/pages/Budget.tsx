@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { AppSidebar } from "@/components/AppSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { AlertTriangle, Plus, TrendingDown, TrendingUp, DollarSign } from "lucide-react";
-import Navigation from "@/components/Navigation";
 import { useBudget } from "@/hooks/useBudget";
 import { useExpenses } from "@/hooks/useExpenses";
 import { CreateBudgetDialog } from "@/components/CreateBudgetDialog";
@@ -18,7 +20,6 @@ const Budget = () => {
   const { toast } = useToast();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
 
-  // Calculate spending by category for current month
   const getCurrentMonthSpending = () => {
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
@@ -42,9 +43,9 @@ const Budget = () => {
     const spent = currentSpending.get(budget.category) || 0;
     const percentage = (spent / budget.amount) * 100;
     
-    if (percentage >= 100) return { status: 'exceeded', color: 'text-white', bgColor: 'bg-white/10' };
-    if (percentage >= 80) return { status: 'warning', color: 'text-white', bgColor: 'bg-white/10' };
-    return { status: 'good', color: 'text-white', bgColor: 'bg-white/10' };
+    if (percentage >= 100) return { status: 'exceeded', color: 'text-foreground', bgColor: 'bg-card' };
+    if (percentage >= 80) return { status: 'warning', color: 'text-foreground', bgColor: 'bg-card' };
+    return { status: 'good', color: 'text-foreground', bgColor: 'bg-card' };
   };
 
   const totalBudget = budgets.reduce((sum, budget) => sum + budget.amount, 0);
@@ -54,148 +55,152 @@ const Budget = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      <main className="container mx-auto px-4 py-8 pb-20 max-w-4xl">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Budget Management</h1>
-            <p className="text-muted-foreground">Track and control your spending</p>
-          </div>
-          <Button onClick={() => setShowCreateDialog(true)}>
-            <Plus size={16} className="mr-2" />
-            Create Budget
-          </Button>
-        </div>
-
-        {/* Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <DollarSign size={16} className="text-primary" />
-                  Total Budget
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">
-                  {formatCurrency(totalBudget)}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <TrendingDown size={16} className="text-primary" />
-                  Total Spent
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">
-                  {formatCurrency(totalSpent)}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <TrendingUp size={16} className="text-primary" />
-                  Remaining
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">
-                  {formatCurrency(remainingBudget)}
-                </div>
-              </CardContent>
-            </Card>
-        </div>
-
-        {/* Budget Categories */}
-        <div className="space-y-6">
-          <h2 className="text-xl font-semibold text-foreground">Budget Categories</h2>
-          
-          {budgets.length === 0 ? (
-            <Card className="p-8 text-center">
-              <DollarSign size={48} className="mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-medium text-foreground mb-2">No budgets yet</h3>
-              <p className="text-muted-foreground mb-4">Create your first budget to start tracking your spending</p>
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full bg-background">
+        <AppSidebar />
+        <div className="flex-1 flex flex-col">
+          <Navigation />
+          <main className="flex-1 container mx-auto px-6 py-8">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-8">
+              <div>
+                <h1 className="text-3xl font-bold text-foreground">Budget Management</h1>
+                <p className="text-muted-foreground">Track and control your spending</p>
+              </div>
               <Button onClick={() => setShowCreateDialog(true)}>
                 <Plus size={16} className="mr-2" />
-                Create Your First Budget
+                Create Budget
               </Button>
-            </Card>
-          ) : (
-            <div className="grid gap-4">
-              {budgets.map((budget) => {
-                const spent = currentSpending.get(budget.category) || 0;
-                const percentage = Math.min((spent / budget.amount) * 100, 100);
-                const status = getBudgetStatus(budget);
-                
-                return (
-                  <Card key={budget.id} className="p-6">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="text-lg font-semibold text-foreground">{budget.category}</h3>
-                        <p className="text-sm text-muted-foreground">{budget.description}</p>
-                      </div>
-                      <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        status.status === 'exceeded' ? 'bg-destructive/20 text-destructive' :
-                        status.status === 'warning' ? 'bg-yellow-500/20 text-yellow-500' :
-                        'bg-success/20 text-success'
-                      }`}>
-                        {status.status}
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Spent: {formatCurrency(spent)}</span>
-                        <span className="text-muted-foreground">Budget: {formatCurrency(budget.amount)}</span>
-                      </div>
-                      <Progress 
-                        value={percentage} 
-                        className={`h-2 ${status.status === 'exceeded' ? '[&>div]:bg-destructive' : 
-                          status.status === 'warning' ? '[&>div]:bg-yellow-500' : '[&>div]:bg-success'}`}
-                      />
-                      <div className="flex justify-between text-xs text-muted-foreground">
-                        <span>{percentage.toFixed(1)}% used</span>
-                        <span>{formatCurrency(budget.amount - spent)} remaining</span>
-                      </div>
-                    </div>
-
-                    {percentage >= 80 && (
-                      <div className="mt-4 p-3 bg-muted border border-border rounded-lg flex items-center gap-2">
-                        <AlertTriangle size={16} className="text-yellow-500" />
-                        <span className="text-sm text-foreground">
-                          {percentage >= 100 ? "Budget exceeded!" : "Approaching budget limit"}
-                        </span>
-                      </div>
-                    )}
-                  </Card>
-                );
-              })}
             </div>
-          )}
-        </div>
 
-        <CreateBudgetDialog 
-          open={showCreateDialog}
-          onOpenChange={setShowCreateDialog}
-          onSuccess={() => {
-            setShowCreateDialog(false);
-            toast({
-              title: "Budget created",
-              description: "Your budget has been created successfully",
-            });
-          }}
-        />
-      </main>
-    </div>
+            {/* Overview Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <DollarSign size={16} className="text-primary" />
+                    Total Budget
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-foreground">
+                    {formatCurrency(totalBudget)}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <TrendingDown size={16} className="text-primary" />
+                    Total Spent
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-foreground">
+                    {formatCurrency(totalSpent)}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <TrendingUp size={16} className="text-primary" />
+                    Remaining
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-foreground">
+                    {formatCurrency(remainingBudget)}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Budget Categories */}
+            <div className="space-y-6">
+              <h2 className="text-xl font-semibold text-foreground">Budget Categories</h2>
+              
+              {budgets.length === 0 ? (
+                <Card className="p-8 text-center">
+                  <DollarSign size={48} className="mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-lg font-medium text-foreground mb-2">No budgets yet</h3>
+                  <p className="text-muted-foreground mb-4">Create your first budget to start tracking your spending</p>
+                  <Button onClick={() => setShowCreateDialog(true)}>
+                    <Plus size={16} className="mr-2" />
+                    Create Your First Budget
+                  </Button>
+                </Card>
+              ) : (
+                <div className="grid gap-4">
+                  {budgets.map((budget) => {
+                    const spent = currentSpending.get(budget.category) || 0;
+                    const percentage = Math.min((spent / budget.amount) * 100, 100);
+                    const status = getBudgetStatus(budget);
+                    
+                    return (
+                      <Card key={budget.id} className="p-6">
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <h3 className="text-lg font-semibold text-foreground">{budget.category}</h3>
+                            <p className="text-sm text-muted-foreground">{budget.description}</p>
+                          </div>
+                          <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            status.status === 'exceeded' ? 'bg-destructive/20 text-destructive' :
+                            status.status === 'warning' ? 'bg-yellow-500/20 text-yellow-500' :
+                            'bg-success/20 text-success'
+                          }`}>
+                            {status.status}
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">Spent: {formatCurrency(spent)}</span>
+                            <span className="text-muted-foreground">Budget: {formatCurrency(budget.amount)}</span>
+                          </div>
+                          <Progress 
+                            value={percentage} 
+                            className={`h-2 ${status.status === 'exceeded' ? '[&>div]:bg-destructive' : 
+                              status.status === 'warning' ? '[&>div]:bg-yellow-500' : '[&>div]:bg-success'}`}
+                          />
+                          <div className="flex justify-between text-xs text-muted-foreground">
+                            <span>{percentage.toFixed(1)}% used</span>
+                            <span>{formatCurrency(budget.amount - spent)} remaining</span>
+                          </div>
+                        </div>
+
+                        {percentage >= 80 && (
+                          <div className="mt-4 p-3 bg-muted border border-border rounded-lg flex items-center gap-2">
+                            <AlertTriangle size={16} className="text-yellow-500" />
+                            <span className="text-sm text-foreground">
+                              {percentage >= 100 ? "Budget exceeded!" : "Approaching budget limit"}
+                            </span>
+                          </div>
+                        )}
+                      </Card>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            <CreateBudgetDialog 
+              open={showCreateDialog}
+              onOpenChange={setShowCreateDialog}
+              onSuccess={() => {
+                setShowCreateDialog(false);
+                toast({
+                  title: "Budget created",
+                  description: "Your budget has been created successfully",
+                });
+              }}
+            />
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 };
 

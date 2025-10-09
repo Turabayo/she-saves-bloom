@@ -1,4 +1,6 @@
 import Navigation from "@/components/Navigation";
+import { AppSidebar } from "@/components/AppSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { ChevronRight, Settings as SettingsIcon } from "lucide-react";
@@ -77,11 +79,13 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      <main className="px-4 pb-20">
-        <div className="max-w-md mx-auto">
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full bg-background">
+        <AppSidebar />
+        <div className="flex-1 flex flex-col">
+          <Navigation />
+          <main className="flex-1 container mx-auto px-6 py-8">
+            <div className="max-w-md mx-auto">
           <div className="py-6">
             <h1 className="text-2xl font-bold text-foreground">{t('settings')}</h1>
           </div>
@@ -163,24 +167,26 @@ const Settings = () => {
               </Button>
             </div>
 
-          </div>
-        </div>
-      </main>
+            </div>
+            </div>
+          </main>
 
-      {/* Dialogs */}
-      <PasswordChangeDialog 
-        open={passwordDialogOpen} 
-        onOpenChange={setPasswordDialogOpen} 
-      />
-      <LanguageSelector 
-        open={languageDialogOpen} 
-        onOpenChange={setLanguageDialogOpen} 
-      />
-      <HelpDialog 
-        open={helpDialogOpen} 
-        onOpenChange={setHelpDialogOpen} 
-      />
-    </div>
+          {/* Dialogs */}
+          <PasswordChangeDialog 
+            open={passwordDialogOpen} 
+            onOpenChange={setPasswordDialogOpen} 
+          />
+          <LanguageSelector 
+            open={languageDialogOpen} 
+            onOpenChange={setLanguageDialogOpen} 
+          />
+          <HelpDialog 
+            open={helpDialogOpen} 
+            onOpenChange={setHelpDialogOpen} 
+          />
+        </div>
+      </div>
+    </SidebarProvider>
   );
 };
 

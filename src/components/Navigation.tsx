@@ -1,117 +1,50 @@
-
-import { useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Settings, Home, Target, BarChart3, LogOut, Receipt, DollarSign, Zap } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { Search, Bot, User } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useDevice } from "@/hooks/use-device";
+import { Input } from "@/components/ui/input";
 
 const Navigation = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { user, signOut } = useAuth();
-  const { t } = useLanguage();
   const { isNative, isIOS } = useDevice();
 
-  const navItems = [
-    { path: '/dashboard', label: t('dashboard'), icon: Home, active: location.pathname === '/dashboard' },
-    { path: '/goals', label: t('goals'), icon: Target, active: location.pathname === '/goals' },
-    { path: '/expenses', label: t('incomeExpenseTracker'), icon: Receipt, active: location.pathname === '/expenses' },
-    { path: '/budget', label: 'Budget', icon: DollarSign, active: location.pathname === '/budget' },
-    { path: '/automated-savings', label: 'Auto Savings', icon: Zap, active: location.pathname === '/automated-savings' },
-    { path: '/insights', label: t('insights'), icon: BarChart3, active: location.pathname === '/insights' },
-  ];
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
-  };
-
-  const handleLogoClick = () => {
-    if (user) {
-      navigate('/dashboard');
-    } else {
-      navigate('/');
-    }
-  };
-
   return (
-    <>
-      {/* Top Header */}
-      <header className={`sticky top-0 bg-card/70 backdrop-blur border-b border-border p-4 ${isNative && isIOS ? 'pt-12' : ''}`}>
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div 
-            className="flex items-center gap-3 cursor-pointer"
-            onClick={handleLogoClick}
-          >
-            <div className="w-8 h-8 bg-gradient-cta rounded-lg flex items-center justify-center shadow-[0_4px_12px_rgba(43,114,255,0.25)]">
-              <span className="text-white font-bold text-sm">I</span>
-            </div>
-            <span className="text-xl font-bold text-foreground">ISave</span>
-          </div>
-          
-          <div className="flex items-center">
-            {/* Desktop navigation with improved spacing and icons */}
-            <nav className="hidden md:flex items-center space-x-8">
-              {navItems.map((item) => {
-                const IconComponent = item.icon;
-                return (
-                  <button
-                    key={item.path}
-                    onClick={() => navigate(item.path)}
-                    className={`flex items-center gap-2 text-sm font-medium transition-colors ${
-                      item.active ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    <IconComponent size={16} />
-                    {item.label}
-                  </button>
-                );
-              })}
-              
-              <button 
-                onClick={handleSignOut}
-                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <LogOut size={16} />
-                {t('signOut')}
-              </button>
-            </nav>
-            
-            <Button 
-              onClick={() => navigate('/settings')}
-              variant="secondary"
-              size="icon"
-              className="ml-6"
-              title="Settings"
-            >
-              <Settings size={16} />
-            </Button>
-          </div>
+    <header className={`sticky top-0 bg-card/70 backdrop-blur border-b border-border px-6 py-3 ${isNative && isIOS ? 'pt-12' : ''}`}>
+      <div className="flex items-center justify-between gap-4">
+        {/* Search */}
+        <div className="flex-1 max-w-md relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+          <Input 
+            placeholder="Search..." 
+            className="pl-10 bg-surface2 border-line"
+          />
         </div>
-      </header>
 
-      {/* Bottom Navigation - Mobile with icons */}
-      <div className={`fixed bottom-0 left-0 right-0 bg-card border-t border-border md:hidden ${isNative ? 'pb-safe' : ''}`}>
-        <div className="max-w-md mx-auto flex">
-          {navItems.map((item) => {
-            const IconComponent = item.icon;
-            return (
-              <button
-                key={item.path}
-                onClick={() => navigate(item.path)}
-                className={`flex-1 py-3 px-2 text-center text-xs font-medium flex flex-col items-center gap-1 ${
-                  item.active ? 'text-primary' : 'text-muted-foreground'
-                }`}
-              >
-                <IconComponent size={18} />
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
+        {/* Right actions */}
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('/assistant')}
+            title="AI Assistant"
+          >
+            <Bot size={18} />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('/settings')}
+            title="Profile"
+          >
+            <User size={18} />
+          </Button>
         </div>
       </div>
-    </>
+    </header>
   );
 };
 

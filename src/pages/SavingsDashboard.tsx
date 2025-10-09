@@ -10,6 +10,8 @@ import { SavingsGoalCard } from "@/components/SavingsGoalCard";
 import { CreateGoalDialog } from "@/components/CreateGoalDialog";
 import { TopUpDialog } from "@/components/TopUpDialog";
 import Navigation from "@/components/Navigation";
+import { AppSidebar } from "@/components/AppSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import FloatingAIButton from "@/components/FloatingAIButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
@@ -49,16 +51,21 @@ const SavingsDashboard = () => {
 
   if (authLoading || goalsLoading) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <div className="mobile-container py-6 space-y-6">
-          <div className="desktop-grid">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-48 rounded-lg" />
-            ))}
+      <SidebarProvider>
+        <div className="flex min-h-screen w-full bg-background">
+          <AppSidebar />
+          <div className="flex-1 flex flex-col">
+            <Navigation />
+            <div className="flex-1 container mx-auto px-6 py-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-48 rounded-lg" />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </SidebarProvider>
     );
   }
 
@@ -79,10 +86,12 @@ const SavingsDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-slate-950 to-slate-900">
-      <Navigation />
-      
-      <div className="mobile-container py-6 space-y-6">
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full bg-background">
+        <AppSidebar />
+        <div className="flex-1 flex flex-col">
+          <Navigation />
+          <main className="flex-1 container mx-auto px-6 py-8 space-y-6">
         {/* Welcome Header */}
         <div className="text-center space-y-2">
           <h1 className="text-3xl md:text-4xl font-bold text-white">
@@ -269,26 +278,28 @@ const SavingsDashboard = () => {
             </CardContent>
           </Card>
         )}
+          </main>
+
+          {/* Top Up Dialog */}
+          {selectedGoalForTopUp && (
+            <TopUpDialog
+              open={showTopUpDialog}
+              onOpenChange={setShowTopUpDialog}
+              goalId={selectedGoalForTopUp}
+              goalName={goals.find(g => g.id === selectedGoalForTopUp)?.name || ''}
+              currentAmount={goals.find(g => g.id === selectedGoalForTopUp)?.current_amount || 0}
+              targetAmount={goals.find(g => g.id === selectedGoalForTopUp)?.goal_amount || 0}
+              onSuccess={() => {
+                refetchGoals();
+                setSelectedGoalForTopUp(null);
+              }}
+            />
+          )}
+
+          <FloatingAIButton />
+        </div>
       </div>
-
-      {/* Top Up Dialog */}
-      {selectedGoalForTopUp && (
-        <TopUpDialog
-          open={showTopUpDialog}
-          onOpenChange={setShowTopUpDialog}
-          goalId={selectedGoalForTopUp}
-          goalName={goals.find(g => g.id === selectedGoalForTopUp)?.name || ''}
-          currentAmount={goals.find(g => g.id === selectedGoalForTopUp)?.current_amount || 0}
-          targetAmount={goals.find(g => g.id === selectedGoalForTopUp)?.goal_amount || 0}
-          onSuccess={() => {
-            refetchGoals();
-            setSelectedGoalForTopUp(null);
-          }}
-        />
-      )}
-
-      <FloatingAIButton />
-    </div>
+    </SidebarProvider>
   );
 };
 

@@ -1,10 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { AppSidebar } from "@/components/AppSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, TrendingUp, Target, Minus, Loader2 } from "lucide-react";
-import Navigation from "@/components/Navigation";
 import { useSavings } from "@/hooks/useSavings";
 import { useTopUps } from "@/hooks/useTopUps";
 import { useWithdrawals } from "@/hooks/useWithdrawals";
@@ -16,7 +18,6 @@ import { TransactionCharts } from "@/components/TransactionCharts";
 import { WithdrawDialog } from "@/components/WithdrawDialog";
 import { WithdrawalHistory } from "@/components/WithdrawalHistory";
 import { useToast } from "@/hooks/use-toast";
-
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -32,7 +33,6 @@ const Dashboard = () => {
     }
   }, [user, authLoading, navigate]);
 
-  // Auto-enable AI assistant by default
   useEffect(() => {
     const aiSetting = localStorage.getItem("aiAssistant");
     if (aiSetting === null) {
@@ -53,229 +53,98 @@ const Dashboard = () => {
 
   if (!user) return null;
 
-  // Use synchronized insights data
   const totalSavings = insights?.totalSavings || 0;
   const monthlyAverage = insights?.monthlyAverage || 0;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      {/* Mobile Layout */}
-      <div className="block lg:hidden">
-        <main className="px-4 pb-20">
-          <div className="max-w-md mx-auto">
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full bg-background">
+        <AppSidebar />
+        <div className="flex-1 flex flex-col">
+          <Navigation />
+          <main className="flex-1 container mx-auto px-6 py-8">
             {/* Header */}
-            <div className="py-6">
-              <h1 className="text-2xl font-bold text-foreground mb-2">
+            <div className="mb-8">
+              <h1 className="text-4xl font-bold text-foreground mb-2">
                 Welcome back, {user?.user_metadata?.full_name || 'there'}!
               </h1>
-              <p className="text-muted-foreground">Here's your financial overview</p>
+              <p className="text-lg text-muted-foreground">Here's your complete financial dashboard</p>
             </div>
 
-
-            {/* Stats Cards */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            {/* Stats Cards Row */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
               <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Target size={20} className="text-primary" />
-                    <span className="text-sm font-medium text-muted-foreground">Total Savings</span>
-                  </div>
-                  <div className="text-lg font-bold text-foreground">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <Target size={16} className="text-primary" />
+                    Total Savings
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-foreground">
                     {formatCurrencyCompact(totalSavings)}
                   </div>
                 </CardContent>
               </Card>
               
               <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2 mb-1">
-                    <TrendingUp size={20} className="text-primary" />
-                    <span className="text-sm font-medium text-muted-foreground">Monthly Avg</span>
-                  </div>
-                  <div className="text-lg font-bold text-foreground">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <TrendingUp size={16} className="text-primary" />
+                    Monthly Average
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-foreground">
                     {formatCurrencyCompact(monthlyAverage)}
                   </div>
                 </CardContent>
               </Card>
-            </div>
 
-            {/* Action Buttons */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <Button 
-                onClick={() => navigate('/top-up')}
-                className="w-full"
-                size="lg"
-              >
-                <Plus size={16} className="mr-2" />
-                Add Money
-              </Button>
-              
-              <WithdrawDialog>
-                <Button variant="outline" className="w-full" size="lg">
-                  <Minus size={16} className="mr-2" />
-                  Withdraw
-                </Button>
-              </WithdrawDialog>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <Card 
-                className="cursor-pointer hover:bg-surface2 transition-colors"
-                onClick={() => navigate('/goals')}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 bg-gradient-cta rounded-lg flex items-center justify-center shadow-[0_4px_12px_rgba(43,114,255,0.25)]">
-                      <Target className="text-white" size={20} />
-                    </div>
-                  </div>
-                  <div className="font-medium text-foreground">Savings Goals</div>
-                  <div className="text-sm text-muted-foreground">Track progress</div>
-                </CardContent>
-              </Card>
-
-              <Card 
-                className="cursor-pointer hover:bg-surface2 transition-colors"
-                onClick={() => navigate('/insights')}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 bg-gradient-cta rounded-lg flex items-center justify-center shadow-[0_4px_12px_rgba(43,114,255,0.25)]">
-                      <TrendingUp className="text-white" size={20} />
-                    </div>
-                  </div>
-                  <div className="font-medium text-foreground">Insights</div>
-                  <div className="text-sm text-muted-foreground">View trends</div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Recent Top-ups */}
-            {topUps.length > 0 && (
-              <Card className="mb-6">
-                <CardHeader>
-                  <CardTitle className="text-foreground">Recent Top-ups</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                     {topUps.slice(0, 3).map((topUp) => (
-                      <div key={topUp.id} className="flex justify-between items-center p-3 bg-surface2 rounded-lg border border-border">
-                        <div>
-                          <p className="font-medium text-foreground">{formatCurrencyCompact(topUp.amount)}</p>
-                          <p className="text-sm text-muted-foreground">{formatDate(topUp.created_at)}</p>
-                        </div>
-                        <span className={`text-sm px-2 py-1 rounded ${
-                          topUp.status.toLowerCase() === 'success' 
-                            ? 'bg-success/20 text-success' 
-                            : topUp.status.toLowerCase() === 'pending'
-                            ? 'bg-warning/20 text-warning'
-                            : 'bg-destructive/20 text-destructive'
-                        }`}>
-                          {topUp.status.toUpperCase()}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-
-            {/* Transaction History */}
-            <TransactionHistory />
-          </div>
-        </main>
-      </div>
-
-      {/* Desktop Layout */}
-      <div className="hidden lg:block">
-        <main className="container mx-auto px-6 py-8">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-2">
-              Welcome back, {user?.user_metadata?.full_name || 'there'}!
-            </h1>
-            <p className="text-lg text-muted-foreground">Here's your complete financial dashboard</p>
-          </div>
-
-
-          {/* Stats Cards Row */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Target size={16} className="text-primary" />
-                  Total Savings
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">
-                  {formatCurrencyCompact(totalSavings)}
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <TrendingUp size={16} className="text-primary" />
-                  Monthly Average
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">
-                  {formatCurrencyCompact(monthlyAverage)}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <Button 
-                  onClick={() => navigate('/top-up')}
-                  className="w-full"
-                  size="lg"
-                >
-                  <Plus size={16} className="mr-2" />
-                  Add Money
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <WithdrawDialog>
-                  <Button variant="outline" className="w-full" size="lg">
-                    <Minus size={16} className="mr-2" />
-                    Withdraw Money
+              <Card>
+                <CardContent className="p-6">
+                  <Button 
+                    onClick={() => navigate('/top-up')}
+                    className="w-full"
+                    size="lg"
+                  >
+                    <Plus size={16} className="mr-2" />
+                    Add Money
                   </Button>
-                </WithdrawDialog>
-              </CardContent>
-            </Card>
-          </div>
+                </CardContent>
+              </Card>
 
-          {/* Transaction Charts */}
-          <div className="mb-8">
-            <TransactionCharts />
-          </div>
+              <Card>
+                <CardContent className="p-6">
+                  <WithdrawDialog>
+                    <Button variant="secondary" className="w-full" size="lg">
+                      <Minus size={16} className="mr-2" />
+                      Withdraw Money
+                    </Button>
+                  </WithdrawDialog>
+                </CardContent>
+              </Card>
+            </div>
 
-          {/* Bottom Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="lg:col-span-1">
-              <WithdrawalHistory />
+            {/* Transaction Charts */}
+            <div className="mb-8">
+              <TransactionCharts />
             </div>
-            <div className="lg:col-span-1">
-              <TransactionHistory />
+
+            {/* Bottom Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="lg:col-span-1">
+                <WithdrawalHistory />
+              </div>
+              <div className="lg:col-span-1">
+                <TransactionHistory />
+              </div>
             </div>
-          </div>
-        </main>
+          </main>
+          <FloatingAIButton />
+        </div>
       </div>
-
-      <FloatingAIButton />
-    </div>
+    </SidebarProvider>
   );
 };
 
