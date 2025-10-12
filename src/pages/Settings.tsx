@@ -159,8 +159,7 @@ const Settings = () => {
                 {t('helpSupport')}
               </Button>
               <Button 
-                variant="destructive" 
-                className="w-full justify-start"
+                className="w-full justify-start bg-gradient-cta text-white shadow-[0_4px_12px_rgba(37,99,235,0.25)] hover:brightness-110"
                 onClick={handleSignOut}
               >
                 {t('signOut')}

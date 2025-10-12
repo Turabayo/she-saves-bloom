@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Wallet2, LineChart, Bell, Repeat, ShieldCheck, Globe2, Download, ChevronRight, Sparkles, Layers } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { useEffect } from "react";
 
 /**
  * ISave — Fresh Landing (Goodbye SheSaves vibes)
@@ -12,6 +14,15 @@ import { Wallet2, LineChart, Bell, Repeat, ShieldCheck, Globe2, Download, Chevro
 
 export default function Landing() {
   const navigate = useNavigate();
+
+  // Set dark theme as default
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (!savedTheme) {
+      localStorage.setItem("theme", "dark");
+      document.documentElement.classList.add("dark");
+    }
+  }, []);
 
   const fmt = (n: number, currency = "RWF") =>
     new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 })
@@ -76,6 +87,7 @@ export default function Landing() {
             <span className="text-2xl font-bold tracking-tight text-foreground">ISave</span>
           </div>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Button variant="ghost" onClick={() => navigate("/auth")}>Sign in</Button>
             <Button onClick={() => navigate("/auth")}>Open the app</Button>
           </div>

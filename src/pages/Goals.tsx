@@ -80,14 +80,14 @@ const Goals = () => {
               <button
                 key={goal.id}
                 onClick={() => toggleGoal(goal.id)}
-                className={`w-full p-4 rounded-xl border transition-colors flex items-center gap-4 ${
+                className={`w-full p-4 rounded-xl border transition-all flex items-center gap-4 ${
                   selectedGoals.includes(goal.id)
-                    ? 'border-primary bg-primary/10'
-                    : 'border-border bg-card'
+                    ? 'border-transparent bg-gradient-cta text-white shadow-[0_4px_12px_rgba(37,99,235,0.25)] hover:brightness-110'
+                    : 'border-border bg-card text-foreground'
                 }`}
               >
                 <span className="text-2xl">{goal.icon}</span>
-                <span className="text-lg font-medium text-foreground">{goal.label}</span>
+                <span className="text-lg font-medium">{goal.label}</span>
               </button>
             ))}
           </div>

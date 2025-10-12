@@ -77,7 +77,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={handleSignOut}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors mt-4"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg bg-gradient-cta text-white shadow-[0_4px_12px_rgba(37,99,235,0.25)] hover:brightness-110 transition-all mt-4"
                 >
                   <LogOut size={20} />
                   <span>{t('signOut')}</span>
