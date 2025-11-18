@@ -57,22 +57,22 @@ const Dashboard = () => {
   const monthlyAverage = insights?.monthlyAverage || 0;
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
         <div className="flex-1 flex flex-col">
           <Navigation />
-          <main className="flex-1 container mx-auto px-6 py-8">
+          <main className="flex-1 container mx-auto px-4 sm:px-6 py-6 sm:py-8">
             {/* Header */}
-            <div className="mb-8">
-              <h1 className="text-4xl font-bold text-foreground mb-2">
+            <div className="mb-6 sm:mb-8">
+              <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
                 Welcome back, {user?.user_metadata?.full_name || 'there'}!
               </h1>
-              <p className="text-lg text-muted-foreground">Here's your complete financial dashboard</p>
+              <p className="text-base sm:text-lg text-muted-foreground">Here's your complete financial dashboard</p>
             </div>
 
             {/* Stats Cards Row */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -102,10 +102,10 @@ const Dashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   <Button 
                     onClick={() => navigate('/top-up')}
-                    className="w-full"
+                    className="w-full min-h-[44px]"
                     size="lg"
                   >
                     <Plus size={16} className="mr-2" />
@@ -115,9 +115,9 @@ const Dashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   <WithdrawDialog>
-                    <Button variant="secondary" className="w-full" size="lg">
+                    <Button variant="secondary" className="w-full min-h-[44px]" size="lg">
                       <Minus size={16} className="mr-2" />
                       Withdraw Money
                     </Button>
@@ -132,11 +132,11 @@ const Dashboard = () => {
             </div>
 
             {/* Bottom Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="lg:col-span-1">
+            <div className="grid grid-cols-1 gap-6">
+              <div>
                 <WithdrawalHistory />
               </div>
-              <div className="lg:col-span-1">
+              <div>
                 <TransactionHistory />
               </div>
             </div>
