@@ -51,7 +51,7 @@ const SavingsDashboard = () => {
 
   if (authLoading || goalsLoading) {
     return (
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={false}>
         <div className="flex min-h-screen w-full bg-background">
           <AppSidebar />
           <div className="flex-1 flex flex-col">
@@ -86,7 +86,7 @@ const SavingsDashboard = () => {
   };
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
         <div className="flex-1 flex flex-col">

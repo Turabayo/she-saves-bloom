@@ -21,7 +21,7 @@ const Insights = () => {
 
   if (loading || chartLoading || goalsLoading) {
     return (
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={false}>
         <div className="flex min-h-screen w-full bg-background">
           <AppSidebar />
           <div className="flex-1 flex flex-col">
@@ -87,7 +87,7 @@ const Insights = () => {
   ];
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
         <div className="flex-1 flex flex-col">
