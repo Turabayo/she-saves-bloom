@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import FloatingAIButton from "@/components/FloatingAIButton";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { LoadingScreen } from "@/components/ui/loader";
 
 const Goals = () => {
   const navigate = useNavigate();
@@ -43,14 +44,7 @@ const Goals = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-400">Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!user) return null;
@@ -60,10 +54,10 @@ const Goals = () => {
       {/* Header */}
       <header className="p-4">
         <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center">
-            <span className="text-white font-bold text-xl">S</span>
+          <div className="w-10 h-10 bg-gradient-cta rounded-xl flex items-center justify-center shadow-lg">
+            <span className="text-white font-bold text-xl">I</span>
           </div>
-          <span className="text-2xl font-bold text-white">ISave</span>
+          <span className="text-2xl font-bold text-foreground">ISave</span>
         </div>
       </header>
 
@@ -80,10 +74,10 @@ const Goals = () => {
               <button
                 key={goal.id}
                 onClick={() => toggleGoal(goal.id)}
-                className={`w-full p-4 rounded-xl border transition-all flex items-center gap-4 ${
+                className={`w-full p-4 rounded-xl border transition-all flex items-center gap-4 min-h-[56px] ${
                   selectedGoals.includes(goal.id)
-                    ? 'border-transparent bg-gradient-cta text-white shadow-[0_4px_12px_rgba(37,99,235,0.25)] hover:brightness-110'
-                    : 'border-border bg-card text-foreground'
+                    ? 'border-transparent bg-gradient-cta text-white shadow-lg hover:brightness-110'
+                    : 'border-border bg-card text-foreground hover:bg-accent'
                 }`}
               >
                 <span className="text-2xl">{goal.icon}</span>
@@ -95,7 +89,7 @@ const Goals = () => {
           <Button 
             onClick={handleContinue}
             disabled={selectedGoals.length === 0}
-            className="w-full py-4 text-lg rounded-xl"
+            className="w-full py-4 text-lg rounded-xl min-h-[48px]"
           >
             Continue
           </Button>

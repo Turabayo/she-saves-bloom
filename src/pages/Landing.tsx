@@ -71,10 +71,10 @@ export default function Landing() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      {/* Background overlay with subtle radials */}
+      {/* Background overlay with subtle radials - using brand blue */}
       <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[#2B72FF]/10 blur-[120px]" />
-        <div className="absolute left-[20%] top-[40%] h-[400px] w-[400px] rounded-full bg-[#9B4DFF]/10 blur-[100px]" />
+        <div className="absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px]" />
+        <div className="absolute left-[20%] top-[40%] h-[400px] w-[400px] rounded-full bg-primary/5 blur-[100px]" />
       </div>
 
       {/* Top Nav */}
