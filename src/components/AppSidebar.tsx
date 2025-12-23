@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Target, Receipt, DollarSign, Zap, BarChart3, LogOut } from "lucide-react";
+import { Target, Receipt, DollarSign, Zap, BarChart3, LogOut, Settings } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Sidebar,
@@ -28,6 +28,7 @@ export function AppSidebar() {
     { path: '/budget', label: 'Budget', icon: DollarSign },
     { path: '/automated-savings', label: 'Auto Savings', icon: Zap },
     { path: '/insights', label: t('insights'), icon: BarChart3 },
+    { path: '/settings', label: t('settings'), icon: Settings },
   ];
 
   const handleSignOut = async () => {
@@ -43,33 +44,33 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className="border-r border-border bg-surface transition-transform duration-300 ease-in-out">
+    <Sidebar className="border-r border-border bg-card transition-transform duration-300 ease-in-out">
       {/* Logo */}
-      <div className="p-6 border-b border-border">
+      <div className="p-5 border-b border-border">
         <div 
           className="flex items-center gap-3 cursor-pointer"
           onClick={() => handleNavClick('/dashboard')}
         >
-          <div className="w-8 h-8 bg-gradient-cta rounded-lg flex items-center justify-center shadow-[0_4px_12px_rgba(37,99,235,0.25)]">
-            <span className="text-white font-bold text-sm">I</span>
+          <div className="w-10 h-10 bg-gradient-cta rounded-xl flex items-center justify-center shadow-lg">
+            <span className="text-white font-bold text-lg">I</span>
           </div>
           <span className="text-xl font-bold text-foreground">ISave</span>
         </div>
       </div>
 
-      <SidebarContent>
+      <SidebarContent className="px-2 py-4">
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {navItems.map((item) => {
                 const active = isActive(item.path);
                 return (
                   <SidebarMenuItem key={item.path}>
                     <SidebarMenuButton
                       onClick={() => handleNavClick(item.path)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors min-h-[44px] ${
+                      className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all min-h-[44px] ${
                         active 
-                          ? 'bg-accent-hover text-foreground font-medium' 
+                          ? 'bg-gradient-cta text-white shadow-lg' 
                           : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                       }`}
                     >
@@ -78,25 +79,25 @@ export function AppSidebar() {
                       ) : (
                         <item.icon size={20} />
                       )}
-                      <span>{item.label}</span>
+                      <span className="font-medium">{item.label}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
               })}
-
-              {/* Sign Out */}
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  onClick={handleSignOut}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg bg-gradient-cta text-white shadow-[0_4px_12px_rgba(37,99,235,0.25)] hover:brightness-110 transition-all mt-4 min-h-[44px]"
-                >
-                  <LogOut size={20} />
-                  <span>{t('signOut')}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* Sign Out at bottom */}
+        <div className="mt-auto pt-4 px-2 border-t border-border">
+          <button
+            onClick={handleSignOut}
+            className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-primary hover:bg-accent transition-colors min-h-[44px]"
+          >
+            <LogOut size={20} />
+            <span className="font-medium">{t('signOut')}</span>
+          </button>
+        </div>
       </SidebarContent>
     </Sidebar>
   );

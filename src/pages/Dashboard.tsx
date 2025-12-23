@@ -6,7 +6,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, TrendingUp, Target, Minus, Loader2 } from "lucide-react";
+import { Plus, TrendingUp, Target, Minus } from "lucide-react";
 import { useSavings } from "@/hooks/useSavings";
 import { useTopUps } from "@/hooks/useTopUps";
 import { useWithdrawals } from "@/hooks/useWithdrawals";
@@ -18,6 +18,7 @@ import { TransactionCharts } from "@/components/TransactionCharts";
 import { WithdrawDialog } from "@/components/WithdrawDialog";
 import { WithdrawalHistory } from "@/components/WithdrawalHistory";
 import { useToast } from "@/hooks/use-toast";
+import { LoadingScreen } from "@/components/ui/loader";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -41,14 +42,7 @@ const Dashboard = () => {
   }, []);
 
   if (authLoading || topUpsLoading || withdrawalsLoading || insightsLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!user) return null;

@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Search, Bot, User, Menu } from "lucide-react";
+import { Search, Bot, Menu, Bell } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useDevice } from "@/hooks/use-device";
 import { Input } from "@/components/ui/input";
 import { useSidebar } from "@/components/ui/sidebar";
+import { UserDropdown } from "@/components/UserDropdown";
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const Navigation = () => {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <header className={`sticky top-0 bg-card/70 backdrop-blur border-b border-border px-4 sm:px-6 py-3 ${isNative && isIOS ? 'pt-12' : ''}`}>
+    <header className={`sticky top-0 bg-card/80 backdrop-blur-sm border-b border-border px-4 sm:px-6 py-3 z-30 ${isNative && isIOS ? 'pt-12' : ''}`}>
       <div className="flex items-center justify-between gap-2 sm:gap-4">
         {/* Menu trigger */}
         <Button
@@ -30,13 +31,22 @@ const Navigation = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
           <Input 
             placeholder="Search..." 
-            className="pl-10 bg-surface border-line"
+            className="pl-10 bg-background border-border rounded-full h-10"
           />
         </div>
 
         {/* Right actions */}
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-2 sm:gap-3">
           <ThemeToggle />
+          
+          <Button
+            variant="ghost"
+            size="icon"
+            className="min-h-[44px] min-w-[44px] relative"
+            title="Notifications"
+          >
+            <Bell size={18} />
+          </Button>
           
           <Button
             variant="ghost"
@@ -48,15 +58,7 @@ const Navigation = () => {
             <Bot size={18} />
           </Button>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate('/settings')}
-            className="min-h-[44px] min-w-[44px]"
-            title="Profile"
-          >
-            <User size={18} />
-          </Button>
+          <UserDropdown />
         </div>
       </div>
     </header>

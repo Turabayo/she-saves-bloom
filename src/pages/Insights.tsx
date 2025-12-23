@@ -2,12 +2,13 @@ import Navigation from "@/components/Navigation";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, CartesianGrid, Tooltip, Legend, AreaChart, Area } from 'recharts';
 import { useChartData } from "@/hooks/useChartData";
 import { useSavingsGoals } from "@/hooks/useSavingsGoals";
 import { formatCurrencyCompact } from "@/utils/dateFormatter";
 import { useRealSavingsInsights } from "@/hooks/useRealSavingsInsights";
 import { TrendingUp, DollarSign, Target, Activity } from "lucide-react";
+import { LoadingScreen } from "@/components/ui/loader";
 
 const Insights = () => {
   const { insights: realInsights, loading } = useRealSavingsInsights();
@@ -20,22 +21,7 @@ const Insights = () => {
   } = useChartData();
 
   if (loading || chartLoading || goalsLoading) {
-    return (
-      <SidebarProvider defaultOpen={false}>
-        <div className="flex min-h-screen w-full bg-background">
-          <AppSidebar />
-          <div className="flex-1 flex flex-col">
-            <Navigation />
-            <main className="flex-1 container mx-auto px-6 py-8">
-              <div className="text-center">
-                <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Loading insights...</p>
-              </div>
-            </main>
-          </div>
-        </div>
-      </SidebarProvider>
-    );
+    return <LoadingScreen message="Loading insights..." />;
   }
 
   const currentInsights = realInsights || {
@@ -157,14 +143,25 @@ const Insights = () => {
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={dailyVolumeData}>
-                      <XAxis dataKey="date" />
-                      <YAxis />
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <Tooltip />
-                      <Legend />
-                      <Line type="monotone" dataKey="volume" stroke="hsl(var(--chart-1))" activeDot={{ r: 8 }} />
-                    </LineChart>
+                    <AreaChart data={dailyVolumeData}>
+                      <defs>
+                        <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <XAxis dataKey="date" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                      <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: 'hsl(var(--card))', 
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px'
+                        }}
+                      />
+                      <Area type="monotone" dataKey="volume" stroke="hsl(var(--chart-1))" fillOpacity={1} fill="url(#colorVolume)" />
+                    </AreaChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
@@ -176,12 +173,18 @@ const Insights = () => {
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={transactionAmountData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis />
-                      <Tooltip formatter={(value: number) => formatCurrencyCompact(value)} />
-                      <Legend />
-                      <Bar dataKey="amount" fill="hsl(var(--chart-2))" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis dataKey="date" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                      <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                      <Tooltip 
+                        formatter={(value: number) => formatCurrencyCompact(value)}
+                        contentStyle={{ 
+                          backgroundColor: 'hsl(var(--card))', 
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px'
+                        }}
+                      />
+                      <Bar dataKey="amount" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
