@@ -1,7 +1,8 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Target, Receipt, Wallet, Zap, BarChart3, LogOut, Settings, LayoutDashboard } from "lucide-react";
+import { Target, Receipt, Wallet, Zap, BarChart3, LogOut, Settings, LayoutDashboard, Shield } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useUserRole } from "@/hooks/useUserRole";
 import {
   SidebarProvider,
   Sidebar,
@@ -20,6 +21,7 @@ function AppSidebarInner() {
   const location = useLocation();
   const { signOut } = useAuth();
   const { t } = useLanguage();
+  const { isAdmin } = useUserRole();
   const { setOpenMobile, isMobile, isHovered, open } = useSidebar();
 
   const navItems = [
@@ -31,6 +33,11 @@ function AppSidebarInner() {
     { path: '/insights', label: 'Insights', icon: BarChart3 },
     { path: '/settings', label: 'Settings', icon: Settings },
   ];
+
+  // Add admin link if user is admin
+  if (isAdmin) {
+    navItems.push({ path: '/admin', label: 'Admin', icon: Shield });
+  }
 
   const handleSignOut = async () => {
     await signOut();
