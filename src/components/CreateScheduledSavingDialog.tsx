@@ -134,12 +134,12 @@ export const CreateScheduledSavingDialog = ({
 
           <div className="space-y-2">
             <Label htmlFor="goal">Linked Goal (Optional)</Label>
-            <Select value={goalId} onValueChange={setGoalId}>
+            <Select value={goalId || "general"} onValueChange={(value) => setGoalId(value === "general" ? "" : value)}>
               <SelectTrigger>
                 <SelectValue placeholder="Select a goal or leave empty" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">General Savings</SelectItem>
+                <SelectItem value="general">General Savings</SelectItem>
                 {goals.map((goal) => (
                   <SelectItem key={goal.id} value={goal.id}>
                     {goal.name}
