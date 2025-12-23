@@ -17,6 +17,8 @@ import TransactionHistory from "@/components/TransactionHistory";
 import { TransactionCharts } from "@/components/TransactionCharts";
 import { WithdrawDialog } from "@/components/WithdrawDialog";
 import { WithdrawalHistory } from "@/components/WithdrawalHistory";
+import { SavingsHealthCard } from "@/components/SavingsHealthCard";
+import { MonthlySummaryCard } from "@/components/MonthlySummaryCard";
 import { useToast } from "@/hooks/use-toast";
 import { LoadingScreen } from "@/components/ui/loader";
 
@@ -119,6 +121,12 @@ const Dashboard = () => {
                   </WithdrawDialog>
                 </CardContent>
               </Card>
+            </div>
+
+            {/* Health Score & Monthly Summary */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <SavingsHealthCard />
+              <MonthlySummaryCard />
             </div>
 
             {/* Transaction Charts */}

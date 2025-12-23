@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Search, Bot, Menu, Bell } from "lucide-react";
+import { Search, Bot, Menu } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useDevice } from "@/hooks/use-device";
 import { Input } from "@/components/ui/input";
 import { useSidebarOptional } from "@/components/ui/sidebar";
 import { UserDropdown } from "@/components/UserDropdown";
+import { NotificationBell } from "@/components/NotificationBell";
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -41,14 +42,7 @@ const Navigation = () => {
         <div className="flex items-center gap-2 sm:gap-3">
           <ThemeToggle />
           
-          <Button
-            variant="ghost"
-            size="icon"
-            className="min-h-[44px] min-w-[44px] relative"
-            title="Notifications"
-          >
-            <Bell size={18} />
-          </Button>
+          <NotificationBell />
           
           <Button
             variant="ghost"
