@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Target, Receipt, DollarSign, Zap, BarChart3, LogOut, Settings, LayoutDashboard } from "lucide-react";
+import { Target, Receipt, Wallet, Zap, BarChart3, LogOut, Settings, LayoutDashboard } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Sidebar,
@@ -23,9 +23,9 @@ export function AppSidebar() {
   const navItems = [
     { path: '/dashboard', label: t('dashboard'), icon: LayoutDashboard },
     { path: '/goals', label: t('goals'), icon: Target },
-    { path: '/expenses', label: t('incomeExpenseTracker'), icon: Receipt },
-    { path: '/budget', label: 'Budget', icon: DollarSign },
-    { path: '/automated-savings', label: 'Auto Savings', icon: Zap },
+    { path: '/expenses', label: 'Tracker', icon: Receipt },
+    { path: '/budget', label: 'Budget', icon: Wallet },
+    { path: '/automated-savings', label: 'Auto Save', icon: Zap },
     { path: '/insights', label: t('insights'), icon: BarChart3 },
     { path: '/settings', label: t('settings'), icon: Settings },
   ];
@@ -58,7 +58,7 @@ export function AppSidebar() {
           <div className="w-10 h-10 bg-gradient-cta rounded-xl flex items-center justify-center shadow-lg shrink-0">
             <span className="text-white font-bold text-lg">I</span>
           </div>
-          <span className={`text-xl font-bold text-foreground transition-opacity duration-200 ${isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
+          <span className={`text-xl font-bold text-foreground whitespace-nowrap transition-all duration-200 ${isExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0 overflow-hidden'}`}>
             ISave
           </span>
         </div>
@@ -70,19 +70,20 @@ export function AppSidebar() {
             <SidebarMenu className="space-y-1">
               {navItems.map((item) => {
                 const active = isActive(item.path);
+                const IconComponent = item.icon;
                 return (
                   <SidebarMenuItem key={item.path}>
                     <SidebarMenuButton
                       onClick={() => handleNavClick(item.path)}
-                      className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all min-h-[44px] ${
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all min-h-[44px] w-full ${
                         active 
                           ? 'bg-gradient-cta text-white shadow-lg' 
                           : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                       }`}
                       tooltip={!isExpanded ? item.label : undefined}
                     >
-                      <item.icon size={20} className="shrink-0" />
-                      <span className={`font-medium transition-opacity duration-200 ${isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
+                      <IconComponent size={20} strokeWidth={1.75} className="shrink-0" />
+                      <span className={`font-medium truncate transition-all duration-200 ${isExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0 overflow-hidden'}`}>
                         {item.label}
                       </span>
                     </SidebarMenuButton>
@@ -95,18 +96,20 @@ export function AppSidebar() {
 
         {/* Sign Out at bottom */}
         <div className="mt-auto pt-2 border-t border-border">
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              onClick={handleSignOut}
-              className="flex items-center gap-3 px-3 py-2 rounded-xl text-muted-foreground hover:bg-accent hover:text-foreground transition-all min-h-[44px]"
-              tooltip={!isExpanded ? t('signOut') : undefined}
-            >
-              <LogOut size={20} className="shrink-0" />
-              <span className={`font-medium transition-opacity duration-200 ${isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
-                {t('signOut')}
-              </span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={handleSignOut}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted-foreground hover:bg-accent hover:text-foreground transition-all min-h-[44px] w-full"
+                tooltip={!isExpanded ? t('signOut') : undefined}
+              >
+                <LogOut size={20} strokeWidth={1.75} className="shrink-0" />
+                <span className={`font-medium truncate transition-all duration-200 ${isExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0 overflow-hidden'}`}>
+                  {t('signOut')}
+                </span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
         </div>
       </SidebarContent>
     </Sidebar>
