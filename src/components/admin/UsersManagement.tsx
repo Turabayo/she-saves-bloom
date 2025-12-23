@@ -162,9 +162,10 @@ export const UsersManagement = () => {
                             <Pencil className="h-4 w-4" />
                           </Button>
                           <Button
-                            variant="destructive"
+                            variant="outline"
                             size="icon"
                             onClick={() => handleDelete(user)}
+                            className="border-primary/30 text-primary hover:bg-primary/10"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
