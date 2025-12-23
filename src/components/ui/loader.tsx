@@ -32,9 +32,12 @@ interface LoadingScreenProps {
 export const LoadingScreen = ({ message = "Loading..." }: LoadingScreenProps) => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="text-center">
-        <Loader size="lg" className="mx-auto mb-4" />
-        <p className="text-muted-foreground text-sm">{message}</p>
+      <div className="text-center space-y-4">
+        <div className="relative w-12 h-12 mx-auto">
+          <div className="absolute inset-0 rounded-full border-2 border-border" />
+          <div className="absolute inset-0 rounded-full border-2 border-t-primary border-r-transparent border-b-transparent border-l-transparent animate-spin" />
+        </div>
+        <p className="text-muted-foreground text-sm font-medium">{message}</p>
       </div>
     </div>
   );
