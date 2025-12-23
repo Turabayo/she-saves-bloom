@@ -75,14 +75,14 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.path}>
                   <SidebarMenuButton
                       onClick={() => handleNavClick(item.path)}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all min-h-[40px] w-full ${
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all min-h-[44px] w-full ${
                         active 
                           ? 'bg-gradient-cta text-white shadow-md' 
-                          : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                          : 'text-foreground/80 hover:bg-accent hover:text-foreground'
                       }`}
                       tooltip={!isExpanded ? item.label : undefined}
                     >
-                      <IconComponent size={20} strokeWidth={1.5} className="shrink-0" />
+                      <IconComponent size={22} strokeWidth={2} className="shrink-0" />
                       <span className={`text-sm font-medium truncate max-w-[140px] transition-all duration-200 ${isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
                         {item.label}
                       </span>
@@ -100,10 +100,10 @@ export function AppSidebar() {
             <SidebarMenuItem>
               <SidebarMenuButton
                 onClick={handleSignOut}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all min-h-[40px] w-full"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-foreground/70 hover:bg-destructive/10 hover:text-destructive transition-all min-h-[44px] w-full"
                 tooltip={!isExpanded ? 'Sign Out' : undefined}
               >
-                <LogOut size={18} strokeWidth={1.75} className="shrink-0" />
+                <LogOut size={20} strokeWidth={2} className="shrink-0" />
                 <span className={`text-sm font-medium truncate transition-all duration-200 ${isExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0 overflow-hidden'}`}>
                   Sign Out
                 </span>

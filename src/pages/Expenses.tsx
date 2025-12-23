@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import { AppSidebar } from "@/components/AppSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarSpacer } from "@/components/ui/sidebar";
 import { ExpensesList } from '@/components/ExpensesList';
 import { IncomeList } from '@/components/IncomeList';
 import { ExpenseInsights } from '@/components/ExpenseInsights';
@@ -17,9 +17,10 @@ const Expenses: React.FC = () => {
     <SidebarProvider defaultOpen={false}>
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
-        <div className="flex-1 flex flex-col">
+        <SidebarSpacer />
+        <div className="flex-1 flex flex-col min-w-0">
           <Navigation />
-          <main className="flex-1 container mx-auto px-6 py-8">
+          <main className="flex-1 container mx-auto px-4 sm:px-6 py-6 sm:py-8">
             <div className="mb-8">
               <h1 className="text-3xl font-bold text-foreground">{t('incomeExpenseTracker')}</h1>
               <p className="text-muted-foreground">Track and analyze your income and spending habits</p>
