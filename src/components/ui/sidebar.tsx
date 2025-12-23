@@ -47,6 +47,10 @@ function useSidebar() {
   return context
 }
 
+function useSidebarOptional() {
+  return React.useContext(SidebarContext)
+}
+
 const SidebarProvider = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
@@ -776,4 +780,5 @@ export {
   SidebarSpacer,
   SidebarTrigger,
   useSidebar,
+  useSidebarOptional,
 }
