@@ -209,11 +209,17 @@ const AutomatedSavings = () => {
                         </div>
 
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-4 border-t border-border">
-                          <div className="flex gap-6 text-sm">
+                          <div className="flex flex-wrap gap-4 sm:gap-6 text-sm">
                             <div>
                               <span className="text-muted-foreground">Next run: </span>
                               <span className="font-medium text-foreground">{formatDate(saving.next_execution_date)}</span>
                             </div>
+                            {saving.last_executed_at && (
+                              <div>
+                                <span className="text-muted-foreground">Last run: </span>
+                                <span className="font-medium text-green-500">{formatDate(saving.last_executed_at)}</span>
+                              </div>
+                            )}
                             <div>
                               <span className="text-muted-foreground">Created: </span>
                               <span className="font-medium text-foreground">{formatDate(saving.created_at)}</span>

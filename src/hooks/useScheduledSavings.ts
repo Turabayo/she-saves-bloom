@@ -14,6 +14,7 @@ export interface ScheduledSaving {
   name: string;
   created_at: string;
   updated_at: string;
+  last_executed_at?: string | null;
 }
 
 export type CreateScheduledSavingInput = {
