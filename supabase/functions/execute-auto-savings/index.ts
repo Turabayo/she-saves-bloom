@@ -16,6 +16,7 @@ interface ScheduledSaving {
   next_execution_date: string;
   is_active: boolean;
   name: string;
+  last_executed_at: string | null;
 }
 
 function getNextExecutionDate(frequency: string, currentDate: Date): Date {
@@ -31,7 +32,6 @@ function getNextExecutionDate(frequency: string, currentDate: Date): Date {
       next.setMonth(next.getMonth() + 1);
       break;
     case "one-time":
-      // For one-time, we'll disable the rule after execution
       return next;
     default:
       next.setMonth(next.getMonth() + 1);
@@ -39,8 +39,15 @@ function getNextExecutionDate(frequency: string, currentDate: Date): Date {
   return next;
 }
 
+function isSameDay(date1: Date, date2: Date): boolean {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
+}
+
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -80,11 +87,27 @@ serve(async (req) => {
 
     let successCount = 0;
     let errorCount = 0;
+    let skippedCount = 0;
     const results: Array<{ rule_id: string; status: string; message: string }> = [];
 
     for (const rule of dueRules as ScheduledSaving[]) {
       try {
         console.log(`[Auto Savings] Processing rule: ${rule.name} (${rule.id})`);
+
+        // IDEMPOTENCY CHECK: Skip if already executed today
+        if (rule.last_executed_at) {
+          const lastExec = new Date(rule.last_executed_at);
+          if (isSameDay(lastExec, today)) {
+            console.log(`[Auto Savings] Skipping rule ${rule.id} - already executed today`);
+            skippedCount++;
+            results.push({
+              rule_id: rule.id,
+              status: "skipped",
+              message: "Already executed today",
+            });
+            continue;
+          }
+        }
 
         // Create a savings record
         const savingRecord = {
@@ -101,12 +124,11 @@ serve(async (req) => {
           .insert([savingRecord]);
 
         if (savingError) {
-          // If goal_id is required and null fails, try with a default or skip
           console.error(`Error creating saving for rule ${rule.id}:`, savingError);
           errorCount++;
           results.push({
             rule_id: rule.id,
-            status: "error",
+            status: "failed",
             message: savingError.message,
           });
           continue;
@@ -130,23 +152,25 @@ serve(async (req) => {
           new Date(rule.next_execution_date)
         );
 
-        // Update the rule
+        const now = new Date().toISOString();
+
+        // Update the rule with last_executed_at for idempotency
         if (rule.frequency === "one-time") {
-          // Disable one-time rules after execution
           await supabase
             .from("scheduled_savings")
             .update({
               is_active: false,
-              updated_at: new Date().toISOString(),
+              last_executed_at: now,
+              updated_at: now,
             })
             .eq("id", rule.id);
         } else {
-          // Update next execution date for recurring rules
           await supabase
             .from("scheduled_savings")
             .update({
               next_execution_date: nextDate.toISOString().split("T")[0],
-              updated_at: new Date().toISOString(),
+              last_executed_at: now,
+              updated_at: now,
             })
             .eq("id", rule.id);
         }
@@ -166,14 +190,14 @@ serve(async (req) => {
         errorCount++;
         results.push({
           rule_id: rule.id,
-          status: "error",
+          status: "failed",
           message: String(ruleError),
         });
       }
     }
 
     console.log(
-      `[Auto Savings] Execution complete. Success: ${successCount}, Errors: ${errorCount}`
+      `[Auto Savings] Execution complete. Success: ${successCount}, Skipped: ${skippedCount}, Errors: ${errorCount}`
     );
 
     return new Response(
@@ -181,6 +205,7 @@ serve(async (req) => {
         success: true,
         message: `Processed ${dueRules.length} rules`,
         processed: successCount,
+        skipped: skippedCount,
         errors: errorCount,
         results,
       }),

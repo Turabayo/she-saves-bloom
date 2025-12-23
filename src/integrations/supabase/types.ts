@@ -294,6 +294,7 @@ export type Database = {
           goal_id: string | null
           id: string
           is_active: boolean
+          last_executed_at: string | null
           name: string
           next_execution_date: string
           updated_at: string
@@ -306,6 +307,7 @@ export type Database = {
           goal_id?: string | null
           id?: string
           is_active?: boolean
+          last_executed_at?: string | null
           name: string
           next_execution_date: string
           updated_at?: string
@@ -318,6 +320,7 @@ export type Database = {
           goal_id?: string | null
           id?: string
           is_active?: boolean
+          last_executed_at?: string | null
           name?: string
           next_execution_date?: string
           updated_at?: string
