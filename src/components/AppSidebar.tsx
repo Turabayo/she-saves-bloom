@@ -64,7 +64,7 @@ export function AppSidebar() {
         </div>
       </div>
 
-      <SidebarContent className="px-2 py-4">
+      <SidebarContent className="px-3 py-4">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
@@ -75,15 +75,15 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.path}>
                   <SidebarMenuButton
                       onClick={() => handleNavClick(item.path)}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all min-h-[44px] w-full ${
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all min-h-[48px] w-full ${
                         active 
                           ? 'bg-gradient-cta text-white shadow-md' 
                           : 'text-foreground/80 hover:bg-accent hover:text-foreground'
-                      }`}
+                      } ${!isExpanded ? 'justify-center px-0' : ''}`}
                       tooltip={!isExpanded ? item.label : undefined}
                     >
                       <IconComponent size={22} strokeWidth={2} className="shrink-0" />
-                      <span className={`text-sm font-medium truncate max-w-[140px] transition-all duration-200 ${isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
+                      <span className={`text-sm font-medium truncate max-w-[140px] transition-all duration-200 ${isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden absolute'}`}>
                         {item.label}
                       </span>
                     </SidebarMenuButton>
@@ -100,11 +100,11 @@ export function AppSidebar() {
             <SidebarMenuItem>
               <SidebarMenuButton
                 onClick={handleSignOut}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-foreground/70 hover:bg-destructive/10 hover:text-destructive transition-all min-h-[44px] w-full"
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-foreground/70 hover:bg-destructive/10 hover:text-destructive transition-all min-h-[48px] w-full ${!isExpanded ? 'justify-center px-0' : ''}`}
                 tooltip={!isExpanded ? 'Sign Out' : undefined}
               >
                 <LogOut size={20} strokeWidth={2} className="shrink-0" />
-                <span className={`text-sm font-medium truncate transition-all duration-200 ${isExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0 overflow-hidden'}`}>
+                <span className={`text-sm font-medium truncate transition-all duration-200 ${isExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0 overflow-hidden absolute'}`}>
                   Sign Out
                 </span>
               </SidebarMenuButton>
