@@ -249,7 +249,11 @@ const SidebarSpacer = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div">
 >(({ className, ...props }, ref) => {
-  const { isMobile, open, isHovered } = useSidebar()
+  const context = useSidebarOptional()
+
+  if (!context) return null
+
+  const { isMobile, open, isHovered } = context
 
   if (isMobile) return null
 

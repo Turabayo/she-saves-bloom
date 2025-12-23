@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Target, Receipt, Wallet, Zap, BarChart3, LogOut, Settings, LayoutDashboard } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import {
+  SidebarProvider,
   Sidebar,
   SidebarContent,
   SidebarGroup,
@@ -11,9 +12,10 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   useSidebar,
+  useSidebarOptional,
 } from "@/components/ui/sidebar";
 
-export function AppSidebar() {
+function AppSidebarInner() {
   const navigate = useNavigate();
   const location = useLocation();
   const { signOut } = useAuth();
@@ -114,4 +116,19 @@ export function AppSidebar() {
       </SidebarContent>
     </Sidebar>
   );
+}
+
+export function AppSidebar() {
+  const sidebarContext = useSidebarOptional();
+
+  // Safety: if a page forgot to wrap with <SidebarProvider />, avoid crashing.
+  if (!sidebarContext) {
+    return (
+      <SidebarProvider defaultOpen={false}>
+        <AppSidebarInner />
+      </SidebarProvider>
+    );
+  }
+
+  return <AppSidebarInner />;
 }
