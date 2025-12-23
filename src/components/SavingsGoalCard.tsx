@@ -47,7 +47,7 @@ export const SavingsGoalCard = ({ goal, onTopUp, onWithdraw, className = "" }: S
             </div>
           </div>
           {isCompleted && (
-            <Badge className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white">
+            <Badge className="bg-gradient-cta text-white">
               🎯 Goal Reached!
             </Badge>
           )}
@@ -97,7 +97,7 @@ export const SavingsGoalCard = ({ goal, onTopUp, onWithdraw, className = "" }: S
         <div className="flex gap-2 pt-2">
           <Button 
             onClick={() => onTopUp(goal.id)}
-            className="flex-1 bg-gradient-to-r from-indigo-500 to-fuchsia-500 hover:from-indigo-600 hover:to-fuchsia-600 text-white"
+            className="flex-1 bg-gradient-cta hover:brightness-110 text-white"
             size="sm"
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -118,7 +118,7 @@ export const SavingsGoalCard = ({ goal, onTopUp, onWithdraw, className = "" }: S
         </div>
 
         {isCompleted && (
-          <div className="mt-3 p-3 bg-gradient-to-r from-indigo-500 to-fuchsia-500 rounded-lg text-white text-center text-sm font-medium">
+          <div className="mt-3 p-3 bg-gradient-cta rounded-lg text-white text-center text-sm font-medium">
             🎉 Congratulations! You can now buy your {goal.name}!
           </div>
         )}
