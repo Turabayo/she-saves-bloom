@@ -19,7 +19,7 @@ export function AppSidebar() {
   const location = useLocation();
   const { signOut } = useAuth();
   const { t } = useLanguage();
-  const { setOpenMobile } = useSidebar();
+  const { setOpenMobile, isMobile, isHovered, open } = useSidebar();
 
   const navItems = [
     { path: '/dashboard', label: t('dashboard'), icon: 'dashboard' },
@@ -40,21 +40,28 @@ export function AppSidebar() {
 
   const handleNavClick = (path: string) => {
     navigate(path);
-    setOpenMobile(false);
+    if (isMobile) {
+      setOpenMobile(false);
+    }
   };
 
+  // Determine if sidebar is expanded (for desktop hover behavior)
+  const isExpanded = isMobile || open || isHovered;
+
   return (
-    <Sidebar className="border-r border-border bg-card transition-transform duration-300 ease-in-out">
+    <Sidebar className="border-r border-border bg-card">
       {/* Logo */}
-      <div className="p-5 border-b border-border">
+      <div className="p-4 border-b border-border">
         <div 
           className="flex items-center gap-3 cursor-pointer"
           onClick={() => handleNavClick('/dashboard')}
         >
-          <div className="w-10 h-10 bg-gradient-cta rounded-xl flex items-center justify-center shadow-lg">
+          <div className="w-10 h-10 bg-gradient-cta rounded-xl flex items-center justify-center shadow-lg shrink-0">
             <span className="text-white font-bold text-lg">I</span>
           </div>
-          <span className="text-xl font-bold text-foreground">ISave</span>
+          <span className={`text-xl font-bold text-foreground transition-opacity duration-200 ${isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
+            ISave
+          </span>
         </div>
       </div>
 
@@ -68,18 +75,21 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.path}>
                     <SidebarMenuButton
                       onClick={() => handleNavClick(item.path)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all min-h-[44px] ${
+                      className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all min-h-[44px] ${
                         active 
                           ? 'bg-gradient-cta text-white shadow-lg' 
                           : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                       }`}
+                      tooltip={!isExpanded ? item.label : undefined}
                     >
                       {item.icon === 'dashboard' ? (
-                        <img src={dashboardIcon} alt="Dashboard" className="w-5 h-5" />
+                        <img src={dashboardIcon} alt="Dashboard" className="w-5 h-5 shrink-0" />
                       ) : (
-                        <item.icon size={20} />
+                        <item.icon size={20} className="shrink-0" />
                       )}
-                      <span className="font-medium">{item.label}</span>
+                      <span className={`font-medium transition-opacity duration-200 ${isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
+                        {item.label}
+                      </span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
@@ -92,10 +102,12 @@ export function AppSidebar() {
         <div className="mt-auto pt-4 px-2 border-t border-border">
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-primary hover:bg-accent transition-colors min-h-[44px]"
+            className="flex items-center gap-3 px-3 py-3 w-full rounded-xl bg-gradient-cta text-white hover:brightness-110 transition-all min-h-[44px]"
           >
-            <LogOut size={20} />
-            <span className="font-medium">{t('signOut')}</span>
+            <LogOut size={20} className="shrink-0" />
+            <span className={`font-medium transition-opacity duration-200 ${isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
+              {t('signOut')}
+            </span>
           </button>
         </div>
       </SidebarContent>

@@ -1,6 +1,6 @@
 import Navigation from "@/components/Navigation";
 import { AppSidebar } from "@/components/AppSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarSpacer } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { ChevronRight, Settings as SettingsIcon } from "lucide-react";
@@ -82,7 +82,8 @@ const Settings = () => {
     <SidebarProvider defaultOpen={false}>
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
-        <div className="flex-1 flex flex-col">
+        <SidebarSpacer />
+        <div className="flex-1 flex flex-col min-w-0">
           <Navigation />
           <main className="flex-1 container mx-auto px-6 py-8">
             <div className="max-w-md mx-auto">

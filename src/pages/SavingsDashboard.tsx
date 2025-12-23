@@ -11,7 +11,7 @@ import { CreateGoalDialog } from "@/components/CreateGoalDialog";
 import { TopUpDialog } from "@/components/TopUpDialog";
 import Navigation from "@/components/Navigation";
 import { AppSidebar } from "@/components/AppSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarSpacer } from "@/components/ui/sidebar";
 import FloatingAIButton from "@/components/FloatingAIButton";
 import { LoadingScreen } from "@/components/ui/loader";
 import { 
@@ -73,7 +73,8 @@ const SavingsDashboard = () => {
     <SidebarProvider defaultOpen={false}>
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
-        <div className="flex-1 flex flex-col">
+        <SidebarSpacer />
+        <div className="flex-1 flex flex-col min-w-0">
           <Navigation />
           <main className="flex-1 container mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         {/* Welcome Header */}
