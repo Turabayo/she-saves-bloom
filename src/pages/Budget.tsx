@@ -1,58 +1,100 @@
-import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarSpacer } from "@/components/ui/sidebar";
 import Navigation from "@/components/Navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { AlertTriangle, Plus, TrendingDown, TrendingUp, DollarSign } from "lucide-react";
-import { useBudget } from "@/hooks/useBudget";
+import { useBudgetPeriod } from "@/hooks/useBudgetPeriod";
+import { useBudgetBills } from "@/hooks/useBudgetBills";
+import { useBudgetDebts } from "@/hooks/useBudgetDebts";
+import { useBudgetPlannedSavings } from "@/hooks/useBudgetPlannedSavings";
 import { useExpenses } from "@/hooks/useExpenses";
-import { CreateBudgetDialog } from "@/components/CreateBudgetDialog";
-import { formatCurrency } from "@/utils/dateFormatter";
-import { useToast } from "@/hooks/use-toast";
+import { useIncome } from "@/hooks/useIncome";
+import { useBudget } from "@/hooks/useBudget";
+import { useSavings } from "@/hooks/useSavings";
+import { BudgetPeriodSelector } from "@/components/budget/BudgetPeriodSelector";
+import { BudgetIncomeTable } from "@/components/budget/BudgetIncomeTable";
+import { BudgetBillsTable } from "@/components/budget/BudgetBillsTable";
+import { BudgetExpensesTable } from "@/components/budget/BudgetExpensesTable";
+import { BudgetDebtsTable } from "@/components/budget/BudgetDebtsTable";
+import { BudgetSavingsTable } from "@/components/budget/BudgetSavingsTable";
+import { AmountLeftChart } from "@/components/budget/AmountLeftChart";
+import { AllocationSummaryChart } from "@/components/budget/AllocationSummaryChart";
+import { FinancialOverviewCard } from "@/components/budget/FinancialOverviewCard";
+import { BudgetSummaryCard } from "@/components/budget/BudgetSummaryCard";
+import { Loader } from "@/components/ui/loader";
+import FloatingAIButton from "@/components/FloatingAIButton";
 
 const Budget = () => {
   const { user } = useAuth();
-  const { budgets, loading: budgetLoading, addBudget, updateBudget } = useBudget();
+  const { budgetPeriod, loading: periodLoading, updatePlannedIncome, updateCurrency, switchPeriod } = useBudgetPeriod();
+  const { bills, addBill, updateBill, deleteBill, getTotalPlanned: getBillsPlanned, getTotalActual: getBillsActual } = useBudgetBills(budgetPeriod?.id || null);
+  const { debts, addDebt, updateDebt, deleteDebt, getTotalPlanned: getDebtsPlanned, getTotalActual: getDebtsActual } = useBudgetDebts(budgetPeriod?.id || null);
+  const { plannedSavings, addPlannedSaving, updatePlannedSaving, deletePlannedSaving, getTotalPlanned: getSavingsPlanned } = useBudgetPlannedSavings(budgetPeriod?.id || null);
   const { expenses } = useExpenses();
-  const { toast } = useToast();
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
-
-  const getCurrentMonthSpending = () => {
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
-    
-    const spending = new Map();
-    
-    expenses.forEach(expense => {
-      const expenseDate = new Date(expense.date);
-      if (expenseDate.getMonth() === currentMonth && expenseDate.getFullYear() === currentYear) {
-        const current = spending.get(expense.category) || 0;
-        spending.set(expense.category, current + expense.amount);
-      }
-    });
-    
-    return spending;
-  };
-
-  const currentSpending = getCurrentMonthSpending();
-
-  const getBudgetStatus = (budget: any) => {
-    const spent = currentSpending.get(budget.category) || 0;
-    const percentage = (spent / budget.amount) * 100;
-    
-    if (percentage >= 100) return { status: 'exceeded', color: 'text-foreground', bgColor: 'bg-card' };
-    if (percentage >= 80) return { status: 'warning', color: 'text-foreground', bgColor: 'bg-card' };
-    return { status: 'good', color: 'text-foreground', bgColor: 'bg-card' };
-  };
-
-  const totalBudget = budgets.reduce((sum, budget) => sum + budget.amount, 0);
-  const totalSpent = Array.from(currentSpending.values()).reduce((sum, amount) => sum + amount, 0);
-  const remainingBudget = totalBudget - totalSpent;
+  const { income } = useIncome();
+  const { budgets } = useBudget();
+  const { savings } = useSavings();
 
   if (!user) return null;
+
+  if (periodLoading) {
+    return (
+      <SidebarProvider defaultOpen={false}>
+        <div className="flex min-h-screen w-full bg-background">
+          <AppSidebar />
+          <SidebarSpacer />
+          <div className="flex-1 flex items-center justify-center">
+            <Loader size="lg" />
+          </div>
+        </div>
+      </SidebarProvider>
+    );
+  }
+
+  const currency = budgetPeriod?.currency || 'RWF';
+  const month = budgetPeriod?.month || new Date().getMonth() + 1;
+  const year = budgetPeriod?.year || new Date().getFullYear();
+  const plannedIncome = budgetPeriod?.planned_income || 0;
+
+  // Calculate actual income for current period
+  const currentMonthIncomes = income.filter(inc => {
+    const d = new Date(inc.date);
+    return d.getMonth() + 1 === month && d.getFullYear() === year;
+  });
+  const actualIncome = currentMonthIncomes.reduce((sum, inc) => sum + inc.amount, 0);
+
+  // Calculate actual expenses for current period
+  const currentMonthExpenses = expenses.filter(exp => {
+    const d = new Date(exp.date);
+    return d.getMonth() + 1 === month && d.getFullYear() === year;
+  });
+  const actualExpenses = currentMonthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+  const plannedExpenses = budgets.reduce((sum, b) => sum + b.amount, 0);
+
+  // Calculate actual savings for current period
+  const currentMonthSavings = savings.filter(sav => {
+    const d = new Date(sav.created_at || '');
+    return d.getMonth() + 1 === month && d.getFullYear() === year;
+  });
+  const actualSavings = currentMonthSavings.reduce((sum, sav) => sum + sav.amount, 0);
+
+  // Group savings by goal for the savings table
+  const savingsByGoal = new Map<string, number>();
+  currentMonthSavings.forEach(sav => {
+    if (sav.goal_id) {
+      const current = savingsByGoal.get(sav.goal_id) || 0;
+      savingsByGoal.set(sav.goal_id, current + sav.amount);
+    }
+  });
+
+  const billsPlanned = getBillsPlanned();
+  const billsActual = getBillsActual();
+  const debtsPlanned = getDebtsPlanned();
+  const debtsActual = getDebtsActual();
+  const savingsPlanned = getSavingsPlanned();
+
+  const totalAllocated = billsActual + actualExpenses + debtsActual + actualSavings;
+  const amountLeft = actualIncome - totalAllocated;
+  const savingsRate = actualIncome > 0 ? (actualSavings / actualIncome) * 100 : 0;
 
   return (
     <SidebarProvider defaultOpen={false}>
@@ -62,144 +104,97 @@ const Budget = () => {
         <div className="flex-1 flex flex-col min-w-0">
           <Navigation />
           <main className="flex-1 container mx-auto px-4 sm:px-6 py-6 sm:py-8">
-            {/* Header */}
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h1 className="text-3xl font-bold text-foreground">Budget Management</h1>
-                <p className="text-muted-foreground">Track and control your spending</p>
-              </div>
-              <Button onClick={() => setShowCreateDialog(true)}>
-                <Plus size={16} className="mr-2" />
-                Create Budget
-              </Button>
-            </div>
-
-            {/* Overview Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <DollarSign size={16} className="text-primary" />
-                    Total Budget
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-foreground">
-                    {formatCurrency(totalBudget)}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <TrendingDown size={16} className="text-primary" />
-                    Total Spent
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-foreground">
-                    {formatCurrency(totalSpent)}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <TrendingUp size={16} className="text-primary" />
-                    Remaining
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-foreground">
-                    {formatCurrency(remainingBudget)}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Budget Categories */}
-            <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-foreground">Budget Categories</h2>
-              
-              {budgets.length === 0 ? (
-                <Card className="p-8 text-center">
-                  <DollarSign size={48} className="mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-medium text-foreground mb-2">No budgets yet</h3>
-                  <p className="text-muted-foreground mb-4">Create your first budget to start tracking your spending</p>
-                  <Button onClick={() => setShowCreateDialog(true)}>
-                    <Plus size={16} className="mr-2" />
-                    Create Your First Budget
-                  </Button>
-                </Card>
-              ) : (
-                <div className="grid gap-4">
-                  {budgets.map((budget) => {
-                    const spent = currentSpending.get(budget.category) || 0;
-                    const percentage = Math.min((spent / budget.amount) * 100, 100);
-                    const status = getBudgetStatus(budget);
-                    
-                    return (
-                      <Card key={budget.id} className="p-6">
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <h3 className="text-lg font-semibold text-foreground">{budget.category}</h3>
-                            <p className="text-sm text-muted-foreground">{budget.description}</p>
-                          </div>
-                          <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            status.status === 'exceeded' ? 'bg-destructive/20 text-destructive' :
-                            status.status === 'warning' ? 'bg-yellow-500/20 text-yellow-500' :
-                            'bg-success/20 text-success'
-                          }`}>
-                            {status.status}
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground">Spent: {formatCurrency(spent)}</span>
-                            <span className="text-muted-foreground">Budget: {formatCurrency(budget.amount)}</span>
-                          </div>
-                          <Progress 
-                            value={percentage} 
-                            className={`h-2 ${status.status === 'exceeded' ? '[&>div]:bg-destructive' : 
-                              status.status === 'warning' ? '[&>div]:bg-yellow-500' : '[&>div]:bg-success'}`}
-                          />
-                          <div className="flex justify-between text-xs text-muted-foreground">
-                            <span>{percentage.toFixed(1)}% used</span>
-                            <span>{formatCurrency(budget.amount - spent)} remaining</span>
-                          </div>
-                        </div>
-
-                        {percentage >= 80 && (
-                          <div className="mt-4 p-3 bg-muted border border-border rounded-lg flex items-center gap-2">
-                            <AlertTriangle size={16} className="text-yellow-500" />
-                            <span className="text-sm text-foreground">
-                              {percentage >= 100 ? "Budget exceeded!" : "Approaching budget limit"}
-                            </span>
-                          </div>
-                        )}
-                      </Card>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            <CreateBudgetDialog 
-              open={showCreateDialog}
-              onOpenChange={setShowCreateDialog}
-              onSuccess={() => {
-                setShowCreateDialog(false);
-                toast({
-                  title: "Budget created",
-                  description: "Your budget has been created successfully",
-                });
-              }}
+            <BudgetPeriodSelector
+              month={month}
+              year={year}
+              currency={currency}
+              onMonthChange={switchPeriod}
+              onCurrencyChange={updateCurrency}
             />
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              <FinancialOverviewCard
+                plannedIncome={plannedIncome}
+                actualIncome={actualIncome}
+                plannedBills={billsPlanned}
+                actualBills={billsActual}
+                plannedExpenses={plannedExpenses}
+                actualExpenses={actualExpenses}
+                plannedDebt={debtsPlanned}
+                actualDebt={debtsActual}
+                plannedSavings={savingsPlanned}
+                actualSavings={actualSavings}
+                currency={currency}
+              />
+              <AmountLeftChart
+                income={actualIncome}
+                bills={billsActual}
+                expenses={actualExpenses}
+                debt={debtsActual}
+                savings={actualSavings}
+                currency={currency}
+              />
+              <BudgetSummaryCard
+                income={actualIncome}
+                totalAllocated={totalAllocated}
+                savingsRate={savingsRate}
+                amountLeft={amountLeft}
+                currency={currency}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <BudgetIncomeTable
+                plannedIncome={plannedIncome}
+                onUpdatePlannedIncome={updatePlannedIncome}
+                incomes={income}
+                currency={currency}
+              />
+              <AllocationSummaryChart
+                bills={billsActual}
+                expenses={actualExpenses}
+                debt={debtsActual}
+                savings={actualSavings}
+                currency={currency}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <BudgetBillsTable
+                bills={bills}
+                onAdd={addBill}
+                onUpdate={updateBill}
+                onDelete={deleteBill}
+                currency={currency}
+              />
+              <BudgetExpensesTable
+                expenses={expenses}
+                budgets={budgets}
+                currency={currency}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <BudgetDebtsTable
+                debts={debts}
+                onAdd={addDebt}
+                onUpdate={updateDebt}
+                onDelete={deleteDebt}
+                currency={currency}
+              />
+              <BudgetSavingsTable
+                plannedSavings={plannedSavings}
+                actualSavings={actualSavings}
+                savingsByGoal={savingsByGoal}
+                onAdd={addPlannedSaving}
+                onUpdate={updatePlannedSaving}
+                onDelete={deletePlannedSaving}
+                currency={currency}
+              />
+            </div>
           </main>
         </div>
+        <FloatingAIButton />
       </div>
     </SidebarProvider>
   );
