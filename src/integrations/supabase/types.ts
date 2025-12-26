@@ -14,6 +14,172 @@ export type Database = {
   }
   public: {
     Tables: {
+      budget_bills: {
+        Row: {
+          actual_amount: number
+          budget_period_id: string
+          created_at: string
+          id: string
+          is_paid: boolean
+          name: string
+          planned_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          actual_amount?: number
+          budget_period_id: string
+          created_at?: string
+          id?: string
+          is_paid?: boolean
+          name: string
+          planned_amount?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          actual_amount?: number
+          budget_period_id?: string
+          created_at?: string
+          id?: string
+          is_paid?: boolean
+          name?: string
+          planned_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_bills_budget_period_id_fkey"
+            columns: ["budget_period_id"]
+            isOneToOne: false
+            referencedRelation: "budget_periods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budget_debts: {
+        Row: {
+          actual_amount: number
+          budget_period_id: string
+          created_at: string
+          id: string
+          name: string
+          planned_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          actual_amount?: number
+          budget_period_id: string
+          created_at?: string
+          id?: string
+          name: string
+          planned_amount?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          actual_amount?: number
+          budget_period_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+          planned_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_debts_budget_period_id_fkey"
+            columns: ["budget_period_id"]
+            isOneToOne: false
+            referencedRelation: "budget_periods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budget_periods: {
+        Row: {
+          created_at: string
+          currency: string
+          id: string
+          month: number
+          planned_income: number
+          updated_at: string
+          user_id: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          id?: string
+          month: number
+          planned_income?: number
+          updated_at?: string
+          user_id: string
+          year: number
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          id?: string
+          month?: number
+          planned_income?: number
+          updated_at?: string
+          user_id?: string
+          year?: number
+        }
+        Relationships: []
+      }
+      budget_planned_savings: {
+        Row: {
+          budget_period_id: string
+          created_at: string
+          goal_id: string | null
+          id: string
+          name: string
+          planned_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          budget_period_id: string
+          created_at?: string
+          goal_id?: string | null
+          id?: string
+          name: string
+          planned_amount?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          budget_period_id?: string
+          created_at?: string
+          goal_id?: string | null
+          id?: string
+          name?: string
+          planned_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_planned_savings_budget_period_id_fkey"
+            columns: ["budget_period_id"]
+            isOneToOne: false
+            referencedRelation: "budget_periods"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_planned_savings_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "savings_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       budgets: {
         Row: {
           amount: number
