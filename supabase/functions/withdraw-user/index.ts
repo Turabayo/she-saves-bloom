@@ -354,17 +354,20 @@ serve(async (req) => {
       })
     }
 
-  } catch (err) {
+  } catch (err: unknown) {
     console.error('=== WITHDRAW ERROR ===')
-    console.error('Error type:', err.constructor.name)
-    console.error('Error message:', err.message)
-    console.error('Error stack:', err.stack)
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+    const errorType = err instanceof Error ? err.constructor.name : 'Unknown'
+    const errorStack = err instanceof Error ? err.stack : undefined
+    console.error('Error type:', errorType)
+    console.error('Error message:', errorMessage)
+    console.error('Error stack:', errorStack)
     
     return new Response(JSON.stringify({ 
       success: false,
       error: 'Internal Error', 
-      details: err.message,
-      type: err.constructor.name
+      details: errorMessage,
+      type: errorType
     }), { 
       status: 200, // Return 200 so frontend can parse the error
       headers: { 'Content-Type': 'application/json', ...corsHeaders }

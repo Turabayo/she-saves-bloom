@@ -91,11 +91,12 @@ async function initiatePayment(phone: string, amount: number): Promise<{ success
       };
     }
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ Network error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     return { 
       success: false, 
-      error: `Network error: ${error.message}` 
+      error: `Network error: ${errorMessage}` 
     };
   }
 }
