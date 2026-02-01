@@ -81,9 +81,10 @@ serve(async (req) => {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         })
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Token fetch error:', err)
-      return new Response(JSON.stringify({ error: 'token_fetch_failed', details: err.message }), {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+      return new Response(JSON.stringify({ error: 'token_fetch_failed', details: errorMessage }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
@@ -248,16 +249,18 @@ serve(async (req) => {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('MoMo API error:', err)
-      return new Response(JSON.stringify({ error: 'network_failed', details: err.message }), {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+      return new Response(JSON.stringify({ error: 'network_failed', details: errorMessage }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
     }
-  } catch (err) {
+  } catch (err: unknown) {
     console.error('Request parsing error:', err)
-    return new Response(JSON.stringify({ error: 'Invalid request', details: err.message }), {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+    return new Response(JSON.stringify({ error: 'Invalid request', details: errorMessage }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     })

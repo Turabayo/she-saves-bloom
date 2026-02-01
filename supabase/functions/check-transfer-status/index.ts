@@ -50,7 +50,7 @@ serve(async (req) => {
     }
 
     const accessToken = await getAccessToken()
-    const subscriptionKey = Deno.env.get('DISB_SUBSCRIPTION_KEY')
+    const subscriptionKey = Deno.env.get('DISB_SUBSCRIPTION_KEY')!
     const momoUrl = `https://sandbox.momodeveloper.mtn.com/disbursement/v1_0/transfer/${momo_reference_id}`
 
     console.log('MTN MoMo status URL:', momoUrl);
@@ -138,9 +138,10 @@ serve(async (req) => {
       headers: { 'Content-Type': 'application/json', ...corsHeaders }
     })
 
-  } catch (err) {
+  } catch (err: unknown) {
     console.error('Check Status Error:', err)
-    return new Response(JSON.stringify({ error: 'Internal Server Error', details: err.message }), { 
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+    return new Response(JSON.stringify({ error: 'Internal Server Error', details: errorMessage }), { 
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders }
     })
